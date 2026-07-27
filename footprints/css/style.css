@@ -1,30 +1,113 @@
-/* Google Fonts - Space Mono & Special Elite */
+/**
+ * =========================================================
+ * FOOTPRINTS - 旅行票根档案样式表
+ * 响应式票根墙布局 | 图片/视频支持 | 自适应网格
+ * =========================================================
+ * 
+ * 目录:
+ * 1. Google Fonts 导入
+ * 2. CSS 变量定义
+ * 3. 全局重置与基础样式
+ * 4. 背景层样式（地图/暗角/纸纹）
+ * 5. Logo 与导航样式
+ * 6. 移动端抽屉导航
+ * 7. 主舞台与票根墙布局
+ * 8. 票根卡片样式（含悬停效果）
+ * 9. 放大查看器样式
+ * 10. 响应式断点适配
+ * 
+ * =========================================================
+ */
+
+/* =========================================================
+   1. Google Fonts - 导入等宽字体和手写风格字体
+   ========================================================= */
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap');
 
+/* =========================================================
+   2. CSS 变量定义 - 统一配色与尺寸
+   修改此处可快速调整整体视觉风格
+   ========================================================= */
 :root {
---paper:#e9e4da;          /* 票根纸张色 */
---ink:#262420;            /* 主墨色 */
---ink-soft:#6b665c;       /* 次墨色 */
---wall:#c4c2bc;           /* 墙面底色（中灰） */
---notch:7px;              /* 票根缺口半径 */
---notch-lg:12px;          /* 放大票根缺口半径 */
-}
-
-* { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior:smooth; }
-
-body {
-font-family: Arial, Helvetica, sans-serif;
-background-color:var(--wall);
-color:var(--ink);
-min-height:100vh;
-overflow-x:hidden;
-position:relative;
+    /* 颜色变量 */
+    --paper: #e9e4da;          /* 票根纸张底色 - 暖米色 */
+    --ink: #262420;            /* 主墨色 - 深棕黑，用于主要文字 */
+    --ink-soft: #6b665c;       /* 次墨色 - 灰棕色，用于次要信息 */
+    --wall: #c4c2bc;           /* 墙面底色 - 中灰色背景 */
+    --color-border: rgba(0, 0, 0, 0.55);  /* 边框颜色 - 半透明黑 */
+    
+    /* 尺寸变量 */
+    --notch: 7px;              /* 票根缺口半径 - 小票根 */
+    --notch-lg: 12px;          /* 放大票根缺口半径 - 大票根 */
+    
+    /* 间距变量 */
+    --gap-x: 26px;             /* 票根水平间距 */
+    --gap-y: 30px;             /* 票根垂直间距 */
 }
 
 /* =========================================================
-   背景层 1：世界地图铅笔素描（fixed + multiply 融合灰墙）
+   3. 全局重置与基础样式
    ========================================================= */
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+html { 
+    scroll-behavior: smooth;   /* 平滑滚动 */
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--wall);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;        /* 禁止横向滚动 */
+    position: relative;
+}
+
+/* =========================================================
+   4. 背景层样式 - 三层叠加创造复古质感
+   z-index: 0 确保背景在最底层
+   ========================================================= */
+
+/* 背景层 1：世界地图铅笔素描（fixed + multiply 融合灰墙） */
+.bg-map {
+    position: fixed; 
+    inset: 0; 
+    z-index: 0;
+    /* 背景图已更换为新的 URL */
+    background-image: url('https://img.yubaos.com/bg.webp');
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat;
+    mix-blend-mode: multiply;  /* 正片叠底混合模式，与墙面自然融合 */
+    opacity: .55; 
+    pointer-events: none;      /* 不响应鼠标事件 */
+}
+
+/* 背景层 2：暗角效果，聚焦中心票根墙 */
+.bg-vignette {
+    position: fixed; 
+    inset: 0; 
+    z-index: 0; 
+    pointer-events: none;
+    background: radial-gradient(ellipse at center,
+        rgba(196,194,188,0) 38%,      /* 中心透明 */
+        rgba(150,148,142,.35) 78%,     /* 中间过渡 */
+        rgba(120,118,112,.6) 100%);    /* 边缘深色 */
+}
+
+/* 背景层 3：极淡纸纹颗粒，增加质感 */
+.bg-grain {
+    position: fixed; 
+    inset: 0; 
+    z-index: 0; 
+    pointer-events: none; 
+    opacity: .06;
+    /* SVG 噪点纹理 - 无需外部图片 */
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 .bg-map{
     position:fixed; inset:0; z-index:0;
     background-image:url('https://img.yubaos.com/bg.webp');
