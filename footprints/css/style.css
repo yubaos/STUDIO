@@ -27,7 +27,7 @@ position:relative;
    ========================================================= */
 .bg-map{
     position:fixed; inset:0; z-index:0;
-    background-image:url('https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/171f15a5e-2a27-44e7-bdc9-4f3cd8eb0c24.png');
+    background-image:url('https://img.yubaos.com/bg.webp');
     background-size:cover; background-position:center; background-repeat:no-repeat;
     mix-blend-mode:multiply; opacity:.55; pointer-events:none;
 }
