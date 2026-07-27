@@ -311,7 +311,8 @@ body {
    缺口位置：垂直方向 2/3 处（从顶部算起）
    ========================================================= */
 .ticket{
-    width:100%; background:var(--paper); border-radius:3px; position:relative;
+    width:160px; background:var(--paper); border-radius:3px; position:relative;
+    box-sizing:border-box;
     -webkit-mask-image:
         radial-gradient(circle at 0% 66.67%,   #0000 var(--notch), #000 calc(var(--notch) + .6px)),
         radial-gradient(circle at 100% 66.67%, #0000 var(--notch), #000 calc(var(--notch) + .6px));
@@ -324,15 +325,12 @@ body {
 
 .t-photo{
     width:138px; height:110px; margin:38px auto 0;
-    overflow:hidden; border-radius:2px; background:#bdb8ad; position:relative;
+    overflow:visible; border-radius:2px; background:#bdb8ad; position:relative;
     aspect-ratio:5/4;
 }
-.t-photo img{
-    width:100%; height:100%; object-fit:cover; display:block;
-    filter:saturate(.92) contrast(1.02);
-    transition:transform .6s cubic-bezier(.2,.8,.2,1), filter .4s ease;
+.t-photo img, .t-photo video{
+    width:100%; height:100%; object-fit:cover; display:block; border-radius:2px;
 }
-.ticket-wrap:hover .t-photo img{transform:scale(1.08); filter:saturate(1.05) contrast(1.05);}
 
 /* 视频票根标识：中央播放徽章 + 脉冲环，暗示“此张为动态影像” */
 .play-badge{
@@ -486,6 +484,15 @@ body {
     .logo:hover svg{transform:none; filter:drop-shadow(0 1px 0 rgba(0,0,0,.18));}
 }
 
+/* 桌面端：图片悬停效果 */
+@media (hover:hover){
+    .t-photo img{
+        filter:saturate(.92) contrast(1.02);
+        transition:transform .6s cubic-bezier(.2,.8,.2,1), filter .4s ease;
+    }
+    .ticket-wrap:hover .t-photo img{transform:scale(1.08); filter:saturate(1.05) contrast(1.05);}
+}
+
 /* =========================================================
    响应式断点
    ========================================================= */
@@ -537,6 +544,7 @@ body {
         gap:22px 14px; justify-items:center;
     }
     .ticket-wrap{width:100%; max-width:160px;}
+    .ticket{width:160px;}
     .t-photo{width:calc(100% - 22px); max-width:138px; height:auto; margin-top:24px; aspect-ratio:5/4;}
 }
 
