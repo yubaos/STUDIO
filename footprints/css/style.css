@@ -1,26 +1,5 @@
-@font-face {
-font-family: 'Space Mono';
-font-style: normal;
-font-weight: 400;
-font-display: swap;
-src: url('../fonts/space-mono-400.ttf') format('truetype');
-}
-
-@font-face {
-font-family: 'Space Mono';
-font-style: normal;
-font-weight: 700;
-font-display: swap;
-src: url('../fonts/space-mono-700.ttf') format('truetype');
-}
-
-@font-face {
-font-family: 'Special Elite';
-font-style: normal;
-font-weight: 400;
-font-display: swap;
-src: url('../fonts/special-elite-400.ttf') format('truetype');
-}
+/* Google Fonts - Space Mono & Special Elite */
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap');
 
 :root {
 --paper:#e9e4da;          /* 票根纸张色 */
