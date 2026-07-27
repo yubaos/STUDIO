@@ -282,7 +282,8 @@ body {
 
 /* =========================================================
    票根外层 wrap —— 旋转 / 阴影 / 入场 / hover 抬起
-   票根采用 2:3 比例设计（宽:高）
+   票根整体采用 2:3 比例设计（宽:高 = 2:3，即 160px:240px）
+   票根内图片/视频区域采用 5:4 比例
    ========================================================= */
 .ticket-wrap{
     --rot:0deg;
@@ -321,8 +322,9 @@ body {
 }
 
 .t-photo{
-    width:138px; height:207px; margin:11px auto 0;
+    width:138px; height:110px; margin:11px auto 0;
     overflow:hidden; border-radius:2px; background:#bdb8ad; position:relative;
+    aspect-ratio:5/4;
 }
 .t-photo img{
     width:100%; height:100%; object-fit:cover; display:block;
@@ -524,7 +526,7 @@ body {
         gap:22px 14px; justify-items:center;
     }
     .ticket-wrap{width:100%; max-width:160px;}
-    .t-photo{width:calc(100% - 22px); max-width:138px; height:auto; aspect-ratio:2/3;}
+    .t-photo{width:calc(100% - 22px); max-width:138px; height:auto; aspect-ratio:5/4;}
 }
 
 /* 超小屏 */
@@ -535,7 +537,7 @@ body {
         padding-right:calc(12px + env(safe-area-inset-right, 0px));
     }
     .ticket-grid{gap:18px 10px;}
-    .t-photo{height:auto; aspect-ratio:2/3;}
+    .t-photo{height:auto; aspect-ratio:5/4;}
     .play-badge{width:30px; height:30px;}
     .play-badge svg{width:11px; height:11px;}
     .drawer-home{margin-left:26px; margin-right:26px;}
