@@ -308,21 +308,22 @@ body {
 
 /* =========================================================
    票根本体 —— 纸张 + 圆角 + 透明缺口（mask 挖洞）
+   缺口位置：垂直方向 2/3 处（从顶部算起）
    ========================================================= */
 .ticket{
     width:100%; background:var(--paper); border-radius:3px; position:relative;
     -webkit-mask-image:
-        radial-gradient(circle at 0% 50%,   #0000 var(--notch), #000 calc(var(--notch) + .6px)),
-        radial-gradient(circle at 100% 50%, #0000 var(--notch), #000 calc(var(--notch) + .6px));
+        radial-gradient(circle at 0% 66.67%,   #0000 var(--notch), #000 calc(var(--notch) + .6px)),
+        radial-gradient(circle at 100% 66.67%, #0000 var(--notch), #000 calc(var(--notch) + .6px));
     -webkit-mask-repeat:no-repeat; -webkit-mask-composite:source-in;
     mask-image:
-        radial-gradient(circle at 0% 50%,   #0000 var(--notch), #000 calc(var(--notch) + .6px)),
-        radial-gradient(circle at 100% 50%, #0000 var(--notch), #000 calc(var(--notch) + .6px));
+        radial-gradient(circle at 0% 66.67%,   #0000 var(--notch), #000 calc(var(--notch) + .6px)),
+        radial-gradient(circle at 100% 66.67%, #0000 var(--notch), #000 calc(var(--notch) + .6px));
     mask-repeat:no-repeat; mask-composite:intersect;
 }
 
 .t-photo{
-    width:138px; height:110px; margin:24px auto 0;
+    width:138px; height:110px; margin:38px auto 0;
     overflow:hidden; border-radius:2px; background:#bdb8ad; position:relative;
     aspect-ratio:5/4;
 }
@@ -342,6 +343,7 @@ body {
     box-shadow:0 2px 8px rgba(0,0,0,.35);
     transition:transform .3s ease, background .3s ease;
     pointer-events:none;
+    z-index:5;
 }
 .play-badge svg{ width:13px; height:13px; fill:#f4f1ea; margin-left:2px; }
 .play-badge::after{
@@ -386,21 +388,28 @@ body {
     transform:scale(.82) translateY(20px); opacity:0;
     transition:transform .5s cubic-bezier(.2,.9,.25,1), opacity .45s ease;
     -webkit-mask-image:
-        radial-gradient(circle at 0% 50%,   #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px)),
-        radial-gradient(circle at 100% 50%, #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px));
+        radial-gradient(circle at 0% 66.67%,   #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px)),
+        radial-gradient(circle at 100% 66.67%, #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px));
     -webkit-mask-repeat:no-repeat; -webkit-mask-composite:source-in;
     mask-image:
-        radial-gradient(circle at 0% 50%,   #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px)),
-        radial-gradient(circle at 100% 50%, #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px));
+        radial-gradient(circle at 0% 66.67%,   #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px)),
+        radial-gradient(circle at 100% 66.67%, #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px));
     mask-repeat:no-repeat; mask-composite:intersect;
 }
 .overlay.open .viewer{transform:scale(1) translateY(0); opacity:1;}
 
 /* 媒体容器：承载 img 或 video，整体淡入切换 */
+/* 上方留有背景边框：通过 padding-top 实现 */
 .v-photo{
     width:100%; height:clamp(420px, 66vh, 720px);
     overflow:hidden; border-radius:3px; background:#15140f; position:relative;
     transition:opacity .3s ease;
+}
+.v-photo::before{
+    content:''; position:absolute; top:0; left:0; right:0;
+    height:18px; background:var(--paper);
+    border-bottom:1px solid rgba(0,0,0,0.15);
+    z-index:10; pointer-events:none;
 }
 .v-photo.swap{opacity:0;}
 .v-photo img, .v-photo video{
@@ -420,6 +429,8 @@ body {
 .v-play svg{ width:30px; height:30px; fill:#f4f1ea; margin-left:5px; }
 .v-play:hover{ background:rgba(20,19,17,.72); transform:translate(-50%,-50%) scale(1.08); }
 .v-play.hide{ opacity:0; pointer-events:none; transform:translate(-50%,-50%) scale(.7); }
+/* 确保播放按钮在边框上方显示 */
+.v-play{ z-index:20; }
 
 .v-info{
     display:flex; justify-content:space-between; align-items:flex-end;
