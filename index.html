@@ -1,32 +1,36 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YUBAO. STUDIO</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YUBAO. STUDIO</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="noise"></div>
-
-<main class="stage">
-  <div class="grid-frame" id="grid">
-    <div class="grid-lines"></div>
-    <section class="hero">
-      <h1>YUBAO.<br>STUDIO.</h1>
-      <p>BUILDING DIGITAL SPACES WITH CODE.</p>
-    </section>
-  </div>
-
-  <nav class="menu">
-    <a href="#">WORK</a>
-    <a href="#">ABOUT</a>
-    <a href="/footprints">FOOTPRINTS</a>
-    <a href="#">TIME MACHINE</a>
-    <a href="#">CONTACT</a>
-  </nav>
-</main>
-
-<script src="script.js"></script>
+  <!-- Noise overlay for texture effect -->
+  <div class="noise"></div>
+  
+  <!-- Main stage container -->
+  <main class="stage">
+    <!-- 3D Grid with perspective effect -->
+    <div class="grid-frame" id="grid">
+      <div class="grid-lines"></div>
+      <section class="hero">
+        <h1>YUBAO.<br>STUDIO.</h1>
+        <p>BUILDING DIGITAL SPACES WITH CODE.</p>
+      </section>
+    </div>
+  
+    <!-- Navigation menu -->
+    <nav class="menu" role="navigation" aria-label="Main navigation">
+      <a href="#" aria-label="View work portfolio">WORK</a>
+      <a href="#" aria-label="About Yubao Studio">ABOUT</a>
+      <a href="/footprints" aria-label="Browse travel footprints">FOOTPRINTS</a>
+      <a href="#" aria-label="Explore time machine feature">TIME MACHINE</a>
+      <a href="#" aria-label="Contact us">CONTACT</a>
+    </nav>
+  </main>
+  
+  <script src="script.js"></script>
 </body>
 </html>
