@@ -28,7 +28,7 @@
      ===================================================================== */
   const IMG = {
     // 示例图片资源 - 可替换为自己的图片
-    kyoto:    'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/147bff259-2579-4288-b4a7-d7f19e60012a.png',
+    KualaLumpur:    'https://img.yubaos.com/Gallery/20161004kl.webp',
     fuji:     'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/14dc9e83f-de7f-4aec-9997-d29e554a3cde.png',
     shanghai: 'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/1ac501088-11d3-40be-8bc0-873924b0f1ba.png',
     bangkok:  'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/1ca9d2404-da75-4a51-9b7a-49446ac90d2e.png',
@@ -82,14 +82,14 @@
     // ========== 图片票根示例 ==========
     {
       id: 1,
-      display: 'KYOTO, JAPAN',       // 票根显示名称
-      real: '京都，日本',             // 真实地名
-      date: '2023.10.15',            // 日期
+      display: 'Kuala Lumpur, Malaysia',       // 票根显示名称
+      real: '吉隆坡，马来西亚',             // 真实地名
+      date: '2016.10.04',            // 日期
       type: 'image',                 // 类型：图片
-      image: IMG.kyoto,              // 图片 URL
-      lat: 35.0036,                  // 纬度
-      lng: 135.7748,                 // 经度
-      note: '祇园花见小路，雨后石板路泛着微光，纸灯笼一盏盏亮起。'  // 描述文字
+      image: IMG.KualaLumpur,              // 图片 URL
+      lat: 3.1589,                  // 纬度
+      lng: 101.7108,                 // 经度
+      note: '拥抱双子塔的宏伟，定格异国旅途的偏爱。'  // 描述文字
     },
     {
       id: 2,
