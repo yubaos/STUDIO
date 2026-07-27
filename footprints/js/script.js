@@ -29,6 +29,7 @@
   const IMG = {
     // 示例图片资源 - 可替换为自己的图片
     KualaLumpur:    'https://img.yubaos.com/Gallery/20161004kl.webp',
+    kyoto:     'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/14dc9e83f-de7f-4aec-9997-d29e554a3cde.png',
     fuji:     'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/14dc9e83f-de7f-4aec-9997-d29e554a3cde.png',
     shanghai: 'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/1ac501088-11d3-40be-8bc0-873924b0f1ba.png',
     bangkok:  'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/1ca9d2404-da75-4a51-9b7a-49446ac90d2e.png',
