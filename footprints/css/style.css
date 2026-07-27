@@ -14,7 +14,7 @@
 html { scroll-behavior:smooth; }
 
 body {
-font-family:'Space Mono', monospace;
+font-family: Arial, Helvetica, sans-serif;
 background-color:var(--wall);
 color:var(--ink);
 min-height:100vh;
@@ -30,9 +30,7 @@ position:relative;
     background-image:url('https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/171f15a5e-2a27-44e7-bdc9-4f3cd8eb0c24.png');
     background-size:cover; background-position:center; background-repeat:no-repeat;
     mix-blend-mode:multiply; opacity:.55; pointer-events:none;
-    animation:mapBreathe 38s ease-in-out infinite alternate;
 }
-@keyframes mapBreathe{ from{transform:scale(1.02);} to{transform:scale(1.08);} }
 
 /* 背景层 2：暗角，聚焦中心票根墙 */
 .bg-vignette{
@@ -62,11 +60,11 @@ position:relative;
 }
 .logo svg{
     display:block; width:100%; height:100%; overflow:visible;
-    transition:transform .45s cubic-bezier(.2,.8,.2,1), filter .45s ease, color .35s ease;
+    transition:transform .3s ease, filter .3s ease, color .3s ease;
     filter:drop-shadow(0 1px 0 rgba(0,0,0,.18));
 }
 .logo:hover svg, .logo:focus-visible svg{
-    transform:translateY(-3px) rotate(-2.5deg);
+    transform:translateY(-3px);
     filter:drop-shadow(0 7px 9px rgba(0,0,0,.32)); color:#000;
 }
 .logo:focus-visible{outline:none;}
@@ -81,13 +79,13 @@ position:relative;
 .nav-menu a{
     position:relative; text-decoration:none; color:var(--ink);
     font-size:13px; font-weight:700; letter-spacing:3px;
-    transition:color .3s ease, letter-spacing .3s ease;
+    transition:opacity .3s ease;
 }
 .nav-menu a::after{
     content:''; position:absolute; right:0; bottom:-5px; width:0; height:1.5px;
     background:var(--ink); transition:width .35s cubic-bezier(.2,.8,.2,1);
 }
-.nav-menu a:hover{letter-spacing:4px;}
+.nav-menu a:hover{opacity:0.45;}
 .nav-menu a:hover::after{width:100%;}
 
 /* =========================================================
@@ -273,19 +271,13 @@ position:relative;
     background:rgba(20,19,17,.55); backdrop-filter:blur(2px);
     display:flex; align-items:center; justify-content:center;
     box-shadow:0 2px 8px rgba(0,0,0,.35);
-    transition:transform .4s cubic-bezier(.2,.8,.2,1), background .3s ease;
+    transition:transform .3s ease, background .3s ease;
     pointer-events:none;
 }
 .play-badge svg{ width:13px; height:13px; fill:#f4f1ea; margin-left:2px; }
 .play-badge::after{
     content:''; position:absolute; inset:0; border-radius:50%;
     border:1.5px solid rgba(244,241,234,.7);
-    animation:badgePulse 2.4s ease-out infinite;
-}
-@keyframes badgePulse{
-    0%{transform:scale(1); opacity:.8;}
-    70%{transform:scale(1.7); opacity:0;}
-    100%{transform:scale(1.7); opacity:0;}
 }
 .ticket-wrap:hover .play-badge{transform:translate(-50%,-50%) scale(1.12); background:rgba(20,19,17,.72);}
 
