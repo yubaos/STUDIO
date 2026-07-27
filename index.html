@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>YUBAO. STUDIO</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -21,15 +21,45 @@
       </section>
     </div>
   
-    <!-- Navigation menu -->
+    <!-- Desktop Navigation menu (wide screen only) -->
     <nav class="menu" role="navigation" aria-label="Main navigation">
-      <a href="#" aria-label="View work portfolio">WORK</a>
-      <a href="#" aria-label="About Yubao Studio">ABOUT</a>
-      <a href="/footprints" aria-label="Browse travel footprints">FOOTPRINTS</a>
-      <a href="#" aria-label="Explore time machine feature">TIME MACHINE</a>
-      <a href="#" aria-label="Contact us">CONTACT</a>
+      <a href="#work">WORK</a>
+      <a href="#about">ABOUT</a>
+      <a href="/footprints">FOOTPRINTS</a>
+      <a href="#time-machine">TIME MACHINE</a>
+      <a href="#contact">CONTACT</a>
     </nav>
   </main>
+  
+  <!-- Mobile hamburger menu button (narrow screen only) -->
+  <button class="menu-btn" id="menuBtn" aria-label="打开菜单" aria-expanded="false" aria-controls="navDrawer">
+    <span class="bars" aria-hidden="true"><i></i><i></i></span>
+    <span class="lbl"><span class="t-open">MENU</span><span class="t-close">CLOSE</span></span>
+  </button>
+  
+  <!-- Drawer backdrop -->
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  
+  <!-- Mobile drawer navigation panel -->
+  <aside class="nav-drawer" id="navDrawer" aria-label="移动端导航" aria-hidden="true">
+    <a href="/" class="drawer-home" id="drawerHome" title="返回主页 / HOME">
+      <span class="arr" aria-hidden="true">&#8592;</span> HOME / 主页
+    </a>
+    <div class="drawer-head">
+      INDEX
+      <b>目录 / MENU</b>
+    </div>
+    <ul class="drawer-list">
+      <li><a href="#work">WORK</a></li>
+      <li><a href="#about">ABOUT</a></li>
+      <li><a href="/footprints">FOOTPRINTS</a></li>
+      <li><a href="#time-machine">TIME MACHINE</a></li>
+      <li><a href="#contact">CONTACT</a></li>
+    </ul>
+    <div class="drawer-foot">
+      © 2026 YUBAO. All Rights Reserved
+    </div>
+  </aside>
   
   <script src="script.js"></script>
 </body>
