@@ -73,11 +73,81 @@
   }
 
   /**
+   * Initialize mobile drawer navigation (matching footprints page)
+   */
+  function initMobileNav() {
+    const menuBtn = document.getElementById('menuBtn');
+    const drawer = document.getElementById('navDrawer');
+    const drawerBackdrop = document.getElementById('drawerBackdrop');
+    const drawerHome = document.getElementById('drawerHome');
+
+    if (!menuBtn || !drawer || !drawerBackdrop) {
+      return;
+    }
+
+    /**
+     * Open drawer navigation
+     */
+    function openDrawer() {
+      drawer.classList.add('open');
+      drawerBackdrop.classList.add('open');
+      menuBtn.classList.add('open');
+      menuBtn.setAttribute('aria-expanded', 'true');
+      drawer.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    /**
+     * Close drawer navigation
+     */
+    function closeDrawer() {
+      drawer.classList.remove('open');
+      drawerBackdrop.classList.remove('open');
+      menuBtn.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+      drawer.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    // Toggle drawer on menu button click
+    menuBtn.addEventListener('click', () => {
+      const isOpen = drawer.classList.contains('open');
+      if (isOpen) {
+        closeDrawer();
+      } else {
+        openDrawer();
+      }
+    });
+
+    // Close drawer when clicking backdrop
+    drawerBackdrop.addEventListener('click', closeDrawer);
+
+    // Close drawer when clicking HOME link
+    if (drawerHome) {
+      drawerHome.addEventListener('click', closeDrawer);
+    }
+
+    // Close drawer when clicking any nav link
+    const navLinks = drawer.querySelectorAll('.drawer-list a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', closeDrawer);
+    });
+
+    // Handle escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && drawer.classList.contains('open')) {
+        closeDrawer();
+      }
+    });
+  }
+
+  /**
    * Initialize all interactions when DOM is ready
    */
   function init() {
     const gridElement = document.getElementById('grid');
     initGridEffect(gridElement);
+    initMobileNav();
   }
 
   // Initialize when DOM is ready
