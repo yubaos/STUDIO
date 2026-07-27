@@ -108,6 +108,25 @@ body {
     opacity: .06;
     /* SVG 噪点纹理 - 无需外部图片 */
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+.bg-map{
+    position:fixed; inset:0; z-index:0;
+    background-image:url('https://img.yubaos.com/bg.webp');
+    background-size:cover; background-position:center; background-repeat:no-repeat;
+    mix-blend-mode:multiply; opacity:.55; pointer-events:none;
+}
+
+/* 背景层 2：暗角，聚焦中心票根墙 */
+.bg-vignette{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:radial-gradient(ellipse at center,
+        rgba(196,194,188,0) 38%,
+        rgba(150,148,142,.35) 78%,
+        rgba(120,118,112,.6) 100%);
+}
+/* 背景层 3：极淡纸纹颗粒 */
+.bg-grain{
+    position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.06;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
 /* =========================================================
