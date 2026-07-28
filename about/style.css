@@ -192,7 +192,7 @@ body {
    ========================================================================== */
 .timeline {
   width: 1000px;
-  margin: 130px auto 0;
+  margin: 110px auto 0;
   display: flex;
   justify-content: space-between;
   position: relative;
