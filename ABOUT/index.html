@@ -1,44 +1,89 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YUBAO - About</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>YUBAO - About</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="page">
-  <header class="profile">
-    <img class="avatar" src="avatar.svg" alt="YUBAO">
-    <div class="name">YUBAO</div>
-    <div class="age">AGE: 34</div>
-  </header>
+  <!-- Noise overlay for texture effect -->
+  <div class="noise"></div>
+  
+  <!-- Top-left logo: back to homepage (same as footprints page) -->
+  <a href="/" class="logo" id="logo" title="返回主页 / HOME" aria-label="返回主页">
+    <svg viewBox="404 343 494 614" xmlns="http://www.w3.org/2000/svg"
+         style="shape-rendering:geometricPrecision;text-rendering:geometricPrecision;image-rendering:optimizeQuality;fill-rule:evenodd;clip-rule:evenodd"
+         aria-hidden="true" focusable="false">
+      <path fill="currentColor" stroke="none" d="M414.99 453c0-33.17.01-66.34.03-99.5.66-5.09 3.49-8.21 8.49-9.39 150.66-.11 301.32-.15 451.99-.11 6.68.13 10.89 4.85 10.51 11.5 0 33.34-.01 66.67-.03 100-1.1 6.44-4.93 9.61-11.48 9.51q-225 0-450-.03c-6.59-.74-9.91-5.5-9.51-11.98Zm2 196c0-33.17.01-66.34.03-99.5.66-5.09 3.49-8.21 8.49-9.39 149.99-.11 299.99-.15 449.99-.11 6.68.13 10.89 4.85 10.51 11.5 0 33.34-.01 66.67-.03 100-1.1 6.44-4.93 9.61-11.48 9.51-149.34 0-298.67-.01-448-.03-6.59-.74-9.91-5.5-9.51-11.98Zm239.17 30.05c-.11-1.19 1.6-1.03 2.32-1.06q67.515.015 135.03 0c.87.01 1.71.16 2.51.47 18.52 9.86 20.19 26.4 23.75 45.05 5.25 31.78 9.94 63.37 16.99 94.82-.61.6-1.36.83-2.24.68-51.26.06-102.51-.05-153.75-.31-.38-.32-.58-.74-.58-1.24-5.6-46.04-15.62-92.72-24.03-138.41ZM416.99 944c0-32.84.01-65.67.03-98.5.66-5.09 3.49-8.21 8.49-9.39 149.99-.11 299.99-.15 449.99-.11 6.68.13 10.89 4.85 10.51 11.5q0 49.5-.03 99c-1.1 6.44-4.93 9.61-11.48 9.51-149.34 0-298.67-.01-448-.03-6.59-.74-9.91-5.5-9.51-11.98Z"/>
+    </svg>
+  </a>
 
-  <nav class="menu">
-    <div>WORK</div>
-    <div>ABOUT</div>
-    <div>FOOTPRINTS</div>
-    <div>TIME MACHINE</div>
-    <div>CONTACT</div>
-  </nav>
-
-  <section class="skills">
-    <div class="skill"><span>Photoshop</span><b>85%</b><i><em style="width:85%"></em></i></div>
-    <div class="skill"><span>Artificial Intelligence Skills</span><b>90%</b><i><em style="width:90%"></em></i></div>
-    <div class="skill"><span>DaVinci Resolve</span><b>75%</b><i><em style="width:75%"></em></i></div>
-    <div class="skill"><span>Website Creation</span><b>95%</b><i><em style="width:95%"></em></i></div>
-    <div class="skill"><span>AmazonSPN</span><b>80%</b><i><em style="width:80%"></em></i></div>
-    <div class="skill"><span>DIY</span><b>70%</b><i><em style="width:70%"></em></i></div>
-  </section>
-
-  <section class="timeline">
-    <div class="line"></div>
-    <article><time>2015-2016</time><p>广东省深圳市中银有限公司</p></article>
-    <article><time>2017-2018</time><p>深圳市惠盈有限公司<br>市场部经理</p></article>
-    <article><time>2019-2020</time><p>深圳市前海金石资本有限公司<br>VC经理</p></article>
-    <article><time>2020-2025</time><p>艾杰美科技贸易（深圳）有限公司<br>技术主管</p></article>
-    <article><time>2025-至今</time><p>logisking<br>市场部经理</p></article>
-  </section>
-</div>
+  <div class="page">
+    <header class="profile">
+      <img class="avatar" src="avatar.svg" alt="YUBAO">
+      <div class="name">YUBAO</div>
+      <div class="age">AGE: 34</div>
+    </header>
+    
+    <!-- Desktop Navigation menu (wide screen only) -->
+    <nav class="menu" role="navigation" aria-label="Main navigation">
+      <a href="/#work">WORK</a>
+      <a href="/#about">ABOUT</a>
+      <a href="/footprints">FOOTPRINTS</a>
+      <a href="/#time-machine">TIME MACHINE</a>
+      <a href="/#contact">CONTACT</a>
+    </nav>
+    
+    <section class="skills">
+      <div class="skill"><span>Photoshop</span><b>85%</b><i><em style="width:85%"></em></i></div>
+      <div class="skill"><span>Artificial Intelligence Skills</span><b>90%</b><i><em style="width:90%"></em></i></div>
+      <div class="skill"><span>DaVinci Resolve</span><b>75%</b><i><em style="width:75%"></em></i></div>
+      <div class="skill"><span>Website Creation</span><b>95%</b><i><em style="width:95%"></em></i></div>
+      <div class="skill"><span>AmazonSPN</span><b>80%</b><i><em style="width:80%"></em></i></div>
+      <div class="skill"><span>DIY</span><b>70%</b><i><em style="width:70%"></em></i></div>
+    </section>
+    
+    <section class="timeline">
+      <div class="line"></div>
+      <article><time>2015-2016</time><p>广东省深圳市中银有限公司</p></article>
+      <article><time>2017-2018</time><p>深圳市惠盈有限公司<br>市场部经理</p></article>
+      <article><time>2019-2020</time><p>深圳市前海金石资本有限公司<br>VC 经理</p></article>
+      <article><time>2020-2025</time><p>艾杰美科技贸易（深圳）有限公司<br>技术主管</p></article>
+      <article><time>2025-至今</time><p>logisking<br>市场部经理</p></article>
+    </section>
+  </div>
+  
+  <!-- Mobile hamburger menu button (narrow screen only) -->
+  <button class="menu-btn" id="menuBtn" aria-label="打开菜单" aria-expanded="false" aria-controls="navDrawer">
+    <span class="bars" aria-hidden="true"><i></i><i></i></span>
+    <span class="lbl"><span class="t-open">MENU</span><span class="t-close">CLOSE</span></span>
+  </button>
+  
+  <!-- Drawer backdrop -->
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  
+  <!-- Mobile drawer navigation panel -->
+  <aside class="nav-drawer" id="navDrawer" aria-label="移动端导航" aria-hidden="true">
+    <a href="/" class="drawer-home" id="drawerHome" title="返回主页 / HOME">
+      <span class="arr" aria-hidden="true">&#8592;</span> HOME / 主页
+    </a>
+    <div class="drawer-head">
+      INDEX
+      <b>目录 / MENU</b>
+    </div>
+    <ul class="drawer-list">
+      <li><a href="/#work">WORK</a></li>
+      <li><a href="/#about">ABOUT</a></li>
+      <li><a href="/footprints">FOOTPRINTS</a></li>
+      <li><a href="/#time-machine">TIME MACHINE</a></li>
+      <li><a href="/#contact">CONTACT</a></li>
+    </ul>
+    <div class="drawer-foot">
+      © 2026 YUBAO. All Rights Reserved
+    </div>
+  </aside>
+  
+  <script src="../script.js"></script>
 </body>
 </html>
