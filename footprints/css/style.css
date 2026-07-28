@@ -324,6 +324,32 @@ body {
     mask-repeat:no-repeat; mask-composite:intersect;
 }
 
+/* 模拟撕票口的虚线：连接两侧孔位 */
+.ticket::before{
+    content:'';
+    position:absolute;
+    top:158px;
+    left:12px;
+    right:12px;
+    height:0;
+    border-top:2px dashed rgba(0,0,0,0.35);
+    z-index:1;
+}
+
+/* 两侧的半圆孔（与 mask 缺口对齐） */
+.ticket::after{
+    content:'';
+    position:absolute;
+    top:152px;
+    left:-6px;
+    width:12px;
+    height:12px;
+    background:var(--wall);
+    border-radius:50%;
+    box-shadow:136px 0 0 var(--wall);
+    z-index:2;
+}
+
 .t-photo{
     width:138px; height:110px; margin:18px auto 0;
     overflow:hidden; border-radius:2px; background:#bdb8ad; position:relative;
@@ -351,20 +377,27 @@ body {
 }
 .ticket-wrap:hover .play-badge{transform:translate(-50%,-50%) scale(1.12); background:rgba(20,19,17,.72);}
 
-/* 票根信息区：位置、日期、分隔线、经纬度 */
-.t-info{padding:14px 6px 0; text-align:center;}
+/* 票根信息区：位置、日期、分隔线、经纬度（位于虚线下方） */
+.t-info{
+    padding:10px 6px 4px;
+    text-align:center;
+    position:relative;
+    z-index:2;
+}
 .t-loc{
-    font-size:12px; font-weight:400; letter-spacing:0; color:var(--ink);
+    font-size:13px; font-weight:600; letter-spacing:0; color:var(--ink);
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     font-family: Arial, Helvetica, sans-serif;
 }
-.t-date{font-size:11px; color:var(--ink-soft); margin-top:3px; letter-spacing:0; font-weight: 400; font-family: Arial, Helvetica, sans-serif;}
-.t-perf{height:0; margin:5px 10px 0; border-top:1.5px solid var(--color-border);}
+.t-date{
+    font-size:12px; color:var(--ink-soft); margin-top:4px; letter-spacing:0; font-weight: 500; font-family: Arial, Helvetica, sans-serif;
+}
+.t-perf{height:0; margin:6px 10px 0; border-top:1.5px solid var(--color-border);}
 /* 票根底部：经纬度（两位小数，单行；窄屏缩字防溢出） */
 .t-code{
-    padding:4px 6px 6px; text-align:center;
-    font-size:10px; letter-spacing:0; color:var(--ink-soft); white-space:nowrap;
-    font-family: Arial, Helvetica, sans-serif; font-weight: 400;
+    padding:5px 6px 6px; text-align:center;
+    font-size:11px; letter-spacing:0; color:var(--ink-soft); white-space:nowrap;
+    font-family: Arial, Helvetica, sans-serif; font-weight: 500;
 }
 
 /* =========================================================
