@@ -336,7 +336,7 @@ body {
     z-index:1;
 }
 
-/* 两侧的半圆孔（与 mask 缺口对齐） */
+/* 两侧的半圆孔（与 mask 缺口对齐）—— 只保留左侧一个孔 */
 .ticket::after{
     content:'';
     position:absolute;
@@ -346,7 +346,6 @@ body {
     height:12px;
     background:var(--wall);
     border-radius:50%;
-    box-shadow:136px 0 0 var(--wall);
     z-index:2;
 }
 
@@ -379,7 +378,7 @@ body {
 
 /* 票根信息区：位置、日期、分隔线、经纬度（位于虚线下方） */
 .t-info{
-    padding:10px 6px 4px;
+    padding:14px 6px 4px;
     text-align:center;
     position:relative;
     z-index:2;
@@ -390,13 +389,13 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 .t-date{
-    font-size:12px; color:var(--ink-soft); margin-top:4px; letter-spacing:0; font-weight: 500; font-family: Arial, Helvetica, sans-serif;
+    font-size:14px; color:var(--ink-soft); margin-top:5px; letter-spacing:0; font-weight: 500; font-family: Arial, Helvetica, sans-serif;
 }
-.t-perf{height:0; margin:6px 10px 0; border-top:1.5px solid var(--color-border);}
+.t-perf{height:0; margin:8px 10px 0; border-top:1.5px solid var(--color-border);}
 /* 票根底部：经纬度（两位小数，单行；窄屏缩字防溢出） */
 .t-code{
-    padding:5px 6px 6px; text-align:center;
-    font-size:11px; letter-spacing:0; color:var(--ink-soft); white-space:nowrap;
+    padding:6px 6px 7px; text-align:center;
+    font-size:13px; letter-spacing:0; color:var(--ink-soft); white-space:nowrap;
     font-family: Arial, Helvetica, sans-serif; font-weight: 500;
 }
 
