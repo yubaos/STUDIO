@@ -60,7 +60,7 @@ body {
   position: relative;
   z-index: 2;
   min-height: 100vh;
-  padding-top: 120px;
+  padding-top: 60px;
   background: radial-gradient(#fff, #f3f3f3);
 }
 
