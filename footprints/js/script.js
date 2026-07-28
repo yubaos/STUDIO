@@ -240,9 +240,9 @@
           <div class="t-info">
             <div class="t-loc">${t.display}</div>
             <div class="t-date">${t.date}</div>
+            <div class="t-perf"></div>
+            <div class="t-code">${fmtCoord(t.lat, t.lng, true)}</div>
           </div>
-          <div class="t-perf"></div>
-          <div class="t-code">${fmtCoord(t.lat, t.lng, true)}</div>
         </article>
       `;
       
