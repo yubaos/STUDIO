@@ -378,10 +378,10 @@ body {
 
 /* 票根信息区：位置、日期、分隔线、经纬度（位于虚线下方，统一调整到票根下 1/3 处） */
 .t-info{
-    padding:0 6px 8px;
+    padding:0 6px 6px;
     text-align:center;
     position:absolute;
-    top:172px;
+    top:168px;
     left:0;
     right:0;
     z-index:2;
@@ -394,15 +394,15 @@ body {
     font-size:13px; font-weight:600; letter-spacing:0; color:var(--ink);
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     font-family: Arial, Helvetica, sans-serif;
-    margin-bottom:4px;
+    margin-bottom:3px;
 }
 .t-date{
     font-size:15px; color:var(--ink-soft); margin-top:0; letter-spacing:0; font-weight: 500; font-family: Arial, Helvetica, sans-serif;
 }
-.t-perf{height:0; margin:8px 12px 0; border-top:1.5px solid var(--color-border);}
+.t-perf{height:0; margin:6px 12px 0; border-top:1.5px solid var(--color-border);}
 /* 票根底部：经纬度（两位小数，单行；窄屏缩字防溢出） */
 .t-code{
-    padding:6px 6px 2px; text-align:center;
+    padding:5px 6px 2px; text-align:center;
     font-size:14px; letter-spacing:0; color:var(--ink-soft); white-space:nowrap;
     font-family: Arial, Helvetica, sans-serif; font-weight: 500;
 }
