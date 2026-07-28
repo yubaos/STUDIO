@@ -1,49 +1,88 @@
 ```
-# Compiled and build artifacts
-*.pyc
+# Environment variables
+.env*
+
+# Logs
+*.log
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+target/
+
+# Python
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git*
+.pytest_cache/
+.hypothesis/
+.DS_Store
+Thumbs.db
+
+# Compiled and binary files
 *.o
 *.obj
-*.class
 *.exe
 *.dll
 *.so
 *.a
 *.out
 
-# Dependencies
-node_modules/
-venv/
-.venv/
-.env
-.env.local
-.env.*
-
-# Build directories
-dist/
-build/
-target/
-coverage/
-htmlcov/
-
-# Logs and temp files
-*.log
-*.tmp
-*.swp
-*.swo
-
-# Editors
+# Editor and IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*.tmp
 
-# System files
+# Archives
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
+
+# Coverage reports
+coverage/
+htmlcov/
+
+# OS generated files
 .DS_Store
 Thumbs.db
-
-# Cache directories
-.mypy_cache/
-.pytest_cache/
-.gradle/
 ```
