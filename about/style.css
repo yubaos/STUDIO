@@ -473,6 +473,7 @@ p {
   .timeline {
     flex-direction: column;
     gap: 50px;
+    align-items: center;
   }
   
   .line {
