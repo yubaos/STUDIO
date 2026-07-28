@@ -309,10 +309,11 @@ body {
 /* =========================================================
    票根本体 —— 纸张 + 圆角 + 透明缺口（mask 挖洞）
    缺口位置：垂直方向 2/3 处（从顶部算起）
+   总高度 240px（保持 2:3 比例：160px 宽 × 240px 高）
    ========================================================= */
 .ticket{
-    width:160px; background:var(--paper); border-radius:3px; position:relative;
-    box-sizing:border-box;
+    width:160px; height:240px; background:var(--paper); border-radius:3px; position:relative;
+    box-sizing:border-box; overflow:hidden;
     -webkit-mask-image:
         radial-gradient(circle at 0% 66.67%,   #0000 var(--notch), #000 calc(var(--notch) + .6px)),
         radial-gradient(circle at 100% 66.67%, #0000 var(--notch), #000 calc(var(--notch) + .6px));
@@ -324,8 +325,8 @@ body {
 }
 
 .t-photo{
-    width:138px; height:110px; margin:38px auto 0;
-    overflow:visible; border-radius:2px; background:#bdb8ad; position:relative;
+    width:138px; height:110px; margin:18px auto 0;
+    overflow:hidden; border-radius:2px; background:#bdb8ad; position:relative;
     aspect-ratio:5/4;
 }
 .t-photo img, .t-photo video{
@@ -350,17 +351,18 @@ body {
 }
 .ticket-wrap:hover .play-badge{transform:translate(-50%,-50%) scale(1.12); background:rgba(20,19,17,.72);}
 
-.t-info{padding:14px 6px 6px; text-align:center;}
+/* 票根信息区：位置、日期、分隔线、经纬度 */
+.t-info{padding:6px 6px 2px; text-align:center;}
 .t-loc{
     font-size:12px; font-weight:400; letter-spacing:0; color:var(--ink);
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     font-family: Arial, Helvetica, sans-serif;
 }
 .t-date{font-size:11px; color:var(--ink-soft); margin-top:2px; letter-spacing:0; font-weight: 400; font-family: Arial, Helvetica, sans-serif;}
-.t-perf{height:0; margin:0 10px; border-top:1.5px solid var(--color-border);}
+.t-perf{height:0; margin:4px 10px 0; border-top:1.5px solid var(--color-border);}
 /* 票根底部：经纬度（两位小数，单行；窄屏缩字防溢出） */
 .t-code{
-    padding:4px 6px 8px; text-align:center;
+    padding:3px 6px 5px; text-align:center;
     font-size:10px; letter-spacing:0; color:var(--ink-soft); white-space:nowrap;
     font-family: Arial, Helvetica, sans-serif; font-weight: 400;
 }
@@ -544,8 +546,8 @@ body {
         gap:22px 14px; justify-items:center;
     }
     .ticket-wrap{width:100%; max-width:160px;}
-    .ticket{width:160px;}
-    .t-photo{width:calc(100% - 22px); max-width:138px; height:auto; margin-top:24px; aspect-ratio:5/4;}
+    .ticket{width:160px; height:240px;}
+    .t-photo{width:calc(100% - 22px); max-width:138px; height:auto; margin-top:18px; aspect-ratio:5/4;}
 }
 
 /* 超小屏 */
