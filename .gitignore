@@ -1,4 +1,4 @@
-```
+```gitignore
 # Compiled and build artifacts
 *.pyc
 __pycache__/
@@ -14,7 +14,6 @@ venv/
 node_modules/
 .julia/
 zig-cache/
-.deps/
 
 # Logs and temp files
 *.log
@@ -37,22 +36,14 @@ zig-cache/
 .DS_Store
 Thumbs.db
 
-# Coverage
+# Testing and coverage
+.coverage
 coverage/
 htmlcov/
-.coverage
+.pytest_cache/
+.mypy_cache/
 
-# Python specific
-*.pyc
-__pycache__/
-*.pyo
-*.pyd
-.Python
-*.so
-*.egg-info/
-.eggs/
-
-# Compressed files
+# Archives
 *.zip
 *.gz
 *.tar
