@@ -459,15 +459,31 @@ body {
 }
 .v-photo video{ background:#000; }
 
-/* 确保视频控件可交互 */
+/* 隐藏视频默认控制条，实现极简无边框效果 */
 .v-photo video::-webkit-media-controls {
-    pointer-events: auto !important;
+    display: none !important;
 }
 .v-photo video::-webkit-media-controls-panel {
-    pointer-events: auto !important;
+    display: none !important;
 }
 .v-photo video::-webkit-media-controls-play-button {
-    pointer-events: auto !important;
+    display: none !important;
+}
+.v-photo video::-webkit-media-controls-current-time-display,
+.v-photo video::-webkit-media-controls-time-remaining-display {
+    display: none !important;
+}
+.v-photo video::-webkit-media-controls-timeline {
+    display: none !important;
+}
+.v-photo video::-webkit-media-controls-mute-button {
+    display: none !important;
+}
+.v-photo video::-webkit-media-controls-volume-slider {
+    display: none !important;
+}
+.v-photo video::-webkit-media-controls-fullscreen-button {
+    display: none !important;
 }
 
 /* 放大查看器自定义播放按钮（叠在视频中央，统一视觉） */
