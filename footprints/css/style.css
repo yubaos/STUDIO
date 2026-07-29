@@ -317,14 +317,14 @@ body {
 .ticket{
     width:160px; height:240px; background:var(--paper); border-radius:3px; position:relative;
     box-sizing:border-box; overflow:hidden;
-    -webkit-mask-image:
+    /* -webkit-mask-image:
         radial-gradient(circle at 0% 66.67%,   #0000 var(--notch), #000 calc(var(--notch) + .6px)),
         radial-gradient(circle at 100% 66.67%, #0000 var(--notch), #000 calc(var(--notch) + .6px));
     -webkit-mask-repeat:no-repeat; -webkit-mask-composite:source-in;
     mask-image:
         radial-gradient(circle at 0% 66.67%,   #0000 var(--notch), #000 calc(var(--notch) + .6px)),
         radial-gradient(circle at 100% 66.67%, #0000 var(--notch), #000 calc(var(--notch) + .6px));
-    mask-repeat:no-repeat; mask-composite:intersect;
+    mask-repeat:no-repeat; mask-composite:intersect; */
 }
 
 /* 模拟撕票口的虚线：连接两侧孔位 */
@@ -432,14 +432,14 @@ body {
     border-radius:6px; padding:30px 30px 34px;
     transform:scale(.82) translateY(20px); opacity:0;
     transition:transform .5s cubic-bezier(.2,.9,.25,1), opacity .45s ease;
-    -webkit-mask-image:
+    /* -webkit-mask-image:
         radial-gradient(circle at 0% 66.67%,   #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px)),
         radial-gradient(circle at 100% 66.67%, #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px));
     -webkit-mask-repeat:no-repeat; -webkit-mask-composite:source-in;
     mask-image:
         radial-gradient(circle at 0% 66.67%,   #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px)),
         radial-gradient(circle at 100% 66.67%, #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px));
-    mask-repeat:no-repeat; mask-composite:intersect;
+    mask-repeat:no-repeat; mask-composite:intersect; */
 }
 .overlay.open .viewer{transform:scale(1) translateY(0); opacity:1;}
 
