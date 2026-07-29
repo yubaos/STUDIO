@@ -531,6 +531,13 @@ video:focus, video:focus-visible{
     z-index:3;
 }
 
+/* 禁止查看器区域的任何 hover 效果导致的阴影/边框显示 */
+.viewer-wrap:hover, .viewer:hover, .v-photo:hover, .v-photo.has-video:hover{
+    box-shadow:none !important;
+    filter:none !important;
+    transform:none !important;
+}
+
 .v-info{
     display:flex; justify-content:space-between; align-items:flex-end;
     flex-wrap:wrap; gap:8px; padding:26px 4px 16px;

@@ -409,6 +409,18 @@
         return false;
       });
       
+      // 鼠标移出页面/视频区域时移除任何可能的 hover 状态
+      document.addEventListener('mouseleave', () => {
+        vid.blur();
+      });
+      
+      vPhoto.addEventListener('mouseout', (e) => {
+        // 只有当鼠标真正离开 vPhoto 元素时才触发
+        if (!vPhoto.contains(e.relatedTarget)) {
+          vid.blur();
+        }
+      });
+      
       // 防止视频获得焦点导致显示边框/阴影
       vid.setAttribute('tabindex', '-1');
       vid.addEventListener('focus', (e) => {
