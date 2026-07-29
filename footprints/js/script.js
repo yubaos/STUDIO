@@ -328,6 +328,11 @@
     }
   }
 
+  // SVG 播放图标（用于视频中央按钮）
+  const PLAY_BTN_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+  // SVG 暂停图标（用于视频中央按钮）
+  const PAUSE_BTN_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+
   /* =====================================================================
      渲染完整媒体（图片/视频）
      在查看器中显示高清图片或可播放的视频
@@ -338,14 +343,52 @@
     
     if (t.type === 'video' && t.video) {
       // 视频模式：极简无边框播放器，隐藏控制条，点击屏幕播放/暂停
+      vPhoto.classList.add('has-video');
       vPhoto.innerHTML = `
         <video src="${t.video}" poster="${t.poster || ''}" playsinline webkit-playsinline preload="metadata"></video>
+        <button class="v-play-btn" aria-label="播放/暂停">${PLAY_BTN_SVG}</button>
       `;
       
       const vid = vPhoto.querySelector('video');
+      const playBtn = vPhoto.querySelector('.v-play-btn');
+      let isPlaying = false;
+      
+      // 更新播放按钮状态
+      function updatePlayBtn() {
+        if (isPlaying && !vid.paused && !vid.ended) {
+          playBtn.classList.add('playing');
+          playBtn.classList.remove('show');
+        } else {
+          playBtn.classList.remove('playing');
+          playBtn.classList.add('show');
+          // 根据播放状态切换图标
+          if (vid.ended) {
+            playBtn.innerHTML = PLAY_BTN_SVG;
+          } else {
+            playBtn.innerHTML = PLAY_BTN_SVG;
+          }
+        }
+      }
+      
+      // 视频播放时自动隐藏按钮
+      vid.addEventListener('play', () => {
+        isPlaying = true;
+        updatePlayBtn();
+      });
+      
+      vid.addEventListener('pause', () => {
+        isPlaying = false;
+        updatePlayBtn();
+      });
+      
+      vid.addEventListener('ended', () => {
+        isPlaying = false;
+        updatePlayBtn();
+      });
       
       // 点击视频切换播放/暂停
-      vPhoto.addEventListener('click', () => {
+      vPhoto.addEventListener('click', (e) => {
+        // 如果点击的是播放按钮本身，也触发播放/暂停
         if (vid.paused || vid.ended) {
           vid.play().catch(()=>{});
         } else {
@@ -358,8 +401,13 @@
         e.preventDefault();
         return false;
       });
+      
+      // 初始显示播放按钮
+      setTimeout(() => updatePlayBtn(), 100);
+      
     } else {
-      // 图片模式：直接显示高清图片
+      // 图片模式：移除视频相关类
+      vPhoto.classList.remove('has-video');
       vPhoto.innerHTML = `<img src="${t.image}" alt="${t.display}">`;
     }
   }

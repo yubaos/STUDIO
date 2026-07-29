@@ -486,19 +486,29 @@ body {
     display: none !important;
 }
 
-/* 放大查看器自定义播放按钮（叠在视频中央，统一视觉） */
-.v-play{
+/* 视频播放时的中央播放/暂停按钮标志 */
+.v-play-btn{
     position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    width:84px; height:84px; border-radius:50%; border:none; cursor:pointer;
-    background:rgba(20,19,17,.5); backdrop-filter:blur(3px);
+    width:72px; height:72px; border-radius:50%; border:none; cursor:pointer;
+    background:rgba(20,19,17,.6); backdrop-filter:blur(4px);
     display:flex; align-items:center; justify-content:center;
-    box-shadow:0 6px 24px rgba(0,0,0,.45);
-    transition:opacity .35s ease, transform .35s cubic-bezier(.2,.8,.2,1), background .3s ease;
-    z-index:30; pointer-events:auto !important;
+    box-shadow:0 8px 28px rgba(0,0,0,.5);
+    transition:opacity .3s ease, transform .3s cubic-bezier(.2,.8,.2,1), background .25s ease;
+    z-index:25; pointer-events:none;
+    opacity:0;
 }
-.v-play svg{ width:30px; height:30px; fill:#f4f1ea; margin-left:5px; }
-.v-play:hover{ background:rgba(20,19,17,.72); transform:translate(-50%,-50%) scale(1.08); }
-.v-play.hide{ opacity:0; pointer-events:none; transform:translate(-50%,-50%) scale(.7); }
+.v-play-btn svg{ width:26px; height:26px; fill:#f4f1ea; margin-left:3px; }
+.v-play-btn.show{ opacity:1; }
+.v-play-btn:hover{ background:rgba(20,19,17,.8); transform:translate(-50%,-50%) scale(1.06); }
+.v-play-btn.playing{ opacity:0; pointer-events:none; }
+
+/* 视频容器特殊处理：当有 v-play-btn 时确保正确层级 */
+.v-photo.has-video::before{
+    z-index:5;
+}
+.v-photo.has-video video{
+    z-index:3;
+}
 
 .v-info{
     display:flex; justify-content:space-between; align-items:flex-end;
