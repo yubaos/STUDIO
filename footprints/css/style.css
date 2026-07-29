@@ -418,7 +418,7 @@ body {
     background:rgba(20,19,17,0); backdrop-filter:blur(0px); visibility:hidden;
     transition:background .45s ease, backdrop-filter .45s ease, visibility .45s;
 }
-.overlay.open{ background:rgba(20,19,17,.84); backdrop-filter:blur(8px); visibility:visible; }
+.overlay.open{ background:rgba(20,19,17,.84); backdrop-filter:none; visibility:visible; }
 
 .viewer-wrap{
     position:relative; width:min(94vw, 1040px);
