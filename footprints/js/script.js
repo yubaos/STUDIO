@@ -498,6 +498,13 @@
     if (e.target === overlay) closeViewer();
   });
 
+  // 禁止在遮罩层上右键菜单
+  overlay.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  });
+
   /* =====================================================================
      移动端抽屉导航相关变量
      ===================================================================== */
