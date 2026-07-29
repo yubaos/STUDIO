@@ -459,30 +459,55 @@ body {
 }
 .v-photo video{ background:#000; }
 
-/* 确保视频控件可交互 */
+/* 隐藏视频默认控制条，实现极简无边框效果 */
 .v-photo video::-webkit-media-controls {
-    pointer-events: auto !important;
+    display: none !important;
 }
 .v-photo video::-webkit-media-controls-panel {
-    pointer-events: auto !important;
+    display: none !important;
 }
 .v-photo video::-webkit-media-controls-play-button {
-    pointer-events: auto !important;
+    display: none !important;
+}
+.v-photo video::-webkit-media-controls-current-time-display,
+.v-photo video::-webkit-media-controls-time-remaining-display {
+    display: none !important;
 }
 
-/* 放大查看器自定义播放按钮（叠在视频中央，统一视觉） */
-.v-play{
-    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    width:84px; height:84px; border-radius:50%; border:none; cursor:pointer;
-    background:rgba(20,19,17,.5); backdrop-filter:blur(3px);
-    display:flex; align-items:center; justify-content:center;
-    box-shadow:0 6px 24px rgba(0,0,0,.45);
-    transition:opacity .35s ease, transform .35s cubic-bezier(.2,.8,.2,1), background .3s ease;
-    z-index:30; pointer-events:auto !important;
+/* 视频播放/暂停按钮：居中显示，仅在暂停时可见 */
+.v-photo .play-center-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: rgba(20, 19, 17, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 20;
 }
-.v-play svg{ width:30px; height:30px; fill:#f4f1ea; margin-left:5px; }
-.v-play:hover{ background:rgba(20,19,17,.72); transform:translate(-50%,-50%) scale(1.08); }
-.v-play.hide{ opacity:0; pointer-events:none; transform:translate(-50%,-50%) scale(.7); }
+.v-photo .play-center-btn svg {
+    width: 28px;
+    height: 28px;
+    fill: #f4f1ea;
+    margin-left: 3px;
+}
+.v-photo.video-paused .play-center-btn {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+.v-photo.video-playing .play-center-btn {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+}
 
 .v-info{
     display:flex; justify-content:space-between; align-items:flex-end;
@@ -493,7 +518,7 @@ body {
 .v-note{ padding:0 4px 18px; font-size:clamp(13px,1.5vw,16px); line-height:1.75; color:var(--ink-soft); max-width:70ch; font-family: Arial, Helvetica, sans-serif; }
 .v-perf{ border-top:1.5px solid var(--color-border); margin:0 4px; }
 .v-foot{
-    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;
+    display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:6px;
     padding:16px 4px 2px; font-size:16px; letter-spacing:0; color:var(--ink-soft);
     font-family: Arial, Helvetica, sans-serif; font-weight: 400;
 }
@@ -573,8 +598,6 @@ body {
     .overlay{padding:14px;}
     .viewer{padding:20px 18px 24px; border-radius:5px;}
     .v-photo{height:clamp(220px, 40vh, 360px);}
-    .v-play{width:66px; height:66px;}
-    .v-play svg{width:24px; height:24px; margin-left:4px;}
     .v-close{top:-44px; right:2px; font-size:32px; width:36px; height:36px;}
     .v-info{padding:18px 2px 12px;}
     .v-note{font-size:13px; line-height:1.7; padding:0 2px 14px;}
