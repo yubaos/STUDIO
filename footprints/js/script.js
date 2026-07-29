@@ -33,7 +33,7 @@
     kyoto:     'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/14dc9e83f-de7f-4aec-9997-d29e554a3cde.png',
     Phuket:     'https://img.yubaos.com/Gallery/Phuket.webp',
     shanghai: 'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/1ac501088-11d3-40be-8bc0-873924b0f1ba.png',
-    bangkok:  'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/1ca9d2404-da75-4a51-9b7a-49446ac90d2e.png',
+    bangkok:  'https://img.yubaos.com/Gallery/Bangkok.webp',
     hanoi:    'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/16cfa3b16-9280-4488-956e-5089d57c87f2.png',
     castle:   'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/1bb3debd7-77a6-47e6-98e8-c9fb004c708c.png',
     // 视频封面专用图片（可按需添加）
@@ -132,23 +132,21 @@
       date: '2016.10.08',
       type: 'image',
       video: IMG.Phuket,
-      lat: 13.7563,
-      lng: 100.5018,
+      lat: 7.8632,
+      lng: 98.3995,
       note: '普吉岛九皇斋节，信徒穿刺显虔诚。'
     },
     {
       id: 5,
-      display: 'HANOI, VIETNAM',
-      real: '河内，越南',
-      date: '2023.10.22',
-      type: 'video',
-      video: VID.clipB,
-      poster: IMG.hanoi,
-      lat: 21.0278,
-      lng: 105.8342,
-      note: '街角咖啡摊，滴漏咖啡一滴一滴落进炼乳里 —— 影像里能听见街声。'
-    },
-    
+      display: 'BANGKOK, THAILAND',
+      real: '曼谷，泰国',
+      date: '2016.10.11',
+      type: 'image',                 // 类型：图片
+      image: IMG.bangkok,              // 图片 URL
+      lat: 13.7501,
+      lng: 100.4920,
+      note: '金顶巍峨，皇家风范，游客如织。'
+    }, 
     // ========== 更多票根（可按需复制添加） ==========
     { id: 6,  display: 'KYOTO STREETS', real: '京都，日本', date: '2023.10.15', type: 'image', image: IMG.kyoto, lat: 35.0142, lng: 135.7795, note: '清晨无人的巷弄，木格窗后传出煮茶的声音。' },
     { id: 7,  display: 'TEMPLE GOLD',   real: '曼谷，泰国', date: '2023.10.20', type: 'image', image: IMG.bangkok, lat: 13.7501, lng: 100.4932, note: '寺庙回廊的浮雕，每一寸都贴了金箔。' },
