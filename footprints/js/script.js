@@ -29,6 +29,7 @@
   const IMG = {
     // 示例图片资源 - 可替换为自己的图片
     KualaLumpur:    'https://img.yubaos.com/Gallery/20161004kl.webp',
+    xiamen:    'https://img.yubaos.com/Gallery/20140410xm.webp',
     kyoto:     'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/14dc9e83f-de7f-4aec-9997-d29e554a3cde.png',
     fuji:     'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/14dc9e83f-de7f-4aec-9997-d29e554a3cde.png',
     shanghai: 'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/1ac501088-11d3-40be-8bc0-873924b0f1ba.png',
@@ -51,6 +52,7 @@
     clipA: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
     clipB: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
     clipC: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4'
+    Langkawi: 'https://img.yubaos.com/video/Langkawi.mp4'
     // 添加新视频示例:
     // travelVlog: 'path/to/travel.mp4',
     // sunset: 'https://example.com/sunset.mp4'
@@ -81,11 +83,22 @@
      ===================================================================== */
   const TICKETS = [
     // ========== 图片票根示例 ==========
-    {
+     {
       id: 1,
+      display: 'XIAMEN, FUJIAN',
+      real: '鼓浪屿，厦门',
+      date: '2014.04.10',
+      type: 'image',
+      image: IMG.xiamen,
+      lat: 24.4450,
+      lng: 118.0743,
+      note: '鼓浪屿碧海青松，英雄永驻。'
+    },
+    {
+      id: 2,
       display: 'Kuala Lumpur, Malaysia',       // 票根显示名称
       real: '吉隆坡，马来西亚',             // 真实地名
-      date: '2016.10.04',            // 日期
+      date: '2016.10.03',            // 日期
       type: 'image',                 // 类型：图片
       image: IMG.KualaLumpur,              // 图片 URL
       lat: 3.1589,                  // 纬度
@@ -93,26 +106,15 @@
       note: '拥抱双子塔的宏伟，定格异国旅途的偏爱。'  // 描述文字
     },
     {
-      id: 2,
-      display: 'MT. FUJI, JAPAN',
-      real: '富士山，日本',
-      date: '2023.10.16',
-      type: 'image',
-      image: IMG.fuji,
-      lat: 35.3606,
-      lng: 138.7274,
-      note: '晴日里的富士，雪线干净得像被尺子量过。'
-    },
-    {
       id: 3,
-      display: 'SHANGHAI, CHINA',
-      real: '上海，中国',
-      date: '2023.10.18',
+      display: 'Langkawi, Malaysia',
+      real: '兰卡威，马来西亚',
+      date: '2016.10.05',
       type: 'image',
-      image: IMG.shanghai,
-      lat: 31.2304,
-      lng: 121.4737,
-      note: '外滩对岸的陆家嘴，暮色把江水染成暖橘。'
+      image: VID.Langkawi,
+      lat: 6.2620,
+      lng: 99.7362,
+      note: '碧海远山，云卷云舒，藏在兰卡威的夏天。'
     },
     
     // ========== 视频票根示例 ==========
