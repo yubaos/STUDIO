@@ -32,7 +32,7 @@
     xiamen:    'https://img.yubaos.com/Gallery/20140410xm.webp',
     zhujiang:     'https://img.yubaos.com/Gallery/zhujiang.webp',
     Phuket:     'https://img.yubaos.com/Gallery/Phuket.webp',
-    xiaomanyao: 'https://img.yubaos.com/Gallery/xiaomanyao.webp',
+    hongkong: 'https://img.yubaos.com/Gallery/xiaomanyao.webp',
     bangkok:  'https://img.yubaos.com/Gallery/Bangkok.webp',
     hanoi:    'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/16cfa3b16-9280-4488-956e-5089d57c87f2.png',
     castle:   'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/1bb3debd7-77a6-47e6-98e8-c9fb004c708c.png',
@@ -148,8 +148,8 @@
       note: '金顶巍峨，皇家风范，游客如织。'
     }, 
     // ========== 更多票根（可按需复制添加） ==========
-    { id: 6,  display: 'GuangZhou CHINA', real: '广州，中国', date: '2017.10.19', type: 'image', image: IMG.xiaomanyao, lat: 23.1065, lng: 113.3244, note: '广州塔，蓝天白云映衬下，尽显婀娜。' },
-    { id: 7,  display: 'GuangZhou CHINA', real: '广州，中国', date: '2017.10.19', type: 'image', image: IMG.zhujiang, lat: 13.7501, lng: 100.4932, note: '碧水蓝天映衬，珠江两岸摩天大楼林立，繁华都市气象万千。' },
+    { id: 6,  display: 'GuangZhou CHINA', real: '广州，中国', date: '2017.10.19', type: 'image', image: IMG.zhujiang, lat: 13.7501, lng: 100.4932, note: '碧水蓝天映衬，珠江两岸摩天大楼林立，繁华都市气象万千。' },
+    { id: 7,  display: 'HongKong CHINA', real: '香港，中国', date: '2017.09.05', type: 'image', image: IMG.hongkong, lat: 22.2930, lng: 114.1706, note: '维港波光粼粼，摩天大楼依山而建，尽显东方之珠的繁华。' },
     { id: 8,  display: 'HANOI MORNING', real: '河内，越南', date: '2023.10.22', type: 'image', image: IMG.hanoi, lat: 21.0341, lng: 105.8522, note: '三十六行街的清晨，摩托车流与叫卖声一同醒来。' },
     { id: 9,  display: 'HIMEJI CASTLE', real: '姬路，日本', date: '2023.10.17', type: 'image', image: IMG.castle, lat: 34.8394, lng: 134.6939, note: '白鹭城，樱花把整座天守阁框成一幅画。' },
     { id: 10, display: 'THE BUND',      real: '上海，中国', date: '2023.10.18', type: 'image', image: IMG.shanghai, lat: 31.2397, lng: 121.4995, note: '江风带着潮气，对岸的灯一盏接一盏点亮。' }
