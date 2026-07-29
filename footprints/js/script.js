@@ -326,16 +326,6 @@
         v.load();
       } catch(_) {}
     }
-    // 移除 mouseleave 监听器，防止重复绑定
-    document.removeEventListener('mouseleave', handleMouseLeave);
-  }
-  
-  // 鼠标移出网页时移除视频焦点，防止 hover/focus 状态残留
-  function handleMouseLeave() {
-    const v = vPhoto.querySelector('video');
-    if (v) {
-      v.blur();
-    }
   }
 
   /* =====================================================================
@@ -389,8 +379,6 @@
         e.preventDefault();
         return false;
       });
-      
-      document.addEventListener('mouseleave', handleMouseLeave);
       
     } else {
       vPhoto.innerHTML = `<img src="${t.image}" alt="${t.display}">`;
