@@ -365,7 +365,7 @@
       vid.addEventListener('ended', updatePlayState);
       
       vPhoto.addEventListener('click', (e) => {
-        if (e.target.closest('.v-close') || e.target.closest('.v-nav')) return;
+        if (e.target.closest('.v-nav')) return;
         if (vid.paused) {
           vid.play().catch(()=>{});
         } else {
