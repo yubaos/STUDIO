@@ -329,30 +329,28 @@ body {
     z-index:1;
 }
 
-/* 左侧圆孔 - 使用透明背景 + 边框实现真实镂空效果 */
+/* 左侧圆孔 - 使用径向渐变模拟真实镂空效果（中心透明，边缘纸张色） */
 .ticket .notch-left{
     position:absolute;
     top:152px;
-    left:-6px;
+    left:0;
     width:12px;
     height:12px;
-    background:transparent;
+    background:radial-gradient(circle at center, transparent 50%, var(--paper) 52%);
     border-radius:50%;
     z-index:2;
-    box-shadow:inset 0 1px 2px rgba(0,0,0,.4);
 }
 
-/* 右侧圆孔 - 使用透明背景 + 边框实现真实镂空效果 */
+/* 右侧圆孔 - 使用径向渐变模拟真实镂空效果（中心透明，边缘纸张色） */
 .ticket .notch-right{
     position:absolute;
     top:152px;
-    right:-6px;
+    right:0;
     width:12px;
     height:12px;
-    background:transparent;
+    background:radial-gradient(circle at center, transparent 50%, var(--paper) 52%);
     border-radius:50%;
     z-index:2;
-    box-shadow:inset 0 1px 2px rgba(0,0,0,.4);
 }
 
 .t-photo{
@@ -443,11 +441,10 @@ body {
     top:66.67%;
     width:24px;
     height:24px;
-    background:transparent;
+    background:radial-gradient(circle at center, transparent 50%, var(--paper) 52%);
     border-radius:50%;
     transform:translateY(-50%);
     z-index:20;
-    box-shadow:inset 0 1px 3px rgba(0,0,0,.4);
 }
 .viewer::before{
     left:-12px;
@@ -462,7 +459,7 @@ body {
 /* 上方留有背景边框：通过 padding-top 实现 */
 .v-photo{
     width:100%; height:clamp(420px, 66vh, 720px);
-    overflow:hidden; border-radius:3px; background:#15140f; position:relative;
+    overflow:hidden; border-radius:3px; background:transparent; position:relative;
     transition:opacity .12s ease;
     z-index:10;
 }
@@ -482,6 +479,7 @@ body {
     backface-visibility:hidden;
 }
 .v-photo video{ background:#000; }
+.v-photo img{ background:#15140f; }
 
 /* 隐藏视频默认控制条，实现极简无边框效果 */
 .v-photo video::-webkit-media-controls {
@@ -531,7 +529,7 @@ body {
 .v-photo.video-paused .play-center-btn {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
-    background: rgba(20, 19, 17, 0.72);
+    background: rgba(20, 19, 17, 0.55);
 }
 .v-photo.video-playing .play-center-btn {
     opacity: 0;
