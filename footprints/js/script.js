@@ -449,7 +449,6 @@
   }
 
   // 绑定查看器控制按钮事件
-  document.getElementById('vClose').addEventListener('click', closeViewer);
   document.getElementById('vPrev').addEventListener('click', (e) => {
     e.stopPropagation();
     step(-1);

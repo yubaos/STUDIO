@@ -545,13 +545,6 @@ body {
     font-family: Arial, Helvetica, sans-serif; font-weight: 400;
 }
 
-.v-close{
-    position:absolute; top:-50px; right:0; width:40px; height:40px;
-    border:none; background:transparent; color:#f2efe8; font-size:36px; line-height:1; cursor:pointer;
-    transition:transform .4s ease, color .3s ease;
-}
-.v-close:hover{transform:rotate(90deg); color:#fff;}
-
 .v-nav{
     position:absolute; top:50%; transform:translateY(-50%);
     width:52px; height:52px; border-radius:50%;
@@ -613,7 +606,6 @@ body {
     .overlay{padding:14px;}
     .viewer{padding:20px 18px 24px; border-radius:5px;}
     .v-photo{height:clamp(220px, 40vh, 360px);}
-    .v-close{top:-44px; right:2px; font-size:32px; width:36px; height:36px;}
     .v-info{padding:18px 2px 12px;}
     .v-note{font-size:13px; line-height:1.7; padding:0 2px 14px;}
     .v-foot{padding:13px 2px 2px; font-size:11px;}
