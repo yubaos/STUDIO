@@ -395,7 +395,7 @@
   function fillViewer(i) {
     const t = TICKETS[i];
     
-    // 淡出切换效果
+    // 淡出切换效果 - 缩短时间减少穿模感
     vPhoto.classList.add('swap');
     setTimeout(() => {
       renderFullMedia(t);
@@ -411,7 +411,7 @@
           vPhoto.classList.add('video-playing');
         }
       }
-    }, 180);
+    }, 120);
     
     // 更新文本信息
     vLoc.textContent  = t.display;
