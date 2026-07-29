@@ -329,27 +329,27 @@ body {
     z-index:1;
 }
 
-/* 左侧圆孔 - 使用深色背景实现视觉镂空效果，与放大查看器保持一致 */
+/* 左侧圆孔 - 使用透明背景 + 边框实现真实镂空效果 */
 .ticket .notch-left{
     position:absolute;
     top:152px;
     left:-6px;
     width:12px;
     height:12px;
-    background:#1a1812;
+    background:transparent;
     border-radius:50%;
     z-index:2;
     box-shadow:inset 0 1px 2px rgba(0,0,0,.4);
 }
 
-/* 右侧圆孔 - 使用深色背景实现视觉镂空效果，与放大查看器保持一致 */
+/* 右侧圆孔 - 使用透明背景 + 边框实现真实镂空效果 */
 .ticket .notch-right{
     position:absolute;
     top:152px;
     right:-6px;
     width:12px;
     height:12px;
-    background:#1a1812;
+    background:transparent;
     border-radius:50%;
     z-index:2;
     box-shadow:inset 0 1px 2px rgba(0,0,0,.4);
@@ -443,7 +443,7 @@ body {
     top:66.67%;
     width:24px;
     height:24px;
-    background:#1a1812;
+    background:transparent;
     border-radius:50%;
     transform:translateY(-50%);
     z-index:20;
@@ -463,7 +463,7 @@ body {
 .v-photo{
     width:100%; height:clamp(420px, 66vh, 720px);
     overflow:hidden; border-radius:3px; background:#15140f; position:relative;
-    transition:opacity .18s ease;
+    transition:opacity .12s ease;
     z-index:10;
 }
 .v-photo::before{
