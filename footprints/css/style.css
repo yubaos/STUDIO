@@ -261,7 +261,7 @@ body {
 }
 
 .archive-head{
-    border-bottom:1px solid var(--color-border);
+    border-bottom:2px solid rgba(0, 0, 0, 0.85);
     padding-bottom:14px; margin-bottom:42px;
 }
 .archive-head .ah-title{
@@ -271,7 +271,7 @@ body {
 }
 .archive-head .ah-title small{
     display:block; font-family: Arial, Helvetica, sans-serif;
-    font-size:16px; letter-spacing:0; color:var(--ink-soft); margin-top:4px;
+    font-size:16px; letter-spacing:0; color:var(--ink); margin-top:4px;
     font-weight: 400;
 }
 
