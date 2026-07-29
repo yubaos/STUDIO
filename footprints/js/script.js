@@ -111,7 +111,8 @@
       real: '兰卡威，马来西亚',
       date: '2016.10.05',
       type: 'video',
-      image: VID.Langkawi,
+      video: VID.Langkawi,
+      poster: IMG.KualaLumpur,
       lat: 6.2620,
       lng: 99.7362,
       note: '碧海远山，云卷云舒，藏在兰卡威的夏天。'
@@ -191,8 +192,9 @@
   function mediaThumbHTML(t) {
     if (t.type === 'video') {
       // 视频票根：显示封面图 + 播放徽章
+      const posterUrl = t.poster || '';
       return `<div class="t-photo">` +
-             `<img src="${t.poster}" alt="${t.display}" loading="lazy">` +
+             (posterUrl ? `<img src="${posterUrl}" alt="${t.display}" loading="lazy">` : '') +
              `<span class="play-badge" aria-hidden="true">${PLAY_SVG}</span>` +
              `</div>`;
     }
@@ -311,6 +313,15 @@
      关闭查看器或切换票根时调用，防止内存泄漏和声音残留
      ===================================================================== */
   function cleanupVideo() {
+    // 清理 Video.js 播放器实例
+    if (vPhoto._player) {
+      try {
+        vPhoto._player.dispose();
+      } catch(_) {}
+      vPhoto._player = null;
+    }
+    
+    // 清理普通 video 元素（降级方案）
     const v = vPhoto.querySelector('video');
     if (v) {
       try {
@@ -328,28 +339,69 @@
      ===================================================================== */
   function renderFullMedia(t) {
     cleanupVideo();  // 先清理之前的媒体
-    
+
     if (t.type === 'video') {
-      // 视频模式：显示 video 元素 + 自定义播放按钮
+      // 视频模式：使用 Video.js 播放器 + Canvas 自动截取第一帧作为封面
+      const videoId = 'vjs-video-' + Date.now();
       vPhoto.innerHTML = `
-        <video src="${t.video}" poster="${t.poster}" controls playsinline webkit-playsinline preload="metadata"></video>
-        <button class="v-play" aria-label="播放视频">${PLAY_SVG}</button>
+        <video id="${videoId}" class="video-js vjs-default-skin vjs-big-play-centered" controls playsinline preload="metadata" crossorigin="anonymous">
+          <source src="${t.video}" type="video/mp4">
+        </video>
       `;
-      
-      const vid = vPhoto.querySelector('video');
-      const vb  = vPhoto.querySelector('.v-play');
-      
-      // 点击播放按钮开始播放
-      vb.addEventListener('click', () => {
-        vid.play().catch(()=>{});
+
+      // 初始化 Video.js 播放器
+      const player = videojs(videoId, {
+        fluid: true,
+        responsive: true,
+        autoplay: false,
+        preload: 'metadata',
+        controls: true,
+        controlBar: {
+          children: ['playToggle', 'volumePanel', 'currentTimeDisplay', 'timeDivider', 'durationDisplay', 'progressControl', 'remainingTimeDisplay', 'fullscreenToggle']
+        }
       });
-      
-      // 播放时隐藏按钮
-      vid.addEventListener('play',  () => vb.classList.add('hide'));
-      // 暂停时显示按钮（除非视频结束）
-      vid.addEventListener('pause', () => { if (!vid.ended) vb.classList.remove('hide'); });
-      // 视频结束时显示按钮
-      vid.addEventListener('ended', () => vb.classList.remove('hide'));
+
+      // 监听 loadedmetadata 事件，使用 Canvas 截取第一帧作为封面
+      player.ready(() => {
+        const tech = player.tech({ IWillNotUseThisInPlugins: true });
+        const videoEl = tech.el();
+
+        videoEl.addEventListener('loadedmetadata', function() {
+          // 创建 Canvas 元素
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+
+          // 设置 Canvas 尺寸为视频尺寸
+          canvas.width = videoEl.videoWidth;
+          canvas.height = videoEl.videoHeight;
+
+          // 绘制视频第一帧
+          ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+
+          // 将 Canvas 内容转换为 Data URL 并设置为 Video.js 的 poster
+          try {
+            const posterDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            player.poster(posterDataUrl);
+          } catch (e) {
+            console.warn('Canvas 截取封面失败:', e);
+            // 降级处理：如果有 poster 配置则使用配置的 poster
+            if (t.poster) {
+              player.poster(t.poster);
+            }
+          }
+        }, { once: true });
+
+        // 如果视频加载失败或超时，使用配置的 poster 作为降级方案
+        setTimeout(() => {
+          if (!player.poster() && t.poster) {
+            player.poster(t.poster);
+          }
+        }, 5000);
+      });
+
+      // 存储 player 引用以便清理
+      vPhoto._player = player;
+
     } else {
       // 图片模式：直接显示高清图片
       vPhoto.innerHTML = `<img src="${t.image}" alt="${t.display}">`;

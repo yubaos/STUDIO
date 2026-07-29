@@ -101,6 +101,10 @@
          点击票根后弹出的全屏查看界面，支持图片/视频播放
          包含：上一张/下一张导航、关闭按钮、位置/日期/描述信息
          ========================================================= -->
+    
+    <!-- Video.js 样式 -->
+    <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet" />
+    
     <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="票根大图">
         <button class="v-nav v-prev" id="vPrev" aria-label="上一张">&#8249;</button>
         <div class="viewer-wrap">
@@ -123,6 +127,8 @@
         <button class="v-nav v-next" id="vNext" aria-label="下一张">&#8250;</button>
     </div>
 
+    <!-- Video.js 脚本 -->
+    <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>
