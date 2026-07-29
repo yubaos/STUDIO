@@ -498,12 +498,32 @@
     if (e.target === overlay) closeViewer();
   });
 
-  // 禁止在遮罩层上右键菜单
+  // 禁止在整个查看器区域（包括遮罩层和查看器本身）的右键菜单
+  // 使用捕获阶段确保在任何子元素之前拦截
   overlay.addEventListener('contextmenu', (e) => {
     e.preventDefault();
     e.stopPropagation();
     return false;
-  });
+  }, { capture: true });
+  
+  // 额外在 viewer-wrap 和 viewer 上也监听，确保完全覆盖
+  const viewerWrap = document.querySelector('.viewer-wrap');
+  if (viewerWrap) {
+    viewerWrap.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }, { capture: true });
+  }
+  
+  const viewerEl = document.querySelector('.viewer');
+  if (viewerEl) {
+    viewerEl.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }, { capture: true });
+  }
 
   /* =====================================================================
      移动端抽屉导航相关变量

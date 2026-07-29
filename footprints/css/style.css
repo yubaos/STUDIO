@@ -423,6 +423,10 @@ body {
 .viewer-wrap{
     position:relative; width:min(94vw, 1040px);
     filter:drop-shadow(0 40px 80px rgba(0,0,0,.6));
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 .viewer{
     position:relative; width:100%; background:var(--paper);
@@ -446,6 +450,10 @@ body {
     width:100%; height:clamp(420px, 66vh, 720px);
     overflow:hidden; border-radius:3px; background:#15140f; position:relative;
     transition:opacity .3s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 .v-photo::before{
     content:''; position:absolute; top:0; left:0; right:0;
@@ -513,6 +521,10 @@ body {
 .v-info{
     display:flex; justify-content:space-between; align-items:flex-end;
     flex-wrap:wrap; gap:8px; padding:26px 4px 16px;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 .v-loc{ font-family: Arial, Helvetica, sans-serif; font-size:clamp(24px,3.4vw,40px); letter-spacing:0; color:var(--ink); font-weight: 400; }
 .v-date{ font-size:clamp(14px,1.8vw,18px); color:var(--ink-soft); letter-spacing:0; font-weight: 400; }
@@ -535,6 +547,10 @@ body {
     position:absolute; top:-50px; right:0; width:40px; height:40px;
     border:none; background:transparent; color:#f2efe8; font-size:36px; line-height:1; cursor:pointer;
     transition:transform .4s ease, color .3s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 .v-close:hover{transform:rotate(90deg); color:#fff;}
 
@@ -545,6 +561,10 @@ body {
     color:#f2efe8; font-size:22px; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
     transition:background .3s ease, transform .3s ease, border-color .3s ease; z-index:2;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 .v-nav:hover{background:rgba(20,19,17,.7); border-color:#f2efe8;}
 .v-prev{left:-78px;}
