@@ -417,6 +417,10 @@ body {
     display:flex; align-items:center; justify-content:center; padding:24px;
     background:rgba(20,19,17,0); backdrop-filter:blur(0px); visibility:hidden;
     transition:background .45s ease, backdrop-filter .45s ease, visibility .45s;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 .overlay.open{ background:rgba(20,19,17,.84); backdrop-filter:blur(8px); visibility:visible; }
 
@@ -454,18 +458,27 @@ body {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+    box-shadow:none !important;
 }
 .v-photo::before{
     content:''; position:absolute; top:0; left:0; right:0;
     height:18px; background:var(--paper);
     border-bottom:1px solid rgba(0,0,0,0.15);
     z-index:10; pointer-events:none;
+    box-shadow:none !important;
 }
 .v-photo.swap{opacity:0;}
 .v-photo img, .v-photo video{
     width:100%; height:100%; object-fit:cover; display:block; pointer-events:auto !important;
 }
-.v-photo video{ background:#000; }
+.v-photo video{ background:#000; outline:none; }
+.v-photo video:focus, .v-photo video:focus-visible, .v-photo video:focus-within{
+    outline:none !important; box-shadow:none !important; border:none !important;
+}
+/* 防止视频元素获得焦点时显示任何浏览器默认样式 */
+video:focus, video:focus-visible{
+    outline:none !important; box-shadow:none !important; border:none !important;
+}
 
 /* 隐藏视频默认控制条，实现极简无边框效果 */
 .v-photo video::-webkit-media-controls {

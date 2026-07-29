@@ -409,6 +409,12 @@
         return false;
       });
       
+      // 防止视频获得焦点导致显示边框/阴影
+      vid.setAttribute('tabindex', '-1');
+      vid.addEventListener('focus', (e) => {
+        e.target.blur();
+      });
+      
       // 初始显示播放按钮
       setTimeout(() => updatePlayBtn(), 100);
       
