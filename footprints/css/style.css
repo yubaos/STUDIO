@@ -426,7 +426,7 @@ body {
 
 .viewer-wrap{
     position:relative; width:min(94vw, 1040px);
-    filter:drop-shadow(0 40px 80px rgba(0,0,0,.6));
+    filter:none !important;
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -471,13 +471,13 @@ body {
 .v-photo img, .v-photo video{
     width:100%; height:100%; object-fit:cover; display:block; pointer-events:auto !important;
 }
-.v-photo video{ background:#000; outline:none; }
+.v-photo video{ background:#000; outline:none !important; box-shadow:none !important; filter:none !important; }
 .v-photo video:focus, .v-photo video:focus-visible, .v-photo video:focus-within{
-    outline:none !important; box-shadow:none !important; border:none !important;
+    outline:none !important; box-shadow:none !important; border:none !important; filter:none !important;
 }
 /* 防止视频元素获得焦点时显示任何浏览器默认样式 */
 video:focus, video:focus-visible{
-    outline:none !important; box-shadow:none !important; border:none !important;
+    outline:none !important; box-shadow:none !important; border:none !important; filter:none !important;
 }
 
 /* 隐藏视频默认控制条，实现极简无边框效果 */
@@ -532,10 +532,24 @@ video:focus, video:focus-visible{
 }
 
 /* 禁止查看器区域的任何 hover 效果导致的阴影/边框显示 */
-.viewer-wrap:hover, .viewer:hover, .v-photo:hover, .v-photo.has-video:hover{
+.viewer-wrap, .viewer-wrap:hover,
+.viewer, .viewer:hover,
+.v-photo, .v-photo:hover, 
+.v-photo.has-video, .v-photo.has-video:hover{
     box-shadow:none !important;
     filter:none !important;
     transform:none !important;
+}
+
+/* 视频播放时强制隔离父级光效 */
+.v-photo.playing{
+    isolation: isolate;
+    box-shadow:none !important;
+    filter:none !important;
+}
+.v-photo.playing::before{
+    box-shadow:none !important;
+    filter:none !important;
 }
 
 .v-info{

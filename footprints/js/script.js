@@ -409,15 +409,36 @@
         return false;
       });
       
+      // 在 overlay 和 viewer 上也禁用右键
+      overlay.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }, { capture: true });
+      
+      viewerWrap.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }, { capture: true });
+      
+      viewerEl.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }, { capture: true });
+      
       // 鼠标移出页面/视频区域时移除任何可能的 hover 状态
       document.addEventListener('mouseleave', () => {
         vid.blur();
+        if(playBtn) playBtn.classList.remove('show');
       });
       
       vPhoto.addEventListener('mouseout', (e) => {
         // 只有当鼠标真正离开 vPhoto 元素时才触发
         if (!vPhoto.contains(e.relatedTarget)) {
           vid.blur();
+          if(playBtn) playBtn.classList.remove('show');
         }
       });
       
@@ -425,6 +446,22 @@
       vid.setAttribute('tabindex', '-1');
       vid.addEventListener('focus', (e) => {
         e.target.blur();
+      });
+      
+      // 监听视频暂停事件，确保暂停时显示播放按钮并移除光效
+      vid.addEventListener('pause', () => {
+        vPhoto.classList.remove('playing');
+        updatePlayBtn();
+      });
+      
+      vid.addEventListener('play', () => {
+        vPhoto.classList.add('playing');
+        if(playBtn) playBtn.classList.remove('show');
+      });
+      
+      vid.addEventListener('ended', () => {
+        vPhoto.classList.remove('playing');
+        updatePlayBtn();
       });
       
       // 初始显示播放按钮
