@@ -329,26 +329,26 @@ body {
     z-index:1;
 }
 
-/* 左侧圆孔 - 使用径向渐变模拟真实镂空效果（中心透明，边缘纸张色） */
+/* 左侧圆孔 - 使用背景色匹配墙面，模拟真实镂空效果 */
 .ticket .notch-left{
     position:absolute;
     top:152px;
     left:0;
     width:12px;
     height:12px;
-    background:radial-gradient(circle at center, transparent 50%, var(--paper) 52%);
+    background:#4a4740;
     border-radius:50%;
     z-index:2;
 }
 
-/* 右侧圆孔 - 使用径向渐变模拟真实镂空效果（中心透明，边缘纸张色） */
+/* 右侧圆孔 - 使用背景色匹配墙面，模拟真实镂空效果 */
 .ticket .notch-right{
     position:absolute;
     top:152px;
     right:0;
     width:12px;
     height:12px;
-    background:radial-gradient(circle at center, transparent 50%, var(--paper) 52%);
+    background:#4a4740;
     border-radius:50%;
     z-index:2;
 }
@@ -441,10 +441,11 @@ body {
     top:66.67%;
     width:24px;
     height:24px;
-    background:radial-gradient(circle at center, transparent 50%, var(--paper) 52%);
+    background:#1a1812;
     border-radius:50%;
     transform:translateY(-50%);
     z-index:20;
+    box-shadow:inset 0 1px 3px rgba(0,0,0,.4);
 }
 .viewer::before{
     left:-12px;
@@ -459,7 +460,7 @@ body {
 /* 上方留有背景边框：通过 padding-top 实现 */
 .v-photo{
     width:100%; height:clamp(420px, 66vh, 720px);
-    overflow:hidden; border-radius:3px; background:transparent; position:relative;
+    overflow:hidden; border-radius:3px; background:#000; position:relative;
     transition:opacity .12s ease;
     z-index:10;
 }
@@ -511,10 +512,11 @@ body {
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-    pointer-events: none;
+    pointer-events: auto;
     opacity: 0;
     transition: opacity 0.25s ease, transform 0.25s ease, background 0.3s ease;
     z-index: 20;
+    cursor: pointer;
 }
 .v-photo .play-center-btn::after{
     content:''; position:absolute; inset:0; border-radius:50%;

@@ -364,14 +364,28 @@
       vid.addEventListener('pause', updatePlayState);
       vid.addEventListener('ended', updatePlayState);
       
-      vPhoto.addEventListener('click', (e) => {
-        if (e.target.closest('.v-nav')) return;
+      // 点击播放按钮或视频区域切换播放/暂停
+      function togglePlay() {
         if (vid.paused) {
           vid.play().catch(()=>{});
         } else {
           vid.pause();
         }
+      }
+      
+      vPhoto.addEventListener('click', (e) => {
+        if (e.target.closest('.v-nav')) return;
+        togglePlay();
       });
+      
+      // 播放按钮单独绑定点击事件（与缩略图徽章行为一致）
+      const playBtn = vPhoto.querySelector('.play-center-btn');
+      if (playBtn) {
+        playBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          togglePlay();
+        });
+      }
       
       vid.addEventListener('contextmenu', (e) => {
         e.preventDefault();
@@ -403,15 +417,16 @@
       // 确保切换后移除可能的 video-paused/video-playing 类，让 renderFullMedia 重新设置
       if (t.type === 'video') {
         const vid = vPhoto.querySelector('video');
-        if (vid && vid.paused) {
-          vPhoto.classList.add('video-paused');
-          vPhoto.classList.remove('video-playing');
-        } else if (vid) {
-          vPhoto.classList.remove('video-paused');
-          vPhoto.classList.add('video-playing');
+        if (vid) {
+          // 等待视频元数据加载完成后再更新播放状态
+          if (vid.readyState >= 1) {
+            updatePlayState();
+          } else {
+            vid.addEventListener('loadedmetadata', updatePlayState, { once: true });
+          }
         }
       }
-    }, 100);
+    }, 120);
     
     // 更新文本信息
     vLoc.textContent  = t.display;
