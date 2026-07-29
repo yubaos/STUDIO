@@ -329,28 +329,30 @@ body {
     z-index:1;
 }
 
-/* 左侧圆孔 */
+/* 左侧圆孔 - 使用透明背景实现真正镂空效果 */
 .ticket .notch-left{
     position:absolute;
     top:152px;
     left:-6px;
     width:12px;
     height:12px;
-    background:var(--wall);
+    background:transparent;
     border-radius:50%;
     z-index:2;
+    box-shadow:0 0 0 100vw var(--paper);
 }
 
-/* 右侧圆孔 */
+/* 右侧圆孔 - 使用透明背景实现真正镂空效果 */
 .ticket .notch-right{
     position:absolute;
     top:152px;
     right:-6px;
     width:12px;
     height:12px;
-    background:var(--wall);
+    background:transparent;
     border-radius:50%;
     z-index:2;
+    box-shadow:0 0 0 100vw var(--paper);
 }
 
 .t-photo{
@@ -495,7 +497,7 @@ body {
     display: none !important;
 }
 
-/* 视频播放/暂停按钮：居中显示，仅在暂停时可见 */
+/* 视频播放/暂停按钮：居中显示，仅在暂停时可见，透明样式与缩略图一致 */
 .v-photo .play-center-btn {
     position: absolute;
     top: 50%;
@@ -504,15 +506,19 @@ body {
     width: 68px;
     height: 68px;
     border-radius: 50%;
-    background: rgba(20, 19, 17, 0.75);
+    background: rgba(20, 19, 17, 0.55);
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.25s ease, transform 0.25s ease;
+    transition: opacity 0.25s ease, transform 0.25s ease, background 0.3s ease;
     z-index: 20;
+}
+.v-photo .play-center-btn::after{
+    content:''; position:absolute; inset:0; border-radius:50%;
+    border:1.5px solid rgba(244,241,234,.7);
 }
 .v-photo .play-center-btn svg {
     width: 28px;
@@ -523,6 +529,7 @@ body {
 .v-photo.video-paused .play-center-btn {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
+    background: rgba(20, 19, 17, 0.72);
 }
 .v-photo.video-playing .play-center-btn {
     opacity: 0;

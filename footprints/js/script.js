@@ -400,6 +400,17 @@
     setTimeout(() => {
       renderFullMedia(t);
       vPhoto.classList.remove('swap');
+      // 确保切换后移除可能的 video-paused/video-playing 类，让 renderFullMedia 重新设置
+      if (t.type === 'video') {
+        const vid = vPhoto.querySelector('video');
+        if (vid && vid.paused) {
+          vPhoto.classList.add('video-paused');
+          vPhoto.classList.remove('video-playing');
+        } else if (vid) {
+          vPhoto.classList.remove('video-paused');
+          vPhoto.classList.add('video-playing');
+        }
+      }
     }, 180);
     
     // 更新文本信息
