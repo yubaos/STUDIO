@@ -110,7 +110,7 @@
       display: 'Langkawi, Malaysia',
       real: '兰卡威，马来西亚',
       date: '2016.10.05',
-      type: 'image',
+      type: 'video',
       image: VID.Langkawi,
       lat: 6.2620,
       lng: 99.7362,
