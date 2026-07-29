@@ -362,7 +362,7 @@ body {
 .play-badge{
     position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
     width:34px; height:34px; border-radius:50%;
-    background:rgba(20,19,17,.55); backdrop-filter:blur(2px);
+    background:rgba(20,19,17,.55); backdrop-filter:none;
     display:flex; align-items:center; justify-content:center;
     box-shadow:0 2px 8px rgba(0,0,0,.35);
     transition:transform .3s ease, background .3s ease;
@@ -418,7 +418,7 @@ body {
     background:rgba(20,19,17,0); backdrop-filter:blur(0px); visibility:hidden;
     transition:background .45s ease, backdrop-filter .45s ease, visibility .45s;
 }
-.overlay.open{ background:rgba(20,19,17,.84); backdrop-filter:blur(8px); visibility:visible; }
+.overlay.open{ background:rgba(20,19,17,.84); backdrop-filter:none; visibility:visible; }
 
 .viewer-wrap{
     position:relative; width:min(94vw, 1040px);
@@ -429,15 +429,26 @@ body {
     border-radius:6px; padding:30px 30px 34px;
     transform:scale(.82) translateY(20px); opacity:0;
     transition:transform .5s cubic-bezier(.2,.9,.25,1), opacity .45s ease;
-    -webkit-mask-image:
-        radial-gradient(circle at 0% 66.67%,   #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px)),
-        radial-gradient(circle at 100% 66.67%, #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px));
-    -webkit-mask-repeat:no-repeat; -webkit-mask-composite:source-in;
-    mask-image:
-        radial-gradient(circle at 0% 66.67%,   #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px)),
-        radial-gradient(circle at 100% 66.67%, #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px));
-    mask-repeat:no-repeat; mask-composite:intersect;
 }
+.viewer::before,
+.viewer::after{
+    content:'';
+    position:absolute;
+    top:66.67%;
+    width:24px;
+    height:24px;
+    background:var(--wall);
+    border-radius:50%;
+    transform:translateY(-50%);
+    z-index:5;
+}
+.viewer::before{
+    left:-12px;
+}
+.viewer::after{
+    right:-12px;
+}
+
 .overlay.open .viewer{transform:scale(1) translateY(0); opacity:1;}
 
 /* 媒体容器：承载 img 或 video，整体淡入切换 */
