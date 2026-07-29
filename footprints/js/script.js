@@ -325,14 +325,9 @@
         window.currentDPlayer = null;
       } catch(_) {}
     }
-    // 清理原生 video 元素（备用）
-    const v = vPhoto.querySelector('video');
-    if (v) {
-      try {
-        v.pause();
-        v.removeAttribute('src');
-        v.load();
-      } catch(_) {}
+    // 清理容器内的所有子元素（包括 DPlayer 创建的 DOM）
+    while (vPhoto.firstChild) {
+      vPhoto.removeChild(vPhoto.firstChild);
     }
   }
 
@@ -346,12 +341,10 @@
     
     if (t.type === 'video' && t.video) {
       // 视频模式：使用 DPlayer 极简播放器（隐藏控制条，点击屏幕播放/暂停）
-      vPhoto.innerHTML = '';
       
       // 创建 DPlayer 容器
       const dpContainer = document.createElement('div');
       dpContainer.className = 'dplayer-container';
-      dpContainer.style.cssText = 'width:100%;height:100%;';
       vPhoto.appendChild(dpContainer);
       
       // 初始化 DPlayer
@@ -374,12 +367,24 @@
         controls: false      // 隐藏控制条，极简无边框
       });
       
-      // 点击视频屏幕播放/暂停
-      dpContainer.addEventListener('click', () => {
-        if (window.currentDPlayer.video.paused) {
-          window.currentDPlayer.play();
-        } else {
-          window.currentDPlayer.pause();
+      // 等待 DPlayer 初始化完成后绑定点击事件
+      dpContainer.addEventListener('click', (e) => {
+        // 防止事件冒泡干扰
+        e.stopPropagation();
+        if (window.currentDPlayer && window.currentDPlayer.video) {
+          if (window.currentDPlayer.video.paused) {
+            window.currentDPlayer.play();
+          } else {
+            window.currentDPlayer.pause();
+          }
+        }
+      });
+      
+      // 双击全屏
+      dpContainer.addEventListener('dblclick', (e) => {
+        e.stopPropagation();
+        if (window.currentDPlayer) {
+          window.currentDPlayer.fullScreen.toggle('web');
         }
       });
       

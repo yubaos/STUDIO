@@ -463,7 +463,10 @@ body {
 .v-photo .dplayer-container {
     width: 100% !important;
     height: 100% !important;
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 20;
 }
 
 /* DPlayer 视频元素样式 */
@@ -483,6 +486,12 @@ body {
 .v-photo .dplayer {
     user-select: none;
     -webkit-user-select: none;
+}
+
+/* 确保 DPlayer 画布可交互 */
+.v-photo .dplayer .dplayer-video-wrap {
+    pointer-events: auto !important;
+    cursor: pointer;
 }
 
 /* 确保视频控件可交互 */
