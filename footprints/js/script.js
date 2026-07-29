@@ -337,26 +337,29 @@
     cleanupVideo();  // 先清理之前的媒体
     
     if (t.type === 'video' && t.video) {
-      // 视频模式：显示 video 元素 + 自定义播放按钮（仅当有 video 字段时才渲染视频）
+      // 视频模式：显示 video 元素（无控制条，极简无边框）
       vPhoto.innerHTML = `
-        <video src="${t.video}" poster="${t.poster || ''}" controls playsinline webkit-playsinline preload="metadata"></video>
-        <button class="v-play" aria-label="播放视频">${PLAY_SVG}</button>
+        <video src="${t.video}" poster="${t.poster || ''}" playsinline webkit-playsinline preload="metadata"></video>
       `;
       
       const vid = vPhoto.querySelector('video');
-      const vb  = vPhoto.querySelector('.v-play');
       
-      // 点击播放按钮开始播放
-      vb.addEventListener('click', () => {
-        vid.play().catch(()=>{});
+      // 点击视频屏幕播放/暂停
+      vPhoto.addEventListener('click', (e) => {
+        // 避免触发关闭按钮等其它元素
+        if (e.target.closest('.v-close') || e.target.closest('.v-nav')) return;
+        if (vid.paused) {
+          vid.play().catch(()=>{});
+        } else {
+          vid.pause();
+        }
       });
       
-      // 播放时隐藏按钮
-      vid.addEventListener('play',  () => vb.classList.add('hide'));
-      // 暂停时显示按钮（除非视频结束）
-      vid.addEventListener('pause', () => { if (!vid.ended) vb.classList.remove('hide'); });
-      // 视频结束时显示按钮
-      vid.addEventListener('ended', () => vb.classList.remove('hide'));
+      // 禁止右键菜单
+      vid.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        return false;
+      });
     } else {
       // 图片模式：直接显示高清图片
       vPhoto.innerHTML = `<img src="${t.image}" alt="${t.display}">`;
