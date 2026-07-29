@@ -307,21 +307,14 @@ body {
 .ticket-wrap:focus-visible .ticket{outline:2px dashed var(--ink); outline-offset:3px;}
 
 /* =========================================================
-   票根本体 —— 纸张 + 圆角 + 透明缺口（mask 挖洞）
-   缺口位置：垂直方向 2/3 处（从顶部算起）
+   票根本体 —— 纸张 + 圆角
    总高度 240px（保持 2:3 比例：160px 宽 × 240px 高）
+   缺口位置：垂直方向 2/3 处（从顶部算起）
+   使用伪元素实现两侧圆孔，避免 mask-image 导致的 GPU 合成问题
    ========================================================= */
 .ticket{
     width:160px; height:240px; background:var(--paper); border-radius:3px; position:relative;
     box-sizing:border-box; overflow:hidden;
-    -webkit-mask-image:
-        radial-gradient(circle at 0% 66.67%,   #0000 var(--notch), #000 calc(var(--notch) + .6px)),
-        radial-gradient(circle at 100% 66.67%, #0000 var(--notch), #000 calc(var(--notch) + .6px));
-    -webkit-mask-repeat:no-repeat; -webkit-mask-composite:source-in;
-    mask-image:
-        radial-gradient(circle at 0% 66.67%,   #0000 var(--notch), #000 calc(var(--notch) + .6px)),
-        radial-gradient(circle at 100% 66.67%, #0000 var(--notch), #000 calc(var(--notch) + .6px));
-    mask-repeat:no-repeat; mask-composite:intersect;
 }
 
 /* 模拟撕票口的虚线：连接两侧孔位 */
@@ -336,12 +329,23 @@ body {
     z-index:1;
 }
 
-/* 两侧的半圆孔（与 mask 缺口对齐）—— 只保留左侧一个孔 */
-.ticket::after{
-    content:'';
+/* 左侧圆孔 */
+.ticket .notch-left{
     position:absolute;
     top:152px;
     left:-6px;
+    width:12px;
+    height:12px;
+    background:var(--wall);
+    border-radius:50%;
+    z-index:2;
+}
+
+/* 右侧圆孔 */
+.ticket .notch-right{
+    position:absolute;
+    top:152px;
+    right:-6px;
     width:12px;
     height:12px;
     background:var(--wall);

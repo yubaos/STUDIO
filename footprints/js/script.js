@@ -252,6 +252,8 @@
             <div class="t-perf"></div>
             <div class="t-code">${fmtCoord(t.lat, t.lng, true)}</div>
           </div>
+          <div class="notch-left"></div>
+          <div class="notch-right"></div>
         </article>
       `;
       

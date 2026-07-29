@@ -1,4 +1,4 @@
-```gitignore
+```
 # Compiled and build artifacts
 *.pyc
 __pycache__/
@@ -14,18 +14,24 @@ build/
 *.out
 
 # Dependencies
-node_modules/
-venv/
 .venv/
-.env
-.env.local
-.env.*
+venv/
+node_modules/
+.mypy_cache/
+.pytest_cache/
+target/
+.gradle/
 
 # Logs and temp files
 *.log
 *.tmp
 *.swp
 *.swo
+
+# Environment
+.env
+.env.local
+*.env.*
 
 # Editors
 .vscode/
