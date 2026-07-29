@@ -459,6 +459,32 @@ body {
 }
 .v-photo video{ background:#000; }
 
+/* DPlayer 容器样式 - 确保全屏覆盖 */
+.v-photo .dplayer-container {
+    width: 100% !important;
+    height: 100% !important;
+    position: relative;
+}
+
+/* DPlayer 视频元素样式 */
+.v-photo .dplayer-container video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    background: #000;
+}
+
+/* DPlayer 控制条隐藏（已设置 controls: false，此处为额外保障） */
+.v-photo .dplayer .dplayer-controller {
+    display: none !important;
+}
+
+/* 禁用 DPlayer 右键菜单 */
+.v-photo .dplayer {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
 /* 确保视频控件可交互 */
 .v-photo video::-webkit-media-controls {
     pointer-events: auto !important;

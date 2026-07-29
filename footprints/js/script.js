@@ -318,6 +318,14 @@
      关闭查看器或切换票根时调用，防止内存泄漏和声音残留
      ===================================================================== */
   function cleanupVideo() {
+    // 清理 DPlayer 实例
+    if (window.currentDPlayer) {
+      try {
+        window.currentDPlayer.destroy();
+        window.currentDPlayer = null;
+      } catch(_) {}
+    }
+    // 清理原生 video 元素（备用）
     const v = vPhoto.querySelector('video');
     if (v) {
       try {
@@ -337,31 +345,50 @@
     cleanupVideo();  // 先清理之前的媒体
     
     if (t.type === 'video' && t.video) {
-      // 视频模式：显示 video 元素 + 自定义播放按钮（仅当有 video 字段时才渲染视频）
-      vPhoto.innerHTML = `
-        <video src="${t.video}" poster="${t.poster || ''}" controls playsinline webkit-playsinline preload="metadata"></video>
-        <button class="v-play" aria-label="播放视频">${PLAY_SVG}</button>
-      `;
+      // 视频模式：使用 DPlayer 极简播放器（隐藏控制条，点击屏幕播放/暂停）
+      vPhoto.innerHTML = '';
       
-      const vid = vPhoto.querySelector('video');
-      const vb  = vPhoto.querySelector('.v-play');
+      // 创建 DPlayer 容器
+      const dpContainer = document.createElement('div');
+      dpContainer.className = 'dplayer-container';
+      dpContainer.style.cssText = 'width:100%;height:100%;';
+      vPhoto.appendChild(dpContainer);
       
-      // 点击播放按钮开始播放
-      vb.addEventListener('click', () => {
-        vid.play().catch(()=>{});
+      // 初始化 DPlayer
+      window.currentDPlayer = new DPlayer({
+        container: dpContainer,
+        video: {
+          url: t.video,
+          poster: t.poster || '',
+          type: 'auto'
+        },
+        autoplay: false,
+        theme: '#262420',
+        loop: false,
+        lang: 'zh-cn',
+        hotkey: true,        // 启用键盘快捷键
+        preload: 'metadata',
+        volume: 0.7,
+        playbackSpeed: [0.5, 0.75, 1, 1.25, 1.5, 2],
+        contextmenu: [],     // 禁用右键菜单
+        controls: false      // 隐藏控制条，极简无边框
       });
       
-      // 播放时隐藏按钮
-      vid.addEventListener('play',  () => vb.classList.add('hide'));
-      // 暂停时显示按钮（除非视频结束）
-      vid.addEventListener('pause', () => { if (!vid.ended) vb.classList.remove('hide'); });
-      // 视频结束时显示按钮
-      vid.addEventListener('ended', () => vb.classList.remove('hide'));
+      // 点击视频屏幕播放/暂停
+      dpContainer.addEventListener('click', () => {
+        if (window.currentDPlayer.video.paused) {
+          window.currentDPlayer.play();
+        } else {
+          window.currentDPlayer.pause();
+        }
+      });
+      
     } else {
       // 图片模式：直接显示高清图片
       vPhoto.innerHTML = `<img src="${t.image}" alt="${t.display}">`;
     }
   }
+
 
   /* =====================================================================
      填充查看器内容
