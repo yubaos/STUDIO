@@ -396,9 +396,16 @@
         }
       });
       
-      // 禁止右键菜单
+      // 禁止右键菜单（同时绑定到视频元素和容器，使用捕获阶段确保拦截）
+      vid.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }, { capture: true });
+      
       vPhoto.addEventListener('contextmenu', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         return false;
       });
       
