@@ -31,7 +31,7 @@
     KualaLumpur:    'https://img.yubaos.com/Gallery/20161004kl.webp',
     xiamen:    'https://img.yubaos.com/Gallery/20140410xm.webp',
     kyoto:     'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/14dc9e83f-de7f-4aec-9997-d29e554a3cde.png',
-    Phuket:     'https://img.yubaos.com/video/Langkawi.jpg',
+    Phuket:     'https://img.yubaos.com/Gallery/Phuket.webp',
     shanghai: 'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/1ac501088-11d3-40be-8bc0-873924b0f1ba.png',
     bangkok:  'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/1ca9d2404-da75-4a51-9b7a-49446ac90d2e.png',
     hanoi:    'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/16cfa3b16-9280-4488-956e-5089d57c87f2.png',
@@ -111,31 +111,30 @@
       lng: 101.7108,                 // 经度
       note: '拥抱双子塔的宏伟，定格异国旅途的偏爱。'  // 描述文字
     },
+
+        // ========== 视频票根示例 ==========
     {
       id: 3,
       display: 'Langkawi, Malaysia',
       real: '兰卡威，马来西亚',
       date: '2016.10.05',
-      type: 'video',
-      video: VID.Langkawi,
-      poster: IMG.LangkawiPoster,
+      type: 'video',                   // 类型：视频
+      video: VID.Langkawi,            // 视频 URL
+      poster: IMG.LangkawiPoster,     // 视频封面图
       lat: 6.2620,
       lng: 99.7362,
       note: '碧海远山，云卷云舒，藏在兰卡威的夏天。'
     },
-    
-    // ========== 视频票根示例 ==========
     {
       id: 4,
-      display: 'BANGKOK, THAILAND',
-      real: '曼谷，泰国',
-      date: '2023.10.20',
-      type: 'video',                 // 类型：视频
-      video: VID.clipA,              // 视频 URL
-      poster: IMG.bangkok,           // 视频封面图
+      display: 'Phuket, THAILAND',
+      real: '普吉岛，泰国',
+      date: '2016.10.08',
+      type: 'image',
+      video: IMG.Phuket,
       lat: 13.7563,
       lng: 100.5018,
-      note: '大皇宫的金顶在夕阳下近乎燃烧 —— 这段影像记录了铃铛与僧诵。'
+      note: '普吉岛九皇斋节，信徒穿刺显虔诚。'
     },
     {
       id: 5,
