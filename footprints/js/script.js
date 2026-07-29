@@ -51,8 +51,8 @@
     // 示例视频资源 - 可替换为自己的视频
     clipA: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
     clipB: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-    clipC: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4'
-    Langkawi: 'https://img.yubaos.com/video/Langkawi.mp4'
+    clipC: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
+    Langkawi: 'https://img.yubaos.com/video/Langkawi.mp4',
     // 添加新视频示例:
     // travelVlog: 'path/to/travel.mp4',
     // sunset: 'https://example.com/sunset.mp4'
