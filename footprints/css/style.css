@@ -366,7 +366,7 @@ body {
     display:flex; align-items:center; justify-content:center;
     box-shadow:0 2px 8px rgba(0,0,0,.35);
     transition:transform .3s ease, background .3s ease;
-    pointer-events:none;
+    pointer-events:auto;
     z-index:5;
 }
 .play-badge svg{ width:13px; height:13px; fill:#f4f1ea; margin-left:2px; }
@@ -455,9 +455,20 @@ body {
 }
 .v-photo.swap{opacity:0;}
 .v-photo img, .v-photo video{
-    width:100%; height:100%; object-fit:cover; display:block;
+    width:100%; height:100%; object-fit:cover; display:block; pointer-events:auto !important;
 }
 .v-photo video{ background:#000; }
+
+/* 确保视频控件可交互 */
+.v-photo video::-webkit-media-controls {
+    pointer-events: auto !important;
+}
+.v-photo video::-webkit-media-controls-panel {
+    pointer-events: auto !important;
+}
+.v-photo video::-webkit-media-controls-play-button {
+    pointer-events: auto !important;
+}
 
 /* 放大查看器自定义播放按钮（叠在视频中央，统一视觉） */
 .v-play{
@@ -467,12 +478,11 @@ body {
     display:flex; align-items:center; justify-content:center;
     box-shadow:0 6px 24px rgba(0,0,0,.45);
     transition:opacity .35s ease, transform .35s cubic-bezier(.2,.8,.2,1), background .3s ease;
+    z-index:30; pointer-events:auto !important;
 }
 .v-play svg{ width:30px; height:30px; fill:#f4f1ea; margin-left:5px; }
 .v-play:hover{ background:rgba(20,19,17,.72); transform:translate(-50%,-50%) scale(1.08); }
 .v-play.hide{ opacity:0; pointer-events:none; transform:translate(-50%,-50%) scale(.7); }
-/* 确保播放按钮在边框上方显示 */
-.v-play{ z-index:20; }
 
 .v-info{
     display:flex; justify-content:space-between; align-items:flex-end;
