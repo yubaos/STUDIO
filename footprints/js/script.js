@@ -326,6 +326,16 @@
         v.load();
       } catch(_) {}
     }
+    // 移除 mouseleave 监听器，防止重复绑定
+    document.removeEventListener('mouseleave', handleMouseLeave);
+  }
+  
+  // 鼠标移出网页时移除视频焦点，防止 hover/focus 状态残留
+  function handleMouseLeave() {
+    const v = vPhoto.querySelector('video');
+    if (v) {
+      v.blur();
+    }
   }
 
   /* =====================================================================
@@ -334,19 +344,35 @@
      参数：t - 票根数据对象
      ===================================================================== */
   function renderFullMedia(t) {
-    cleanupVideo();  // 先清理之前的媒体
+    cleanupVideo();
     
     if (t.type === 'video' && t.video) {
-      // 视频模式：显示 video 元素（无控制条，极简无边框）
+      const playBtnSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
       vPhoto.innerHTML = `
         <video src="${t.video}" poster="${t.poster || ''}" playsinline webkit-playsinline preload="metadata"></video>
+        <span class="play-center-btn" aria-hidden="true">${playBtnSvg}</span>
       `;
       
       const vid = vPhoto.querySelector('video');
       
-      // 点击视频屏幕播放/暂停
+      vPhoto.classList.add('video-paused');
+      vPhoto.classList.remove('video-playing');
+      
+      function updatePlayState() {
+        if (vid.paused) {
+          vPhoto.classList.add('video-paused');
+          vPhoto.classList.remove('video-playing');
+        } else {
+          vPhoto.classList.remove('video-paused');
+          vPhoto.classList.add('video-playing');
+        }
+      }
+      
+      vid.addEventListener('play', updatePlayState);
+      vid.addEventListener('pause', updatePlayState);
+      vid.addEventListener('ended', updatePlayState);
+      
       vPhoto.addEventListener('click', (e) => {
-        // 避免触发关闭按钮等其它元素
         if (e.target.closest('.v-close') || e.target.closest('.v-nav')) return;
         if (vid.paused) {
           vid.play().catch(()=>{});
@@ -355,13 +381,18 @@
         }
       });
       
-      // 禁止右键菜单
       vid.addEventListener('contextmenu', (e) => {
         e.preventDefault();
         return false;
       });
+      vPhoto.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        return false;
+      });
+      
+      document.addEventListener('mouseleave', handleMouseLeave);
+      
     } else {
-      // 图片模式：直接显示高清图片
       vPhoto.innerHTML = `<img src="${t.image}" alt="${t.display}">`;
     }
   }
