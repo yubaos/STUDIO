@@ -32,7 +32,7 @@
     xiamen:    'https://img.yubaos.com/Gallery/20140410xm.webp',
     zhujiang:     'https://img.yubaos.com/Gallery/zhujiang.webp',
     Phuket:     'https://img.yubaos.com/Gallery/Phuket.webp',
-    hongkong: 'https://img.yubaos.com/Gallery/xiaomanyao.webp',
+    hongkong: 'https://img.yubaos.com/Gallery/hongkong.webp',
     bangkok:  'https://img.yubaos.com/Gallery/Bangkok.webp',
     hanoi:    'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/16cfa3b16-9280-4488-956e-5089d57c87f2.png',
     castle:   'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/1bb3debd7-77a6-47e6-98e8-c9fb004c708c.png',
