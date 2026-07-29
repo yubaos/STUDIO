@@ -35,10 +35,15 @@
     shanghai: 'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/1ac501088-11d3-40be-8bc0-873924b0f1ba.png',
     bangkok:  'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/1ca9d2404-da75-4a51-9b7a-49446ac90d2e.png',
     hanoi:    'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/16cfa3b16-9280-4488-956e-5089d57c87f2.png',
-    castle:   'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/1bb3debd7-77a6-47e6-98e8-c9fb004c708c.png'
+    castle:   'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/1bb3debd7-77a6-47e6-98e8-c9fb004c708c.png',
+    // 视频封面专用图片（可按需添加）
+    LangkawiPoster: 'https://img.yubaos.com/Gallery/20161005lk.webp'
     // 添加新图片示例:
     // paris:  'path/to/paris.jpg',
     // london: 'https://example.com/london.png'
+    // 视频封面示例:
+    // clipAPoster: 'path/to/clipA-poster.jpg',
+    // clipBPoster: 'https://example.com/clipB-poster.png'
   };
 
   /* =====================================================================
@@ -56,6 +61,7 @@
     // 添加新视频示例:
     // travelVlog: 'path/to/travel.mp4',
     // sunset: 'https://example.com/sunset.mp4'
+    // 视频封面图可在 IMG 中添加，命名建议：clipAPoster, clipBPoster, LangkawiPoster 等
   };
 
   /* =====================================================================
@@ -111,7 +117,8 @@
       real: '兰卡威，马来西亚',
       date: '2016.10.05',
       type: 'video',
-      image: VID.Langkawi,
+      video: VID.Langkawi,
+      poster: IMG.LangkawiPoster,
       lat: 6.2620,
       lng: 99.7362,
       note: '碧海远山，云卷云舒，藏在兰卡威的夏天。'
@@ -189,16 +196,16 @@
      返回：HTML 字符串
      ===================================================================== */
   function mediaThumbHTML(t) {
-    if (t.type === 'video') {
-      // 视频票根：显示封面图 + 播放徽章
+    if (t.type === 'video' && t.poster) {
+      // 视频票根：显示封面图 + 播放徽章（仅当有 poster 字段时才显示封面）
       return `<div class="t-photo">` +
              `<img src="${t.poster}" alt="${t.display}" loading="lazy">` +
              `<span class="play-badge" aria-hidden="true">${PLAY_SVG}</span>` +
              `</div>`;
     }
-    // 图片票根：仅显示图片
+    // 图片票根或无封面的视频票根：仅显示图片
     return `<div class="t-photo">` +
-           `<img src="${t.image}" alt="${t.display}" loading="lazy">` +
+           `<img src="${t.image || t.poster || ''}" alt="${t.display}" loading="lazy">` +
            `</div>`;
   }
 
@@ -329,10 +336,10 @@
   function renderFullMedia(t) {
     cleanupVideo();  // 先清理之前的媒体
     
-    if (t.type === 'video') {
-      // 视频模式：显示 video 元素 + 自定义播放按钮
+    if (t.type === 'video' && t.video) {
+      // 视频模式：显示 video 元素 + 自定义播放按钮（仅当有 video 字段时才渲染视频）
       vPhoto.innerHTML = `
-        <video src="${t.video}" poster="${t.poster}" controls playsinline webkit-playsinline preload="metadata"></video>
+        <video src="${t.video}" poster="${t.poster || ''}" controls playsinline webkit-playsinline preload="metadata"></video>
         <button class="v-play" aria-label="播放视频">${PLAY_SVG}</button>
       `;
       
@@ -379,7 +386,7 @@
     vIdx.textContent  = String(i + 1).padStart(2, '0') + ' / ' + String(TICKETS.length).padStart(2, '0');
     
     // 更新媒体类型标签
-    if (t.type === 'video') {
+    if (t.type === 'video' && t.video) {
       vMedia.hidden = false;
       vMedia.textContent = '▶ VIDEO';
     } else {
