@@ -329,28 +329,30 @@ body {
     z-index:1;
 }
 
-/* 左侧圆孔 - 使用与墙面背景相同的颜色实现视觉镂空效果 */
+/* 左侧圆孔 - 使用深色背景实现视觉镂空效果，与放大查看器保持一致 */
 .ticket .notch-left{
     position:absolute;
     top:152px;
     left:-6px;
     width:12px;
     height:12px;
-    background:var(--wall);
+    background:#1a1812;
     border-radius:50%;
     z-index:2;
+    box-shadow:inset 0 1px 2px rgba(0,0,0,.4);
 }
 
-/* 右侧圆孔 - 使用与墙面背景相同的颜色实现视觉镂空效果 */
+/* 右侧圆孔 - 使用深色背景实现视觉镂空效果，与放大查看器保持一致 */
 .ticket .notch-right{
     position:absolute;
     top:152px;
     right:-6px;
     width:12px;
     height:12px;
-    background:var(--wall);
+    background:#1a1812;
     border-radius:50%;
     z-index:2;
+    box-shadow:inset 0 1px 2px rgba(0,0,0,.4);
 }
 
 .t-photo{
@@ -441,7 +443,7 @@ body {
     top:66.67%;
     width:24px;
     height:24px;
-    background:var(--wall);
+    background:#1a1812;
     border-radius:50%;
     transform:translateY(-50%);
     z-index:20;
@@ -462,19 +464,20 @@ body {
     width:100%; height:clamp(420px, 66vh, 720px);
     overflow:hidden; border-radius:3px; background:#15140f; position:relative;
     transition:opacity .18s ease;
+    z-index:10;
 }
 .v-photo::before{
     content:''; position:absolute; top:0; left:0; right:0;
     height:18px; background:var(--paper);
     border-bottom:1px solid rgba(0,0,0,0.15);
-    z-index:10; pointer-events:none;
+    z-index:15; pointer-events:none;
     transform:translateZ(0);
 }
 .v-photo.swap{opacity:0;}
 .v-photo img,
 .v-photo video{
     width:100%; height:100%; object-fit:cover; display:block; pointer-events:auto !important;
-    position:relative; z-index:1;
+    position:relative; z-index:5;
     transform:translateZ(0);
     backface-visibility:hidden;
 }
