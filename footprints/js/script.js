@@ -407,26 +407,34 @@
   function fillViewer(i) {
     const t = TICKETS[i];
     
-    // 淡出切换效果 - 与 CSS transition 时间匹配，避免穿模
-    vPhoto.classList.add('swap');
-    setTimeout(() => {
-      renderFullMedia(t);
-      vPhoto.classList.remove('swap');
-      // 确保切换后移除可能的 video-paused/video-playing 类，让 renderFullMedia 重新设置
-      if (t.type === 'video') {
-        const vid = vPhoto.querySelector('video');
-        if (vid) {
-          // 等待视频元数据加载完成后再更新播放状态
-          if (vid.readyState >= 1) {
-            updatePlayState();
-          } else {
-            vid.addEventListener('loadedmetadata', updatePlayState, { once: true });
-          }
+    // 先隐藏媒体容器，避免穿模闪烁
+    vPhoto.style.visibility = 'hidden';
+    
+    // 立即渲染新内容
+    renderFullMedia(t);
+    
+    // 强制重绘
+    vPhoto.offsetHeight;
+    
+    // 确保移除 swap 类和视频状态类，让新内容正确显示
+    vPhoto.classList.remove('swap');
+    if (t.type === 'video') {
+      const vid = vPhoto.querySelector('video');
+      if (vid) {
+        if (vid.readyState >= 1) {
+          updatePlayState();
+        } else {
+          vid.addEventListener('loadedmetadata', updatePlayState, { once: true });
         }
       }
-      // 强制重绘，消除加载容器穿模闪烁
-      vPhoto.offsetHeight;
-    }, 120);
+    }
+    
+    // 短暂延迟后显示，确保内容已准备好
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        vPhoto.style.visibility = 'visible';
+      });
+    });
     
     // 更新文本信息
     vLoc.textContent  = t.display;
