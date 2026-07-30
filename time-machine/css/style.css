@@ -290,8 +290,8 @@ body {
 }
 
 .grid-front h3{
-    font-family: 'ZCOOL XiaoWei', 'Ma Shan Zheng', 'Space Mono', 'Special Elite', Arial, sans-serif;
-    font-size: clamp(48px, 7vw, 96px);
+    font-family: 'Ma Shan Zheng', 'ZCOOL XiaoWei', 'Space Mono', 'Special Elite', Arial, sans-serif;
+    font-size: clamp(64px, 9vw, 128px);
     font-weight: 400;
     color: var(--text-white);
     letter-spacing: 8px;
