@@ -8,7 +8,13 @@
 /* =========================================================
    1. Google Fonts - 导入等宽字体、手写风格字体和中文毛笔字体
    ========================================================= */
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Special+Elite&family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap');
+
+/* 正風毛筆字體 - Bakudai-Regular */
+@font-face {
+  font-family: Bakudai-Regular;
+  src: url(https://cdn.jsdelivr.net/gh/max32002/bakudaifont@1.48/webfont/Bakudai-Regular.woff2) format("woff2");
+}
 
 /* =========================================================
    2. CSS 变量定义 - 统一配色与尺寸
@@ -290,8 +296,8 @@ body {
 }
 
 .grid-front h3{
-    font-family: 'Ma Shan Zheng', 'ZCOOL XiaoWei', 'Space Mono', 'Special Elite', Arial, sans-serif;
-    font-size: clamp(64px, 9vw, 128px);
+    font-family: 'Bakudai-Regular', 'Space Mono', 'Special Elite', Arial, sans-serif;
+    font-size: clamp(80px, 12vw, 160px);
     font-weight: 400;
     color: var(--text-white);
     letter-spacing: 8px;
