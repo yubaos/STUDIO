@@ -9,21 +9,21 @@
   'use strict';
 
   /* =====================================================================
-     【配置区】图片资源与数据配置
+     【配置区】图片资源与数据配置 - 汉字标题（毛笔字风格）
      ===================================================================== */
   const IMAGES = [
-    { id: 1, title: 'MEMORY 01', date: '2024.01.15', image: 'https://img.yubaos.com/Gallery/20161004kl.webp', note: '第一段珍贵回忆，定格在那个冬天。' },
-    { id: 2, title: 'MEMORY 02', date: '2024.02.20', image: 'https://img.yubaos.com/Gallery/20140410xm.webp', note: '春日暖阳下的美好时光。' },
-    { id: 3, title: 'MEMORY 03', date: '2024.03.10', image: 'https://img.yubaos.com/Gallery/zhujiang.webp', note: '珠江边的晚风，吹散了所有烦恼。' },
-    { id: 4, title: 'MEMORY 04', date: '2024.04.05', image: 'https://img.yubaos.com/Gallery/Phuket.webp', note: '普吉岛的碧海蓝天，令人心旷神怡。' },
-    { id: 5, title: 'MEMORY 05', date: '2024.05.18', image: 'https://img.yubaos.com/Gallery/hongkong.webp', note: '维多利亚港的夜景，璀璨夺目。' },
-    { id: 6, title: 'MEMORY 06', date: '2024.06.22', image: 'https://img.yubaos.com/Gallery/Bangkok.webp', note: '曼谷的街头，充满了异国情调。' },
-    { id: 7, title: 'MEMORY 07', date: '2024.07.30', image: 'https://img.yubaos.com/Gallery/beijing.webp', note: '北京的夏天，热烈而充满活力。' },
-    { id: 8, title: 'MEMORY 08', date: '2024.08.14', image: 'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/1bb3debd7-77a6-47e6-98e8-c9fb004c708c.png', note: '古城堡的黄昏，神秘而浪漫。' },
-    { id: 9, title: 'MEMORY 09', date: '2024.09.08', image: 'https://img.yubaos.com/Gallery/20161004kl.webp', note: '秋日私语，落叶纷飞的季节。' },
-    { id: 10, title: 'MEMORY 10', date: '2024.10.01', image: 'https://img.yubaos.com/Gallery/20140410xm.webp', note: '国庆假期的美好记忆。' },
-    { id: 11, title: 'MEMORY 11', date: '2024.11.11', image: 'https://img.yubaos.com/Gallery/zhujiang.webp', note: '双十一，不只是购物节。' },
-    { id: 12, title: 'MEMORY 12', date: '2024.12.25', image: 'https://img.yubaos.com/Gallery/Phuket.webp', note: '圣诞节的特别回忆。' }
+    { id: 1, title: '忆往昔', date: '2024.01.15', image: 'https://img.yubaos.com/Gallery/20161004kl.webp', note: '第一段珍贵回忆，定格在那个冬天。' },
+    { id: 2, title: '春日暖', date: '2024.02.20', image: 'https://img.yubaos.com/Gallery/20140410xm.webp', note: '春日暖阳下的美好时光。' },
+    { id: 3, title: '珠江风', date: '2024.03.10', image: 'https://img.yubaos.com/Gallery/zhujiang.webp', note: '珠江边的晚风，吹散了所有烦恼。' },
+    { id: 4, title: '普吉岛', date: '2024.04.05', image: 'https://img.yubaos.com/Gallery/Phuket.webp', note: '普吉岛的碧海蓝天，令人心旷神怡。' },
+    { id: 5, title: '维港夜', date: '2024.05.18', image: 'https://img.yubaos.com/Gallery/hongkong.webp', note: '维多利亚港的夜景，璀璨夺目。' },
+    { id: 6, title: '曼谷街', date: '2024.06.22', image: 'https://img.yubaos.com/Gallery/Bangkok.webp', note: '曼谷的街头，充满了异国情调。' },
+    { id: 7, title: '北京夏', date: '2024.07.30', image: 'https://img.yubaos.com/Gallery/beijing.webp', note: '北京的夏天，热烈而充满活力。' },
+    { id: 8, title: '古城堡', date: '2024.08.14', image: 'https://image.qwenlm.ai/public_source/ad1849f7-810e-4742-98d1-aa785709bea4/1bb3debd7-77a6-47e6-98e8-c9fb004c708c.png', note: '古城堡的黄昏，神秘而浪漫。' },
+    { id: 9, title: '秋日语', date: '2024.09.08', image: 'https://img.yubaos.com/Gallery/20161004kl.webp', note: '秋日私语，落叶纷飞的季节。' },
+    { id: 10, title: '国庆忆', date: '2024.10.01', image: 'https://img.yubaos.com/Gallery/20140410xm.webp', note: '国庆假期的美好记忆。' },
+    { id: 11, title: '双十一', date: '2024.11.11', image: 'https://img.yubaos.com/Gallery/zhujiang.webp', note: '双十一，不只是购物节。' },
+    { id: 12, title: '圣诞情', date: '2024.12.25', image: 'https://img.yubaos.com/Gallery/Phuket.webp', note: '圣诞节的特别回忆。' }
   ];
 
   /* =====================================================================
