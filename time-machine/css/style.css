@@ -228,7 +228,7 @@ body {
     position: relative;
     z-index: 10;
     width: calc(100vw - 260px - 7vw - 80px); /* 总宽度减去左侧 Logo(260px)、右侧菜单 (7vw) 和安全距离 (80px) */
-    margin-left: 160px; /* 从左侧 Logo 右边开始（原 260px，现左移 100px） */
+    margin-left: 110px; /* 从左侧 Logo 右边开始（原 260px，现左移 150px） */
     padding-top: 80px; /* 为导航栏留出空间 */
     min-height: 100vh;
 }
@@ -240,10 +240,10 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--gap);
-    width: calc(100% + 200px); /* 向四边延长，增加宽度 */
-    margin-left: -100px; /* 向左延伸 */
-    padding-bottom: 100px; /* 向下延长 */
-    padding-top: 100px; /* 向上延长 */
+    width: calc(100% + 250px); /* 向四边延长，增加宽度 */
+    margin-left: -125px; /* 向左延伸 */
+    padding-bottom: 150px; /* 向下延长 */
+    padding-top: 150px; /* 向上延长 */
 }
 
 /* =========================================================
