@@ -263,7 +263,7 @@ body {
    ========================================================= */
 .grid-item{
     position: relative;
-    aspect-ratio: 16/9;
+    min-height: 420px;
     background: var(--bg-darker);
     border: 1px solid var(--border-white);
     cursor: pointer;
@@ -437,12 +437,18 @@ body {
     .grid-container{
         grid-template-columns:repeat(3, 1fr);
     }
+    .grid-item{
+        min-height: 360px;
+    }
 }
 
 /* 手机：2 列宫格 */
 @media (max-width:768px){
     .grid-container{
         grid-template-columns:repeat(2, 1fr);
+    }
+    .grid-item{
+        min-height: 300px;
     }
     .stage{
         padding:84px 0 56px;
@@ -456,6 +462,9 @@ body {
 @media (max-width:480px){
     .grid-container{
         grid-template-columns:1fr;
+    }
+    .grid-item{
+        min-height: 280px;
     }
 }
 
