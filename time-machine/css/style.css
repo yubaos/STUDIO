@@ -253,7 +253,7 @@ body {
    ========================================================= */
 .grid-container{
     display:grid;
-    grid-template-columns:repeat(4, 1fr);
+    grid-template-columns:repeat(3, 1fr);
     gap: var(--gap);
     width: 100%;
 }
@@ -434,10 +434,10 @@ body {
     }
 }
 
-/* 平板：3 列宫格 */
+/* 平板：2 列宫格 */
 @media (max-width:1200px){
     .grid-container{
-        grid-template-columns:repeat(3, 1fr);
+        grid-template-columns:repeat(2, 1fr);
     }
 }
 
