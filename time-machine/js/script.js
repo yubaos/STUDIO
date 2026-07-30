@@ -1,7 +1,7 @@
 /**
  * =========================================================
  * TIME MACHINE - 时光机交互脚本
- * 宫格翻转放大 | 图片查看器 | 响应式布局
+ * 宫格翻转放大 | 图片查看器 | 无限滚动加载
  * =========================================================
  */
 
@@ -30,43 +30,94 @@
      获取 DOM 元素
      ===================================================================== */
   const gridContainer = document.getElementById('gridContainer');
-  const overlay = document.getElementById('overlay');
-  const vPhoto = document.getElementById('vPhoto');
-  const vTitle = document.getElementById('vTitle');
-  const vDate = document.getElementById('vDate');
-  const vNote = document.getElementById('vNote');
-  const vIdx = document.getElementById('vIdx');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxClose = document.getElementById('lightboxClose');
+  const lightboxPrev = document.getElementById('lightboxPrev');
+  const lightboxNext = document.getElementById('lightboxNext');
 
   let currentIndex = 0;
   let activeGridItem = null;
+  let isLoading = false;
+  let loadedCount = 0;
+  const INITIAL_COUNT = 12; // 初始加载数量
+  const LOAD_MORE_COUNT = 6; // 每次加载更多数量
 
   /* =====================================================================
-     构建宫格网格
+     创建单个宫格元素
+     ===================================================================== */
+  function createGridItem(item, index) {
+    const gridItem = document.createElement('div');
+    gridItem.className = 'grid-item';
+    gridItem.dataset.index = index;
+    
+    gridItem.innerHTML = `
+      <div class="grid-inner">
+        <div class="grid-front">
+          <h3>${item.title}</h3>
+        </div>
+        <div class="grid-back">
+          <img src="${item.image}" alt="${item.title}">
+        </div>
+      </div>
+    `;
+    
+    // 点击事件 - 翻转并放大
+    gridItem.addEventListener('click', () => handleGridClick(gridItem, index));
+    
+    return gridItem;
+  }
+
+  /* =====================================================================
+     构建宫格网格 - 初始加载
      ===================================================================== */
   function buildGrid() {
     gridContainer.innerHTML = '';
+    loadedCount = 0;
     
-    IMAGES.forEach((item, index) => {
-      const gridItem = document.createElement('div');
-      gridItem.className = 'grid-item';
-      gridItem.dataset.index = index;
-      
-      gridItem.innerHTML = `
-        <div class="grid-inner">
-          <div class="grid-front">
-            <h3>${item.title}</h3>
-          </div>
-          <div class="grid-back">
-            <img src="${item.image}" alt="${item.title}">
-          </div>
-        </div>
-      `;
-      
-      // 点击事件 - 翻转并放大
-      gridItem.addEventListener('click', () => handleGridClick(gridItem, index));
-      
+    // 初始加载指定数量的宫格
+    for (let i = 0; i < Math.min(INITIAL_COUNT, IMAGES.length); i++) {
+      const item = IMAGES[i % IMAGES.length];
+      const gridItem = createGridItem(item, i);
       gridContainer.appendChild(gridItem);
-    });
+      loadedCount++;
+    }
+  }
+
+  /* =====================================================================
+     加载更多宫格 - 无限滚动
+     ===================================================================== */
+  function loadMoreGrids() {
+    if (isLoading) return;
+    
+    isLoading = true;
+    
+    // 模拟加载延迟，提升用户体验
+    setTimeout(() => {
+      for (let i = 0; i < LOAD_MORE_COUNT; i++) {
+        const index = loadedCount + i;
+        const item = IMAGES[index % IMAGES.length]; // 循环使用图片
+        const gridItem = createGridItem(item, index);
+        gridContainer.appendChild(gridItem);
+      }
+      
+      loadedCount += LOAD_MORE_COUNT;
+      isLoading = false;
+    }, 300);
+  }
+
+  /* =====================================================================
+     滚动监听 - 无限滚动加载
+     ===================================================================== */
+  function handleScroll() {
+    const scrollTop = window.scrollY || window.pageYOffset;
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+    
+    // 当滚动到距离底部 500px 时加载更多
+    if (scrollTop + windowHeight >= documentHeight - 500) {
+      loadMoreGrids();
+    }
   }
 
   /* =====================================================================
@@ -82,52 +133,41 @@
     if (gridItem.classList.contains('active')) {
       // 已经是激活状态，点击则恢复并打开查看器
       gridItem.classList.remove('active');
-      setTimeout(() => openViewer(index), 400);
+      setTimeout(() => openLightbox(index), 400);
     } else {
       // 激活当前宫格（翻转）
       gridItem.classList.add('active');
       activeGridItem = gridItem;
       
       // 延迟打开查看器，等待翻转动画完成
-      setTimeout(() => openViewer(index), 600);
+      setTimeout(() => openLightbox(index), 600);
     }
   }
 
   /* =====================================================================
-     打开查看器
+     打开全屏查看器
      ===================================================================== */
-  function openViewer(index) {
+  function openLightbox(index) {
     currentIndex = index;
-    fillViewer(index);
-    overlay.classList.add('open');
+    updateLightboxImage();
+    lightbox.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
 
   /* =====================================================================
-     填充查看器内容
+     更新全屏查看器图片
      ===================================================================== */
-  function fillViewer(index) {
-    const item = IMAGES[index];
-    
-    // 淡出切换效果
-    vPhoto.classList.add('swap');
-    setTimeout(() => {
-      vPhoto.innerHTML = `<img src="${item.image}" alt="${item.title}">`;
-      vPhoto.classList.remove('swap');
-    }, 180);
-    
-    // 更新文本信息
-    vTitle.textContent = item.title;
-    vDate.textContent = item.date;
-    vNote.textContent = item.note;
-    vIdx.textContent = String(index + 1).padStart(2, '0') + ' / ' + String(IMAGES.length).padStart(2, '0');
+  function updateLightboxImage() {
+    const item = IMAGES[currentIndex % IMAGES.length];
+    lightboxImg.src = item.image;
+    lightboxImg.alt = item.title;
   }
 
   /* =====================================================================
-     关闭查看器
+     关闭全屏查看器
      ===================================================================== */
-  function closeViewer() {
-    overlay.classList.remove('open');
+  function closeLightbox() {
+    lightbox.classList.remove('open');
     
     // 恢复所有宫格
     if (activeGridItem) {
@@ -142,8 +182,12 @@
      切换查看器内容（上一张/下一张）
      ===================================================================== */
   function step(dir) {
-    currentIndex = (currentIndex + dir + IMAGES.length) % IMAGES.length;
-    fillViewer(currentIndex);
+    currentIndex = (currentIndex + dir);
+    if (dir > 0 && currentIndex >= loadedCount) {
+      // 如果是下一张且已到最后，加载更多
+      loadMoreGrids();
+    }
+    updateLightboxImage();
     
     // 同时更新宫格的激活状态
     if (activeGridItem) {
@@ -159,67 +203,46 @@
   /* =====================================================================
      绑定事件
      ===================================================================== */
-  // 查看器控制按钮
-  document.getElementById('vClose').addEventListener('click', closeViewer);
-  document.getElementById('vPrev').addEventListener('click', (e) => {
+  // 全屏查看器控制按钮
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightboxPrev.addEventListener('click', (e) => {
     e.stopPropagation();
     step(-1);
   });
-  document.getElementById('vNext').addEventListener('click', (e) => {
+  lightboxNext.addEventListener('click', (e) => {
     e.stopPropagation();
     step(1);
   });
   
   // 点击遮罩层关闭
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) closeViewer();
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
   });
 
+  // 滚动监听 - 无限加载
+  window.addEventListener('scroll', handleScroll);
+
   /* =====================================================================
-     移动端抽屉导航相关变量
+     菜单导航相关
      ===================================================================== */
   const menuBtn = document.getElementById('menuBtn');
-  const drawer = document.getElementById('navDrawer');
-  const drawerBackdrop = document.getElementById('drawerBackdrop');
+  const fullscreenMenu = document.getElementById('fullscreenMenu');
 
-  /* =====================================================================
-     抽屉导航控制函数
-     ===================================================================== */
-  function openDrawer() {
-    drawer.classList.add('open');
-    drawerBackdrop.classList.add('open');
-    menuBtn.classList.add('open');
-    menuBtn.setAttribute('aria-expanded', 'true');
-    drawer.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+  function toggleMenu() {
+    fullscreenMenu.classList.toggle('open');
+    menuBtn.classList.toggle('open');
+    document.body.style.overflow = fullscreenMenu.classList.contains('open') ? 'hidden' : '';
   }
 
-  function closeDrawer() {
-    drawer.classList.remove('open');
-    drawerBackdrop.classList.remove('open');
-    menuBtn.classList.remove('open');
-    menuBtn.setAttribute('aria-expanded', 'false');
-    drawer.setAttribute('aria-hidden', 'true');
-    if (!overlay.classList.contains('open')) {
+  menuBtn.addEventListener('click', toggleMenu);
+  
+  // 点击菜单项关闭菜单
+  fullscreenMenu.querySelectorAll('.menu-item').forEach(item => {
+    item.addEventListener('click', () => {
+      fullscreenMenu.classList.remove('open');
+      menuBtn.classList.remove('open');
       document.body.style.overflow = '';
-    }
-  }
-
-  function toggleDrawer() {
-    drawer.classList.contains('open') ? closeDrawer() : openDrawer();
-  }
-
-  // 绑定抽屉控制事件
-  menuBtn.addEventListener('click', toggleDrawer);
-  drawerBackdrop.addEventListener('click', closeDrawer);
-  drawer.querySelectorAll('.drawer-list a').forEach(a => {
-    a.addEventListener('click', closeDrawer);
-  });
-
-  // 监听屏幕尺寸变化，宽屏时自动关闭抽屉
-  const MQ_WIDE = window.matchMedia('(min-width: 1100px)');
-  (MQ_WIDE.addEventListener ? MQ_WIDE.addEventListener.bind(MQ_WIDE, 'change') : MQ_WIDE.addListener.bind(MQ_WIDE))((e) => {
-    if (e.matches) closeDrawer();
+    });
   });
 
   /* =====================================================================
@@ -227,37 +250,22 @@
      ===================================================================== */
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      if (overlay.classList.contains('open')) {
-        closeViewer();
-      } else if (drawer.classList.contains('open')) {
-        closeDrawer();
+      if (lightbox.classList.contains('open')) {
+        closeLightbox();
+      } else if (fullscreenMenu.classList.contains('open')) {
+        toggleMenu();
       }
       return;
     }
     
     // 查看器开启时才响应方向键
-    if (!overlay.classList.contains('open')) return;
+    if (!lightbox.classList.contains('open')) return;
     
     if (e.key === 'ArrowLeft') {
       step(-1);
     } else if (e.key === 'ArrowRight') {
       step(1);
     }
-  });
-
-  /* =====================================================================
-     主页链接保护
-     ===================================================================== */
-  function guardHome(e) {
-    if (location.protocol === 'file:') {
-      e.preventDefault();
-    }
-  }
-  
-  document.getElementById('logo').addEventListener('click', guardHome);
-  document.getElementById('drawerHome').addEventListener('click', (e) => {
-    guardHome(e);
-    closeDrawer();
   });
 
   /* =====================================================================
