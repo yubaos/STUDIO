@@ -39,6 +39,12 @@
   const vDate = document.getElementById('vDate');
   const vNote = document.getElementById('vNote');
   const vIdx = document.getElementById('vIdx');
+  
+  // 移动端菜单元素
+  const menuBtn = document.getElementById('menuBtn');
+  const navDrawer = document.getElementById('navDrawer');
+  const drawerBackdrop = document.getElementById('drawerBackdrop');
+  const drawerHome = document.getElementById('drawerHome');
 
   let currentIndex = 0;
   let activeGridItem = null;
@@ -255,4 +261,48 @@
      初始化
      ===================================================================== */
   buildGrid();
+  
+  /* =====================================================================
+     移动端菜单交互
+     ===================================================================== */
+  function openDrawer() {
+    if (menuBtn) menuBtn.classList.add('open');
+    if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true');
+    if (navDrawer) navDrawer.classList.add('open');
+    if (navDrawer) navDrawer.setAttribute('aria-hidden', 'false');
+    if (drawerBackdrop) drawerBackdrop.classList.add('open');
+  }
+  
+  function closeDrawer() {
+    if (menuBtn) menuBtn.classList.remove('open');
+    if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+    if (navDrawer) navDrawer.classList.remove('open');
+    if (navDrawer) navDrawer.setAttribute('aria-hidden', 'true');
+    if (drawerBackdrop) drawerBackdrop.classList.remove('open');
+  }
+  
+  if (menuBtn) {
+    menuBtn.addEventListener('click', () => {
+      const isOpen = menuBtn.classList.contains('open');
+      if (isOpen) {
+        closeDrawer();
+      } else {
+        openDrawer();
+      }
+    });
+  }
+  
+  if (drawerBackdrop) {
+    drawerBackdrop.addEventListener('click', closeDrawer);
+  }
+  
+  if (drawerHome) {
+    drawerHome.addEventListener('click', closeDrawer);
+  }
+  
+  // 点击抽屉内的链接也关闭抽屉
+  const drawerLinks = document.querySelectorAll('.drawer-list a');
+  drawerLinks.forEach(link => {
+    link.addEventListener('click', closeDrawer);
+  });
 })();
