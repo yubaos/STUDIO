@@ -222,11 +222,24 @@ body {
 }
 
 /* =========================================================
+   主舞台：时光机宫格容器
+   ========================================================= */
+.stage {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    padding-top: 100px; /* 为导航栏留出空间 */
+    padding-left: 260px; /* 避开左侧 Logo */
+    padding-right: 200px; /* 避开右侧菜单 */
+    min-height: 100vh;
+}
+
+/* =========================================================
    宫格网格容器 - 白色线条分割
    ========================================================= */
-.grid-container{
-    display:grid;
-    grid-template-columns:repeat(3, 1fr);
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: var(--gap);
     width: 100%;
     padding-bottom: 1px;
@@ -391,9 +404,9 @@ body {
     .nav-menu{display:none;}
     .logo{display:none;}
     .menu-btn{display:flex;}
-    .grid-container{
-        max-width:100%;
-        padding-left:28px; padding-right:28px;
+    .stage {
+        padding-left: 28px;
+        padding-right: 28px;
     }
 }
 
@@ -409,8 +422,9 @@ body {
     .grid-container{
         grid-template-columns:repeat(2, 1fr);
     }
-    .grid-container{
-        padding-left:18px; padding-right:18px;
+    .stage {
+        padding-left: 18px;
+        padding-right: 18px;
     }
 }
 
@@ -418,6 +432,10 @@ body {
 @media (max-width:480px){
     .grid-container{
         grid-template-columns:1fr;
+    }
+    .stage {
+        padding-left: 12px;
+        padding-right: 12px;
     }
 }
 
