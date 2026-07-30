@@ -227,8 +227,8 @@ body {
 .stage {
     position: relative;
     z-index: 10;
-    width: calc(100vw - 260px - 7vw - 130px); /* 总宽度减去左侧 Logo(260px)、右侧菜单 (7vw) 和安全距离 (130px) - 增加安全距离避免干涉 */
-    margin-left: 250px; /* 从左侧 Logo 右边开始，向左移动 10px */
+    width: calc(100vw - 260px - 7vw - 140px); /* 总宽度减去左侧 Logo(260px)、右侧菜单 (7vw) 和安全距离 (140px) - 增加安全距离避免干涉 */
+    margin-left: 240px; /* 从左侧 Logo 右边开始，向左移动 10px */
     padding-top: 80px; /* 为导航栏留出空间 */
     min-height: 100vh;
 }
