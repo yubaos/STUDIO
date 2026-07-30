@@ -222,14 +222,14 @@ body {
 }
 
 /* =========================================================
-   主舞台：时光机宫格容器
+   主舞台：时光机宫格容器 - 严格限制在 Logo 和菜单之间
    ========================================================= */
 .stage {
     position: relative;
     z-index: 10;
-    width: calc(100% - 260px - 200px); /* 总宽度减去左侧 Logo(260px) 和右侧菜单 (200px) 的占用空间 */
+    width: calc(100vw - 260px - 7vw - 80px); /* 总宽度减去左侧 Logo(260px)、右侧菜单 (7vw) 和安全距离 (80px) */
     margin-left: 260px; /* 从左侧 Logo 右边开始 */
-    padding-top: 100px; /* 为导航栏留出空间 */
+    padding-top: 80px; /* 为导航栏留出空间 */
     min-height: 100vh;
 }
 
@@ -270,9 +270,9 @@ body {
     transform-style: preserve-3d;
 }
 
-/* 宫格激活状态 - 翻转并放大 */
+/* 宫格激活状态 - 仅翻转，不放大 */
 .grid-item.active .grid-inner{
-    transform: scale(1.5) rotateY(180deg);
+    transform: rotateY(180deg);
     z-index: 100;
 }
 
@@ -404,7 +404,7 @@ body {
     .logo{display:none;}
     .menu-btn{display:flex;}
     .stage {
-        width: calc(100% - 56px); /* 左右各留 28px */
+        width: calc(100vw - 56px); /* 左右各留 28px */
         margin-left: 28px;
         padding-left: 0;
         padding-right: 0;
@@ -424,7 +424,7 @@ body {
         grid-template-columns:repeat(2, 1fr);
     }
     .stage {
-        width: calc(100% - 36px); /* 左右各留 18px */
+        width: calc(100vw - 36px); /* 左右各留 18px */
         margin-left: 18px;
         padding-left: 0;
         padding-right: 0;
@@ -437,7 +437,7 @@ body {
         grid-template-columns:1fr;
     }
     .stage {
-        width: calc(100% - 24px); /* 左右各留 12px */
+        width: calc(100vw - 24px); /* 左右各留 12px */
         margin-left: 12px;
         padding-left: 0;
         padding-right: 0;

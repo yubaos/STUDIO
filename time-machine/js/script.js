@@ -126,20 +126,21 @@
   }
 
   /* =====================================================================
-     处理宫格点击 - 翻转放大效果
+     处理宫格点击 - 仅翻转，不放大，再次点击恢复
      ===================================================================== */
   function handleGridClick(gridItem, index) {
-    if (activeGridItem && activeGridItem !== gridItem) {
-      activeGridItem.classList.remove('active');
-    }
-
+    // 如果点击的是已经激活的宫格，则关闭它（翻转回去）
     if (gridItem.classList.contains('active')) {
       gridItem.classList.remove('active');
-      setTimeout(() => openOverlay(index), 400);
+      activeGridItem = null;
     } else {
+      // 如果已有其他宫格激活，先关闭它
+      if (activeGridItem && activeGridItem !== gridItem) {
+        activeGridItem.classList.remove('active');
+      }
+      // 激活当前宫格
       gridItem.classList.add('active');
       activeGridItem = gridItem;
-      setTimeout(() => openOverlay(index), 600);
     }
   }
 
