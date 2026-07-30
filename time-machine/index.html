@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>FOOTPRINTS — 旅行票根档案</title>
+<title>TIME MACHINE — 时光机</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <!-- Google Fonts - Space Mono & Special Elite -->
 <link rel="stylesheet" href="css/style.css">
@@ -22,7 +22,7 @@
 
     <!-- =========================================================
          左上角 LOGO：返回主页按钮
-         注意：部署时请将 href="#" 改为真实主页地址
+         注意：部署时请将 href="#/" 改为真实主页地址
          移动端（≤1099px）会自动隐藏，由抽屉导航的 HOME 按钮替代
          ========================================================= -->
     <a href="/" class="logo" id="logo" title="返回主页 / HOME" aria-label="返回主页">
@@ -83,41 +83,32 @@
     </aside>
 
     <!-- =========================================================
-         主舞台：票根墙容器
-         标题 + 票根网格（自适应布局）
+         主舞台：时光机宫格容器
+         宫格网格（自适应布局，无限滚动加载）
          ========================================================= -->
     <main class="stage">
-        <header class="archive-head">
-            <div class="ah-title">
-                FOOTPRINTS
-                <small>旅行票根档案 · A TRAVEL ARCHIVE</small>
-            </div>
-        </header>
-        <!-- 票根墙网格容器：JS 将在此处动态渲染所有票根 -->
-        <section class="ticket-grid" id="ticketGrid" aria-label="票根墙"></section>
+        <!-- 时光机宫格容器 -->
+        <section class="grid-container" id="gridContainer" aria-label="时光机宫格"></section>
     </main>
 
     <!-- =========================================================
          放大查看器（Overlay）
-         点击票根后弹出的全屏查看界面，支持图片/视频播放
-         包含：上一张/下一张导航、关闭按钮、位置/日期/描述信息
+         点击宫格后弹出的全屏查看界面
          ========================================================= -->
-    <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="票根大图">
+    <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="大图查看">
         <button class="v-nav v-prev" id="vPrev" aria-label="上一张">&#8249;</button>
         <div class="viewer-wrap">
             <div class="viewer" id="viewer">
                 <button class="v-close" id="vClose" aria-label="关闭">&times;</button>
                 <div class="v-photo" id="vPhoto"></div>
                 <div class="v-info">
-                    <div class="v-loc" id="vLoc"></div>
+                    <div class="v-title" id="vTitle"></div>
                     <div class="v-date" id="vDate"></div>
                 </div>
                 <p class="v-note" id="vNote"></p>
                 <div class="v-perf"></div>
                 <div class="v-foot">
                     <span class="v-idx" id="vIdx"></span>
-                    <span class="v-media" id="vMedia" hidden></span>
-                    <span id="vCode"></span>
                 </div>
             </div>
         </div>
