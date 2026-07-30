@@ -230,7 +230,7 @@ body {
     width: 100%;
     padding-top: 100px; /* 为导航栏留出空间 */
     padding-left: 260px; /* 避开左侧 Logo */
-    padding-right: 200px; /* 避开右侧菜单 */
+    padding-right: calc(7vw + 40px); /* 避开右侧菜单 (7vw) + 额外安全距离 */
     min-height: 100vh;
 }
 
