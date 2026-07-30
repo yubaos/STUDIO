@@ -183,6 +183,47 @@
     return Math.abs(lat).toFixed(d) + '°' + ns + sep + Math.abs(lng).toFixed(d) + '°' + ew;
   }
 
+  /* =====================================================================
+     工具函数：生成 Cloudflare 缩略图 URL
+     说明：使用 Cloudflare Image Transformations 服务生成优化后的缩略图
+     参数:
+     - url: 原始图片 URL
+     - width: 目标宽度（默认 400px，适用于票根墙封面预览）
+     - quality: 图片质量（默认 75）
+     返回：Cloudflare 优化后的图片 URL
+     ===================================================================== */
+  function getThumbURL(url, width, quality) {
+    if (!url || typeof url !== 'string') return url;
+    
+    // 如果已经是 Cloudflare 优化的 URL，直接返回
+    if (url.includes('/cdn-cgi/image/')) return url;
+    
+    // 默认参数
+    width = width || 400;
+    quality = quality || 75;
+    
+    // 构建 Cloudflare Image Transformations URL
+    // 格式：https://example.com/cdn-cgi/image/width=400,quality=75/https://origin.com/image.jpg
+    try {
+      const urlObj = new URL(url);
+      const protocol = urlObj.protocol;
+      const host = urlObj.host;
+      const pathname = urlObj.pathname;
+      const search = urlObj.search || '';
+      
+      // 提取域名部分（去除 www. 等前缀）
+      const domain = protocol + '//' + host;
+      const imagePath = pathname + search;
+      
+      // 构建优化后的 URL
+      return `${domain}/cdn-cgi/image/width=${width},quality=${quality},format=auto${imagePath}`;
+    } catch (e) {
+      // 如果 URL 解析失败，返回原 URL
+      console.warn('无法解析图片 URL:', url, e);
+      return url;
+    }
+  }
+
   // SVG 播放图标（用于视频票根标识）
   const PLAY_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
 
@@ -195,14 +236,19 @@
   function mediaThumbHTML(t) {
     if (t.type === 'video' && t.poster) {
       // 视频票根：显示封面图 + 播放徽章（仅当有 poster 字段时才显示封面）
+      // 使用 Cloudflare 缩略图优化
+      const thumbSrc = getThumbURL(t.poster, 400, 75);
       return `<div class="t-photo">` +
-             `<img src="${t.poster}" alt="${t.display}" loading="lazy">` +
+             `<img src="${thumbSrc}" alt="${t.display}" loading="lazy">` +
              `<span class="play-badge" aria-hidden="true">${PLAY_SVG}</span>` +
              `</div>`;
     }
     // 图片票根或无封面的视频票根：仅显示图片
+    // 使用 Cloudflare 缩略图优化
+    const imgSrc = t.image || t.poster || '';
+    const thumbSrc = getThumbURL(imgSrc, 400, 75);
     return `<div class="t-photo">` +
-           `<img src="${t.image || t.poster || ''}" alt="${t.display}" loading="lazy">` +
+           `<img src="${thumbSrc}" alt="${t.display}" loading="lazy">` +
            `</div>`;
   }
 
@@ -345,8 +391,10 @@
     
     if (t.type === 'video' && t.video) {
       const playBtnSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+      // 视频海报使用 Cloudflare 缩略图优化（可选，如果希望海报也优化）
+      const posterSrc = t.poster ? getThumbURL(t.poster, 800, 85) : '';
       vPhoto.innerHTML = `
-        <video src="${t.video}" poster="${t.poster || ''}" playsinline webkit-playsinline preload="metadata"></video>
+        <video src="${t.video}" poster="${posterSrc}" playsinline webkit-playsinline preload="metadata"></video>
         <span class="play-center-btn" aria-hidden="true">${playBtnSvg}</span>
       `;
       
@@ -390,6 +438,7 @@
       document.addEventListener('mouseleave', handleMouseLeave);
       
     } else {
+      // 图片使用原图（查看器中显示高清图），不应用缩略图优化
       vPhoto.innerHTML = `<img src="${t.image}" alt="${t.display}">`;
     }
   }
