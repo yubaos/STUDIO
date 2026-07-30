@@ -227,7 +227,7 @@ body {
 .stage {
     position: relative;
     z-index: 10;
-    width: calc(100vw - 260px - 7vw - 80px); /* 总宽度减去左侧 Logo(260px)、右侧菜单 (7vw) 和安全距离 (80px) */
+    width: calc(100vw - 260px - 7vw - 120px); /* 总宽度减去左侧 Logo(260px)、右侧菜单 (7vw) 和安全距离 (120px) - 增加安全距离避免干涉 */
     margin-left: 260px; /* 从左侧 Logo 右边开始 */
     padding-top: 80px; /* 为导航栏留出空间 */
     min-height: 100vh;
@@ -317,9 +317,8 @@ body {
     display: block;
 }
 
-/* 宫格悬停效果 */
+/* 宫格悬停效果 - 仅保留轻微 z-index 提升，取消光效 */
 .grid-item:hover{
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
     z-index: 10;
 }
 
