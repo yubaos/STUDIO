@@ -8,7 +8,7 @@
 /* =========================================================
    1. Google Fonts - 导入等宽字体、手写风格字体和中文毛笔字体
    ========================================================= */
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Special+Elite&family=Ma+Shan+Zheng&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Special+Elite&family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap');
 
 /* =========================================================
    2. CSS 变量定义 - 统一配色与尺寸
@@ -290,11 +290,11 @@ body {
 }
 
 .grid-front h3{
-    font-family: 'Ma Shan Zheng', 'Space Mono', 'Special Elite', Arial, sans-serif;
-    font-size: clamp(32px, 5vw, 64px);
+    font-family: 'ZCOOL XiaoWei', 'Ma Shan Zheng', 'Space Mono', 'Special Elite', Arial, sans-serif;
+    font-size: clamp(48px, 7vw, 96px);
     font-weight: 400;
     color: var(--text-white);
-    letter-spacing: 16px;
+    letter-spacing: 8px;
     text-align: center;
 }
 
