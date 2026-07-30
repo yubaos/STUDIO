@@ -30,18 +30,22 @@
      获取 DOM 元素
      ===================================================================== */
   const gridContainer = document.getElementById('gridContainer');
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightboxImg');
-  const lightboxClose = document.getElementById('lightboxClose');
-  const lightboxPrev = document.getElementById('lightboxPrev');
-  const lightboxNext = document.getElementById('lightboxNext');
+  const overlay = document.getElementById('overlay');
+  const vPhoto = document.getElementById('vPhoto');
+  const vClose = document.getElementById('vClose');
+  const vPrev = document.getElementById('vPrev');
+  const vNext = document.getElementById('vNext');
+  const vTitle = document.getElementById('vTitle');
+  const vDate = document.getElementById('vDate');
+  const vNote = document.getElementById('vNote');
+  const vIdx = document.getElementById('vIdx');
 
   let currentIndex = 0;
   let activeGridItem = null;
   let isLoading = false;
   let loadedCount = 0;
-  const INITIAL_COUNT = 12; // 初始加载数量
-  const LOAD_MORE_COUNT = 6; // 每次加载更多数量
+  const INITIAL_COUNT = 12;
+  const LOAD_MORE_COUNT = 6;
 
   /* =====================================================================
      创建单个宫格元素
@@ -50,7 +54,7 @@
     const gridItem = document.createElement('div');
     gridItem.className = 'grid-item';
     gridItem.dataset.index = index;
-    
+
     gridItem.innerHTML = `
       <div class="grid-inner">
         <div class="grid-front">
@@ -61,10 +65,8 @@
         </div>
       </div>
     `;
-    
-    // 点击事件 - 翻转并放大
+
     gridItem.addEventListener('click', () => handleGridClick(gridItem, index));
-    
     return gridItem;
   }
 
@@ -74,8 +76,7 @@
   function buildGrid() {
     gridContainer.innerHTML = '';
     loadedCount = 0;
-    
-    // 初始加载指定数量的宫格
+
     for (let i = 0; i < Math.min(INITIAL_COUNT, IMAGES.length); i++) {
       const item = IMAGES[i % IMAGES.length];
       const gridItem = createGridItem(item, i);
@@ -89,18 +90,17 @@
      ===================================================================== */
   function loadMoreGrids() {
     if (isLoading) return;
-    
+
     isLoading = true;
-    
-    // 模拟加载延迟，提升用户体验
+
     setTimeout(() => {
       for (let i = 0; i < LOAD_MORE_COUNT; i++) {
         const index = loadedCount + i;
-        const item = IMAGES[index % IMAGES.length]; // 循环使用图片
+        const item = IMAGES[index % IMAGES.length];
         const gridItem = createGridItem(item, index);
         gridContainer.appendChild(gridItem);
       }
-      
+
       loadedCount += LOAD_MORE_COUNT;
       isLoading = false;
     }, 300);
@@ -113,8 +113,7 @@
     const scrollTop = window.scrollY || window.pageYOffset;
     const windowHeight = window.innerHeight;
     const documentHeight = document.documentElement.scrollHeight;
-    
-    // 当滚动到距离底部 500px 时加载更多
+
     if (scrollTop + windowHeight >= documentHeight - 500) {
       loadMoreGrids();
     }
@@ -124,57 +123,55 @@
      处理宫格点击 - 翻转放大效果
      ===================================================================== */
   function handleGridClick(gridItem, index) {
-    // 如果已经有激活的宫格，先恢复它
     if (activeGridItem && activeGridItem !== gridItem) {
       activeGridItem.classList.remove('active');
     }
-    
-    // 切换当前宫格的激活状态
+
     if (gridItem.classList.contains('active')) {
-      // 已经是激活状态，点击则恢复并打开查看器
       gridItem.classList.remove('active');
-      setTimeout(() => openLightbox(index), 400);
+      setTimeout(() => openOverlay(index), 400);
     } else {
-      // 激活当前宫格（翻转）
       gridItem.classList.add('active');
       activeGridItem = gridItem;
-      
-      // 延迟打开查看器，等待翻转动画完成
-      setTimeout(() => openLightbox(index), 600);
+      setTimeout(() => openOverlay(index), 600);
     }
   }
 
   /* =====================================================================
      打开全屏查看器
      ===================================================================== */
-  function openLightbox(index) {
+  function openOverlay(index) {
     currentIndex = index;
-    updateLightboxImage();
-    lightbox.classList.add('open');
+    updateOverlayContent();
+    overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
 
   /* =====================================================================
-     更新全屏查看器图片
+     更新全屏查看器内容
      ===================================================================== */
-  function updateLightboxImage() {
+  function updateOverlayContent() {
     const item = IMAGES[currentIndex % IMAGES.length];
-    lightboxImg.src = item.image;
-    lightboxImg.alt = item.title;
+    
+    vPhoto.innerHTML = `<img src="${item.image}" alt="${item.title}" style="width:100%;height:100%;object-fit:contain;">`;
+    
+    if (vTitle) vTitle.textContent = item.title;
+    if (vDate) vDate.textContent = item.date || '';
+    if (vNote) vNote.textContent = item.note || '';
+    if (vIdx) vIdx.textContent = `${currentIndex + 1} / ${loadedCount}`;
   }
 
   /* =====================================================================
      关闭全屏查看器
      ===================================================================== */
-  function closeLightbox() {
-    lightbox.classList.remove('open');
-    
-    // 恢复所有宫格
+  function closeOverlay() {
+    overlay.classList.remove('open');
+
     if (activeGridItem) {
       activeGridItem.classList.remove('active');
       activeGridItem = null;
     }
-    
+
     document.body.style.overflow = '';
   }
 
@@ -182,85 +179,71 @@
      切换查看器内容（上一张/下一张）
      ===================================================================== */
   function step(dir) {
-    currentIndex = (currentIndex + dir);
-    if (dir > 0 && currentIndex >= loadedCount) {
-      // 如果是下一张且已到最后，加载更多
+    const newIndex = currentIndex + dir;
+    
+    if (dir > 0 && newIndex >= loadedCount) {
       loadMoreGrids();
     }
-    updateLightboxImage();
     
-    // 同时更新宫格的激活状态
-    if (activeGridItem) {
-      activeGridItem.classList.remove('active');
-    }
-    const newActiveItem = gridContainer.children[currentIndex];
-    if (newActiveItem) {
-      newActiveItem.classList.add('active');
-      activeGridItem = newActiveItem;
+    if (newIndex >= 0 && newIndex < loadedCount) {
+      currentIndex = newIndex;
+      updateOverlayContent();
+
+      if (activeGridItem) {
+        activeGridItem.classList.remove('active');
+      }
+      const newActiveItem = gridContainer.children[currentIndex];
+      if (newActiveItem) {
+        newActiveItem.classList.add('active');
+        activeGridItem = newActiveItem;
+      }
     }
   }
 
   /* =====================================================================
      绑定事件
      ===================================================================== */
-  // 全屏查看器控制按钮
-  lightboxClose.addEventListener('click', closeLightbox);
-  lightboxPrev.addEventListener('click', (e) => {
+  if (vClose) vClose.addEventListener('click', closeOverlay);
+  
+  if (vPrev) vPrev.addEventListener('click', (e) => {
     e.stopPropagation();
     step(-1);
   });
-  lightboxNext.addEventListener('click', (e) => {
+  
+  if (vNext) vNext.addEventListener('click', (e) => {
     e.stopPropagation();
     step(1);
   });
-  
-  // 点击遮罩层关闭
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) closeLightbox();
-  });
 
-  // 滚动监听 - 无限加载
-  window.addEventListener('scroll', handleScroll);
-
-  /* =====================================================================
-     菜单导航相关
-     ===================================================================== */
-  const menuBtn = document.getElementById('menuBtn');
-  const fullscreenMenu = document.getElementById('fullscreenMenu');
-
-  function toggleMenu() {
-    fullscreenMenu.classList.toggle('open');
-    menuBtn.classList.toggle('open');
-    document.body.style.overflow = fullscreenMenu.classList.contains('open') ? 'hidden' : '';
+  if (overlay) {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay || e.target.classList.contains('viewer-wrap')) {
+        closeOverlay();
+      }
+    });
   }
 
-  menuBtn.addEventListener('click', toggleMenu);
-  
-  // 点击菜单项关闭菜单
-  fullscreenMenu.querySelectorAll('.menu-item').forEach(item => {
-    item.addEventListener('click', () => {
-      fullscreenMenu.classList.remove('open');
-      menuBtn.classList.remove('open');
-      document.body.style.overflow = '';
+  if (vPhoto) {
+    vPhoto.addEventListener('click', (e) => {
+      e.stopPropagation();
     });
-  });
+  }
+
+  window.addEventListener('scroll', handleScroll, { passive: true });
 
   /* =====================================================================
      键盘快捷键支持
      ===================================================================== */
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      if (lightbox.classList.contains('open')) {
-        closeLightbox();
-      } else if (fullscreenMenu.classList.contains('open')) {
-        toggleMenu();
+      if (overlay && overlay.classList.contains('open')) {
+        closeOverlay();
       }
       return;
     }
-    
-    // 查看器开启时才响应方向键
-    if (!lightbox.classList.contains('open')) return;
-    
+
+    if (!overlay || !overlay.classList.contains('open')) return;
+
     if (e.key === 'ArrowLeft') {
       step(-1);
     } else if (e.key === 'ArrowRight') {
