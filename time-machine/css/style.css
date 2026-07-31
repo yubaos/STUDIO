@@ -16,6 +16,15 @@
   src: url(https://cdn.jsdelivr.net/gh/max32002/bakudaifont@1.48/webfont/Bakudai-Regular.woff2) format("woff2");
 }
 
+/* Time Machine 宫格字体 */
+@font-face {
+  font-family: 'TimeMachineFont';
+  src: url('https://img.yubaos.com/fonts.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* =========================================================
    2. CSS 变量定义 - 统一配色与尺寸
    ========================================================= */
@@ -296,7 +305,7 @@ body {
 }
 
 .grid-front h3{
-    font-family: 'Bakudai-Regular', 'Space Mono', 'Special Elite', Arial, sans-serif;
+    font-family: 'TimeMachineFont', 'Bakudai-Regular', 'Space Mono', 'Special Elite', Arial, sans-serif;
     font-size: clamp(80px, 12vw, 160px);
     font-weight: 400;
     color: var(--text-white);
