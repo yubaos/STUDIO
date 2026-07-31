@@ -19,10 +19,11 @@
 /* Time Machine 宫格字体 */
 @font-face {
   font-family: 'TimeMachineFont';
-  src: url('https://img.yubaos.com/fonts.woff2') format('woff2');
+  src: url('https://fonts.yubaos.com/fonts.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
+  crossorigin: anonymous;
 }
 
 /* =========================================================
