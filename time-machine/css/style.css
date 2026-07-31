@@ -60,7 +60,28 @@ body {
     color: var(--text-white);
     min-height: 100vh;
     overflow-x: hidden;
+    overflow-y: scroll; /* 始终显示滚动条占位，避免滑动时出现/消失导致的闪烁 */
     position: relative;
+}
+
+/* =========================================================
+   自定义滚动条样式 - 消除浏览器默认滚动条闪烁问题
+   ========================================================= */
+::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: transparent;
 }
 
 /* =========================================================
