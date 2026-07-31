@@ -22,7 +22,7 @@
   src: url('https://fonts.yubaos.com/fonts.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
   crossorigin: anonymous;
 }
 
