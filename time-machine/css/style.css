@@ -333,14 +333,14 @@ body {
     display: block;
 }
 
-/* 宫格悬停效果 - 仅保留轻微 z-index 提升，取消光效 */
+/* 宫格悬停效果 - 移除所有交互动效 */
 .grid-item:hover{
-    z-index: 10;
+    z-index: inherit;
 }
 
 .grid-item:hover .grid-front h3{
-    letter-spacing: 12px;
-    transition: letter-spacing 0.3s ease;
+    letter-spacing: 8px;
+    transition: none;
 }
 
 /* =========================================================
