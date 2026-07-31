@@ -8,7 +8,13 @@
 /* =========================================================
    1. Google Fonts - 导入等宽字体、手写风格字体和中文毛笔字体
    ========================================================= */
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Special+Elite&family=Ma+Shan+Zheng&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap');
+
+/* 正風毛筆字體 - Bakudai-Regular */
+@font-face {
+  font-family: Bakudai-Regular;
+  src: url(https://cdn.jsdelivr.net/gh/max32002/bakudaifont@1.48/webfont/Bakudai-Regular.woff2) format("woff2");
+}
 
 /* =========================================================
    2. CSS 变量定义 - 统一配色与尺寸
@@ -227,8 +233,8 @@ body {
 .stage {
     position: relative;
     z-index: 10;
-    width: calc(100vw - 260px - 7vw - 80px); /* 总宽度减去左侧 Logo(260px)、右侧菜单 (7vw) 和安全距离 (80px) */
-    margin-left: 260px; /* 从左侧 Logo 右边开始 */
+    width: calc(100vw - 260px - 7vw - 140px); /* 总宽度减去左侧 Logo(260px)、右侧菜单 (7vw) 和安全距离 (140px) - 增加安全距离避免干涉 */
+    margin-left: 240px; /* 从左侧 Logo 右边开始，向左移动 10px */
     padding-top: 80px; /* 为导航栏留出空间 */
     min-height: 100vh;
 }
@@ -290,11 +296,11 @@ body {
 }
 
 .grid-front h3{
-    font-family: 'Ma Shan Zheng', 'Space Mono', 'Special Elite', Arial, sans-serif;
-    font-size: clamp(32px, 5vw, 64px);
+    font-family: 'Bakudai-Regular', 'Space Mono', 'Special Elite', Arial, sans-serif;
+    font-size: clamp(80px, 12vw, 160px);
     font-weight: 400;
     color: var(--text-white);
-    letter-spacing: 16px;
+    letter-spacing: 8px;
     text-align: center;
 }
 
@@ -317,9 +323,8 @@ body {
     display: block;
 }
 
-/* 宫格悬停效果 */
+/* 宫格悬停效果 - 仅保留轻微 z-index 提升，取消光效 */
 .grid-item:hover{
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
     z-index: 10;
 }
 
