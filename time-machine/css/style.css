@@ -27,7 +27,7 @@
 }
 
 /* =========================================================
-   2. CSS 变量定义 - 统一配色与尺寸
+   2. CSS 变量定义 - 统一配色与尺寸（与首页保持一致）
    ========================================================= */
 :root {
     /* 颜色变量 - 灰黑色主题 */
@@ -39,6 +39,10 @@
     
     /* 尺寸变量 */
     --gap: 0px;                   /* 宫格间距（无缝） */
+    
+    /* Transitions - 与首页保持一致 */
+    --transition-fast: 0.15s ease-out;
+    --transition-medium: 0.3s ease;
 }
 
 /* =========================================================
@@ -143,16 +147,16 @@ body {
 .logo:focus-visible{outline:none;}
 
 /* =========================================================
-   右侧导航菜单（白色版本）
+   右侧导航菜单（白色版本）- 与首页菜单位置统一
    ========================================================= */
 .nav-menu{
     position:fixed; right:7vw; top:50%; transform:translateY(-50%);
-    z-index:120; display:flex; flex-direction:column; gap:14px; text-align:right;
+    z-index:120; display:flex; flex-direction:column; gap:calc(8px * 1.75); text-align:right;
 }
 .nav-menu a{
     position:relative; text-decoration:none; color:var(--text-white);
     font-size:16px; font-weight:400; letter-spacing:0;
-    transition:opacity 0.3s ease;
+    transition:opacity var(--transition-medium);
 }
 .nav-menu a:hover{opacity:0.6;}
 
