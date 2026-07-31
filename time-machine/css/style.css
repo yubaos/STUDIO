@@ -16,6 +16,16 @@
   src: url(https://cdn.jsdelivr.net/gh/max32002/bakudaifont@1.48/webfont/Bakudai-Regular.woff2) format("woff2");
 }
 
+/* Time Machine 宫格字体 */
+@font-face {
+  font-family: 'TimeMachineFont';
+  src: url('https://fonts.yubaos.com/fonts.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+  crossorigin: anonymous;
+}
+
 /* =========================================================
    2. CSS 变量定义 - 统一配色与尺寸
    ========================================================= */
@@ -296,7 +306,7 @@ body {
 }
 
 .grid-front h3{
-    font-family: 'Bakudai-Regular', 'Space Mono', 'Special Elite', Arial, sans-serif;
+    font-family: 'TimeMachineFont', 'Bakudai-Regular', 'Space Mono', 'Special Elite', Arial, sans-serif;
     font-size: clamp(80px, 12vw, 160px);
     font-weight: 400;
     color: var(--text-white);
@@ -323,14 +333,14 @@ body {
     display: block;
 }
 
-/* 宫格悬停效果 - 仅保留轻微 z-index 提升，取消光效 */
+/* 宫格悬停效果 - 移除所有交互动效 */
 .grid-item:hover{
-    z-index: 10;
+    z-index: inherit;
 }
 
 .grid-item:hover .grid-front h3{
-    letter-spacing: 12px;
-    transition: letter-spacing 0.3s ease;
+    letter-spacing: 8px;
+    transition: none;
 }
 
 /* =========================================================
