@@ -438,7 +438,7 @@ body {
 .leaflet-pane > svg path.leaflet-interactive:focus { outline: none; }
 
 /* ---- 缩放控件（紧凑版 26px，纸面主题） ---- */
-.leaflet-bar { border: none; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(9,25,38,.26); }
+.leaflet-bar { border: none; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(9,25,38,.26); display: none !important; }
 .leaflet-control-zoom a {
   width: 26px; height: 26px; line-height: 26px;
   background: var(--paper); color: var(--ink-3);
@@ -733,7 +733,7 @@ body {
   .map-wrap { position: fixed; inset: 0; z-index: 0; }
 
   .sidebar {
-    position: fixed; left: 0; right: 0; bottom: 18vh; z-index: 1200;
+    position: fixed; left: 0; right: 0; bottom: 25vh; z-index: 1200;
     max-height: 46dvh;
     border-radius: 18px 18px 0 0;
     box-shadow: 0 -14px 40px rgba(4,14,24,.45);
@@ -742,8 +742,8 @@ body {
   .sidebar.expanded { max-height: 82dvh; }
   .sidebar::before { display: none; }
   
-  /* 弹窗打开时隐藏侧边栏头部（head-top） */
-  body.modal-open .side-head { display: none; }
+  /* 弹窗打开时隐藏侧边栏头部（head-top）仅在非展开状态下 */
+  body.modal-open:not(.sidebar-expanded) .side-head { display: none; }
 
   .sheet-handle {
     display: block; flex: none;
@@ -1303,7 +1303,7 @@ body {
     const map = L.map('map', {
       zoomControl: false, minZoom: 3, maxZoom: 17,
       worldCopyJump: true, attributionControl: true,
-      fadeAnimation: false, markerZoomAnimation: false,
+      fadeAnimation: true, markerZoomAnimation: true,
       scrollWheelZoom: true, touchZoom: true
     });
     /* 飞行缩放期间复用当前瓦片，等视图稳定后再更新，防止中间层频繁淡入淡出。 */
@@ -1312,11 +1312,11 @@ body {
       updateWhenZooming: false, updateWhenIdle: true, keepBuffer: 4
     }).addTo(map);
     /* 移除 +/- 缩放按钮：电脑使用鼠标滚轮，手机使用触控缩放 */
-    map.on('movestart', () => {
+    map.on('movestart zoomstart', () => {
       state.isMapMoving = true;
       map.getContainer().classList.add('is-moving');
     });
-    map.on('moveend', () => {
+    map.on('moveend zoomend', () => {
       state.isMapMoving = false;
       map.getContainer().classList.remove('is-moving');
     });
@@ -1835,6 +1835,8 @@ body {
         const sb = $('#sidebar');
         sb.classList.toggle('expanded');
         handle.setAttribute('aria-expanded', String(sb.classList.contains('expanded')));
+        // 同步到 body 用于控制 modal 状态下 head-top 的显示
+        document.body.classList.toggle('sidebar-expanded', sb.classList.contains('expanded'));
       });
     }
   }
