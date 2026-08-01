@@ -1297,20 +1297,34 @@ body {
   }
 
   function loadRegionsAsync(defs) {
+    const retrySet = new Set();
     Promise.allSettled(defs.map(async (def) => {
       const rec = state.regions.get(def.id);
       if (!rec) return;
-      const gj = await fetchRegionGeoJSON(def);
-      rec.layer = createRegionLayer(def, gj);
-      /* 边界到达时若该区域恰为选中态，补齐行军蚁样式。 */
-      if (state.activeRegion === def.id) {
-        setRegionStyle(def.id, ACTIVE_STYLE);
-        setRegionActiveClass(def.id, true);
+      try {
+        const gj = await fetchRegionGeoJSON(def);
+        rec.layer = createRegionLayer(def, gj);
+        /* 边界到达时若该区域恰为选中态，补齐行军蚁样式。 */
+        if (state.activeRegion === def.id) {
+          setRegionStyle(def.id, ACTIVE_STYLE);
+          setRegionActiveClass(def.id, true);
+        }
+      } catch (err) {
+        console.warn(`[footprint] 区域 ${def.name} 边界加载失败:`, err);
+        retrySet.add(def);
+        // 第一次失败后尝试重试一次
+        try {
+          const gj = await fetchRegionGeoJSON(def);
+          rec.layer = createRegionLayer(def, gj);
+          retrySet.delete(def);
+        } catch (retryErr) {
+          console.warn(`[footprint] 区域 ${def.name} 重试仍失败`);
+        }
       }
-    })).then((results) => {
-      const failed = results.filter((r) => r.status === 'rejected').length;
+    })).then(() => {
+      const failed = retrySet.size;
       if (failed > 0) {
-        console.warn('[footprint] 部分区域边界加载失败');
+        console.warn('[footprint] 部分区域边界最终加载失败');
         toast(`${failed} 个区域边界加载失败，点击 chips 仍可定位`);
       }
     });
@@ -1394,7 +1408,11 @@ body {
     markCurrent(id);
     const target = L.latLng(spot.lat, spot.lng);
     const targetZoom = spot.zoom || 9;
-    if (state._openAfterMove) state.map.off('moveend', state._openAfterMove);
+    // 清理之前的 moveend 监听器，避免重复触发
+    if (state._openAfterMove) {
+      state.map.off('moveend', state._openAfterMove);
+      state._openAfterMove = null;
+    }
     state._openAfterMove = () => {
       state._openAfterMove = null;
       openInstax(idx);
@@ -1557,50 +1575,72 @@ body {
   }
 
   /* ---------------- 10. Instax Wide 弹窗（大画幅 · 无可见控件） ---------------- */
-  function openInstax(idx) {
+  function openInstax(idx, isNav = false) {
     state.modalIndex = (idx + state.spots.length) % state.spots.length;
     const spot = state.spots[state.modalIndex];
     const overlay = $('#instaxOverlay');
     const media = $('#instaxMedia');
 
-    stopCurrentMedia();
-    media.classList.remove('is-video');
+    // 导航切换时保留视频状态，仅更新内容；首次打开则完全重置
+    if (!isNav) {
+      stopCurrentMedia();
+      media.classList.remove('is-video');
+      media.innerHTML = '';
+    }
 
     const tilt = ((state.modalIndex % 5) - 2) * 1.4;
     $('#instaxCard').style.setProperty('--tilt', tilt.toFixed(1) + 'deg');
 
-    media.innerHTML = '';
+    // 如果是导航且已有媒体元素，只需更新 src，避免重建导致状态丢失
     let node;
     if (spot.media === 'video') {
-      node = document.createElement('video');
-      node.className = 'instax-asset developing';
-      node.loop = true; node.muted = true;
-      node.setAttribute('playsinline', '');
-      node.setAttribute('preload', 'metadata');
-      node.setAttribute('controlslist', 'nodownload');
-      node.setAttribute('disablepictureinpicture', '');
-      if (spot.poster) node.poster = previewImageUrl(spot.poster, IMAGE_VARIANT.modal);
-      node.addEventListener('loadeddata', () => node.classList.remove('developing'), { once: true });
-      node.addEventListener('error', () => mediaFailed(media), { once: true });
-      node.src = spot.src;
+      if (isNav && media.querySelector('video')) {
+        node = media.querySelector('video');
+        node.pause();
+        node.src = spot.src;
+        if (spot.poster) node.poster = previewImageUrl(spot.poster, IMAGE_VARIANT.modal);
+        node.load();
+        node.play().catch(() => {});
+      } else {
+        media.classList.remove('is-video');
+        media.innerHTML = '';
+        node = document.createElement('video');
+        node.className = 'instax-asset developing';
+        node.loop = true; node.muted = true;
+        node.setAttribute('playsinline', '');
+        node.setAttribute('preload', 'metadata');
+        node.setAttribute('controlslist', 'nodownload');
+        node.setAttribute('disablepictureinpicture', '');
+        if (spot.poster) node.poster = previewImageUrl(spot.poster, IMAGE_VARIANT.modal);
+        node.addEventListener('loadeddata', () => node.classList.remove('developing'), { once: true });
+        node.addEventListener('error', () => mediaFailed(media), { once: true });
+        node.src = spot.src;
 
-      const vstate = el('span', 'instax-vstate is-paused', '▶');
-      media.appendChild(node);
-      media.appendChild(vstate);
-      media.classList.add('is-video');
-      node.addEventListener('play',  () => vstate.classList.remove('is-paused'));
-      node.addEventListener('pause', () => { vstate.textContent = '▶'; vstate.classList.add('is-paused'); });
+        const vstate = el('span', 'instax-vstate is-paused', '▶');
+        media.appendChild(node);
+        media.appendChild(vstate);
+        media.classList.add('is-video');
+        node.addEventListener('play',  () => vstate.classList.remove('is-paused'));
+        node.addEventListener('pause', () => { vstate.textContent = '▶'; vstate.classList.add('is-paused'); });
 
-      node.play().catch(() => {});
+        node.play().catch(() => {});
+      }
     } else {
-      node = new Image();
-      node.className = 'instax-asset developing';
-      node.alt = spot.name;
-      node.draggable = false;
-      node.addEventListener('load', () => node.classList.remove('developing'), { once: true });
-      node.addEventListener('error', () => mediaFailed(media), { once: true });
-      node.src = previewImageUrl(spot.src, IMAGE_VARIANT.modal);
-      media.appendChild(node);
+      if (isNav && media.querySelector('img')) {
+        node = media.querySelector('img');
+        node.src = previewImageUrl(spot.src, IMAGE_VARIANT.modal);
+      } else {
+        media.classList.remove('is-video');
+        media.innerHTML = '';
+        node = new Image();
+        node.className = 'instax-asset developing';
+        node.alt = spot.name;
+        node.draggable = false;
+        node.addEventListener('load', () => node.classList.remove('developing'), { once: true });
+        node.addEventListener('error', () => mediaFailed(media), { once: true });
+        node.src = previewImageUrl(spot.src, IMAGE_VARIANT.modal);
+        media.appendChild(node);
+      }
     }
 
     $('#instaxName').textContent = spot.name;
@@ -1640,11 +1680,14 @@ body {
 
   function navInstax(dir) {
     if (state.modalIndex < 0) return;
+    const prevIdx = state.modalIndex;
     const next = (state.modalIndex + dir + state.spots.length) % state.spots.length;
+    if (next === prevIdx) return;
+    
     const spot = state.spots[next];
     state.map.flyTo([spot.lat, spot.lng], spot.zoom || 9, { duration: .8 });
     markCurrent(spot.id);
-    openInstax(next);
+    openInstax(next, true);
   }
 
   function onMediaClick() {

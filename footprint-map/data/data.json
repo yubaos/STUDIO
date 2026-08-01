@@ -1,0 +1,188 @@
+{
+  "meta": {
+    "title": "行迹山海",
+    "subtitle": "FOOTPRINT ATLAS",
+    "span": "2014 — 2019",
+    "updatedAt": "2026-08-01"
+  },
+  "regions": [
+    {
+      "id": "fujian",
+      "name": "福建",
+      "en": "FUJIAN",
+      "scope": "中国 · 省",
+      "color": "#3a8fb7",
+      "geo": { "type": "datav", "adcode": "350000" },
+      "fallbackView": { "center": [26.10, 117.90], "zoom": 6 }
+    },
+    {
+      "id": "guangdong",
+      "name": "广东",
+      "en": "GUANGDONG",
+      "scope": "中国 · 省",
+      "color": "#e09f3e",
+      "geo": { "type": "datav", "adcode": "440000" },
+      "fallbackView": { "center": [23.40, 113.40], "zoom": 6 }
+    },
+    {
+      "id": "beijing",
+      "name": "北京",
+      "en": "BEIJING",
+      "scope": "中国 · 直辖市",
+      "color": "#c94f4f",
+      "geo": { "type": "datav", "adcode": "110000" },
+      "fallbackView": { "center": [40.00, 116.40], "zoom": 7 }
+    },
+    {
+      "id": "hongkong",
+      "name": "香港",
+      "en": "HONG KONG",
+      "scope": "中国 · 特别行政区",
+      "color": "#7d6597",
+      "geo": { "type": "world", "id": "344" },
+      "fallbackView": { "center": [22.32, 114.17], "zoom": 9 }
+    },
+    {
+      "id": "thailand",
+      "name": "泰国",
+      "en": "THAILAND",
+      "scope": "东南亚 · 国家",
+      "color": "#6f8f3c",
+      "geo": { "type": "world", "id": "764" },
+      "fallbackView": { "center": [15.50, 101.00], "zoom": 5 }
+    },
+    {
+      "id": "malaysia",
+      "name": "马来西亚",
+      "en": "MALAYSIA",
+      "scope": "东南亚 · 国家",
+      "color": "#2fa08c",
+      "geo": { "type": "world", "id": "458" },
+      "fallbackView": { "center": [4.00, 109.00], "zoom": 5 }
+    }
+  ],
+  "spots": [
+    {
+      "id": "xiamen-2014",
+      "region": "fujian",
+      "country": "中国",
+      "name": "鼓浪屿",
+      "place": "厦门 · 中国",
+      "en": "XIAMEN, FUJIAN",
+      "date": "2014.04.10",
+      "lat": 24.4450,
+      "lng": 118.0743,
+      "zoom": 11,
+      "media": "photo",
+      "src": "https://img.yubaos.com/Gallery/20140410xm.webp",
+      "note": "鼓浪屿碧海青松，英雄永驻。"
+    },
+    {
+      "id": "kl-2016",
+      "region": "malaysia",
+      "country": "马来西亚",
+      "name": "吉隆坡",
+      "place": "吉隆坡 · 马来西亚",
+      "en": "KUALA LUMPUR, MALAYSIA",
+      "date": "2016.10.03",
+      "lat": 3.1589,
+      "lng": 101.7108,
+      "zoom": 10,
+      "media": "photo",
+      "src": "https://img.yubaos.com/Gallery/20161004kl.webp",
+      "note": "拥抱双子塔的宏伟，定格异国旅途的偏爱。"
+    },
+    {
+      "id": "langkawi-2016",
+      "region": "malaysia",
+      "country": "马来西亚",
+      "name": "兰卡威",
+      "place": "兰卡威 · 马来西亚",
+      "en": "LANGKAWI, MALAYSIA",
+      "date": "2016.10.05",
+      "lat": 6.2620,
+      "lng": 99.7362,
+      "zoom": 10,
+      "media": "video",
+      "src": "https://img.yubaos.com/video/Langkawi.mp4",
+      "poster": "https://img.yubaos.com/video/Langkawi.webp",
+      "note": "碧海远山，云卷云舒，藏在兰卡威的夏天。"
+    },
+    {
+      "id": "phuket-2016",
+      "region": "thailand",
+      "country": "泰国",
+      "name": "普吉岛",
+      "place": "普吉 · 泰国",
+      "en": "PHUKET, THAILAND",
+      "date": "2016.10.08",
+      "lat": 7.8632,
+      "lng": 98.3995,
+      "zoom": 10,
+      "media": "photo",
+      "src": "https://img.yubaos.com/Gallery/Phuket.webp",
+      "note": "普吉岛九皇斋节，信徒穿刺显虔诚。"
+    },
+    {
+      "id": "bangkok-2016",
+      "region": "thailand",
+      "country": "泰国",
+      "name": "曼谷",
+      "place": "曼谷 · 泰国",
+      "en": "BANGKOK, THAILAND",
+      "date": "2016.10.11",
+      "lat": 13.7501,
+      "lng": 100.4920,
+      "zoom": 10,
+      "media": "photo",
+      "src": "https://img.yubaos.com/Gallery/Bangkok.webp",
+      "note": "金顶巍峨，皇家风范，游客如织。"
+    },
+    {
+      "id": "guangzhou-2017",
+      "region": "guangdong",
+      "country": "中国",
+      "name": "广州",
+      "place": "广州 · 中国",
+      "en": "GUANGZHOU, CHINA",
+      "date": "2017.10.19",
+      "lat": 23.1291,
+      "lng": 113.2644,
+      "zoom": 10,
+      "media": "photo",
+      "src": "https://img.yubaos.com/Gallery/zhujiang.webp",
+      "note": "碧水蓝天映衬，珠江两岸摩天大楼林立，繁华都市气象万千。",
+      "coordNote": "原始记录坐标有误，已修正为广州市区坐标"
+    },
+    {
+      "id": "hongkong-2018",
+      "region": "hongkong",
+      "country": "中国",
+      "name": "香港",
+      "place": "香港 · 中国",
+      "en": "HONG KONG, CHINA",
+      "date": "2018.09.05",
+      "lat": 22.2930,
+      "lng": 114.1706,
+      "zoom": 11,
+      "media": "photo",
+      "src": "https://img.yubaos.com/Gallery/hongkong.webp",
+      "note": "维港波光粼粼，摩天大楼依山而建，尽显东方之珠的繁华。"
+    },
+    {
+      "id": "beijing-2019",
+      "region": "beijing",
+      "country": "中国",
+      "name": "北京",
+      "place": "北京 · 中国",
+      "en": "BEIJING, CHINA",
+      "date": "2019.07.03",
+      "lat": 39.9063,
+      "lng": 116.3912,
+      "zoom": 9,
+      "media": "photo",
+      "src": "https://img.yubaos.com/Gallery/beijing.webp",
+      "note": "雄伟天安门前留影，定格首都日光下的庄严与青春。"
+    }
+  ]
+}
