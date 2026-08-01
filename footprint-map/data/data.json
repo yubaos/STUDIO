@@ -1,0 +1,53 @@
+{
+  "regions": [
+    {
+      "id": "region_1",
+      "name": "浙江省",
+      "type": "province",
+      "geojson": {
+        "type": "Polygon",
+        "coordinates": [[
+          [118.0, 31.0],
+          [123.0, 31.0],
+          [123.0, 27.0],
+          [118.0, 27.0],
+          [118.0, 31.0]
+        ]]
+      },
+      "visitDate": "2023-05-15",
+      "note": "游览了杭州西湖、乌镇水乡"
+    }
+  ],
+  "markers": [
+    {
+      "id": "marker_1",
+      "name": "西湖",
+      "location": "杭州市，浙江省",
+      "lat": 30.2441,
+      "lng": 120.1488,
+      "date": "2023-05-16",
+      "photo": "https://images.unsplash.com/photo-1548685913-fe6678babe8d?w=800&h=600&fit=crop",
+      "description": "西湖美景，三月天。湖水清澈，柳岸闻莺，让人流连忘返。"
+    },
+    {
+      "id": "marker_2",
+      "name": "外滩",
+      "location": "上海市",
+      "lat": 31.2397,
+      "lng": 121.4995,
+      "date": "2023-06-20",
+      "photo": "https://images.unsplash.com/photo-1548266652-99cf277df72e?w=800&h=600&fit=crop",
+      "description": "上海外滩夜景迷人，万国建筑群见证了这座城市的百年沧桑。"
+    },
+    {
+      "id": "marker_3",
+      "name": "故宫",
+      "location": "北京市",
+      "lat": 39.9163,
+      "lng": 116.3972,
+      "date": "2023-08-10",
+      "photo": "https://images.unsplash.com/photo-1599661448669-3e03c307746d?w=800&h=600&fit=crop",
+      "description": "紫禁城宏伟壮观，红墙黄瓦尽显皇家气派。"
+    }
+  ]
+}
