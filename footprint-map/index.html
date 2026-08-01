@@ -821,11 +821,10 @@ body {
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-sc/index.css" media="print" onload="this.media='all'">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono/index.css" media="print" onload="this.media='all'">
 
-  <!-- ★ Leaflet 完整样式：同样异步加载（关键结构样式已内置于 style.css，加载失败也不影响地图可用） -->
+  <!-- ★ Leaflet 完整样式：同样异步加载（关键结构样式已内置于内联 style，加载失败也不影响地图可用） -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" media="print" onload="this.media='all'">
 
-  <!-- 本地样式：唯一阻塞渲染的样式表，保证加载层与页面骨架瞬间可见 -->
-  <link rel="stylesheet" href="css/style.css">
+  <!-- 本地样式已内联到 <style> 标签中，无需单独加载 css/style.css -->
 </head>
 <body>
 
