@@ -1234,7 +1234,20 @@ body {
 
   async function fetchRegionGeoJSON(def) {
     if (def.geo && def.geo.type === 'datav') {
-      const res = await fetchWithTimeout(DATAV_URL(def.geo.adcode), 9000);
+      const adcode = def.geo.adcode;
+      // 优先尝试从本地 data 目录加载
+      try {
+        const localUrl = `data/${adcode}.json`;
+        const res = await fetchWithTimeout(localUrl, 3000);
+        if (res.ok) {
+          console.log(`[footprint] 区域 ${def.name} 从本地加载：${localUrl}`);
+          return correctGeoJSON(await res.json());
+        }
+      } catch (localErr) {
+        console.log(`[footprint] 区域 ${def.name} 本地文件不存在，回退到远程 CDN`);
+      }
+      // 本地失败则从远程 CDN 加载
+      const res = await fetchWithTimeout(DATAV_URL(adcode), 9000);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       return correctGeoJSON(await res.json());          /* GCJ-02 → WGS-84 */
     }
