@@ -69,7 +69,7 @@
   }
 
   /**
-   * Initialize mobile drawer navigation (matching footprints page)
+   * Initialize mobile drawer navigation (matching ticket-stub page)
    */
   function initMobileNav() {
     const menuBtn = document.getElementById('menuBtn');
