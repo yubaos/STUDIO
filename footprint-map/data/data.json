@@ -1,0 +1,71 @@
+{
+  "regions": [
+    {
+      "id": "region_1",
+      "name": "California, USA",
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-124.482003, 42.009518],
+          [-124.211006, 41.184863],
+          [-120.001861, 39.002097],
+          [-114.634459, 34.877197],
+          [-114.634459, 32.541111],
+          [-117.127887, 32.536819],
+          [-118.519897, 33.507328],
+          [-120.638733, 34.563819],
+          [-120.644861, 35.136819],
+          [-121.896772, 36.315125],
+          [-121.935678, 36.638099],
+          [-121.858678, 36.869099],
+          [-122.105678, 37.484099],
+          [-122.406678, 37.804099],
+          [-122.515678, 38.111099],
+          [-123.001678, 38.951099],
+          [-123.722678, 39.833099],
+          [-124.398678, 40.313099],
+          [-124.482003, 42.009518]
+        ]]
+      },
+      "style": {
+        "color": "#3498db",
+        "fillColor": "#3498db",
+        "fillOpacity": 0.4,
+        "weight": 2
+      }
+    }
+  ],
+  "markers": [
+    {
+      "id": "marker_1",
+      "name": "Golden Gate Bridge",
+      "location": "San Francisco, California",
+      "date": "2024-03-15",
+      "lat": 37.8199,
+      "lng": -122.4783,
+      "photo": "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=800&q=80",
+      "description": "The iconic Golden Gate Bridge standing majestically against the foggy San Francisco Bay. The orange-red towers seem to touch the clouds, and walking across this engineering marvel was an unforgettable experience."
+    },
+    {
+      "id": "marker_2",
+      "name": "Yosemite National Park",
+      "location": "California, USA",
+      "date": "2024-03-18",
+      "lat": 37.8651,
+      "lng": -119.5383,
+      "photo": "https://images.unsplash.com/photo-1533038590840-1cde6e668a91?w=800&q=80",
+      "description": "Breathtaking views of El Capitan and Half Dome. The valley floor was covered with wildflowers, and the waterfalls were at their peak flow. Nature's grandeur at its finest."
+    },
+    {
+      "id": "marker_3",
+      "name": "Santa Monica Pier",
+      "location": "Los Angeles, California",
+      "date": "2024-03-22",
+      "lat": 34.0094,
+      "lng": -118.4973,
+      "photo": "https://images.unsplash.com/photo-1580674285054-bed31e145f59?w=800&q=80",
+      "description": "Classic California beach vibes at the historic Santa Monica Pier. The Ferris wheel silhouetted against the sunset, street performers, and the sound of waves created perfect memories."
+    }
+  ]
+}
