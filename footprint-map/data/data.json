@@ -1,0 +1,47 @@
+{
+  "regions": [
+    {
+      "id": "guangdong",
+      "name": "广东省",
+      "geoJsonUrl": "https://raw.githubusercontent.com/aliyun/china-geojson/main/geojson/440000.json",
+      "style": {
+        "color": "#3b82f6",
+        "fillColor": "#3b82f6",
+        "fillOpacity": 0.3,
+        "weight": 2
+      }
+    }
+  ],
+  "markers": [
+    {
+      "id": 1,
+      "name": "鼓浪屿",
+      "location": "厦门，福建",
+      "lat": 24.4450,
+      "lng": 118.0743,
+      "date": "2014.04.10",
+      "photo": "https://img.yubaos.com/Gallery/20140410xm.webp",
+      "description": "鼓浪屿碧海青松，英雄永驻。漫步在琴岛的小巷，感受中西文化的交融。"
+    },
+    {
+      "id": 2,
+      "name": "双子塔",
+      "location": "吉隆坡，马来西亚",
+      "lat": 3.1589,
+      "lng": 101.7108,
+      "date": "2016.10.03",
+      "photo": "https://img.yubaos.com/Gallery/20161004kl.webp",
+      "description": "拥抱双子塔的宏伟，定格异国旅途的偏爱。夜晚的灯光秀令人难忘。"
+    },
+    {
+      "id": 3,
+      "name": "兰卡威海滩",
+      "location": "兰卡威，马来西亚",
+      "lat": 6.2620,
+      "lng": 99.7362,
+      "date": "2016.10.05",
+      "photo": "https://img.yubaos.com/video/Langkawi.webp",
+      "description": "碧海远山，云卷云舒，藏在兰卡威的夏天。享受阳光沙滩的惬意时光。"
+    }
+  ]
+}

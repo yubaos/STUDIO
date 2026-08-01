@@ -1,656 +1,449 @@
 /**
  * =========================================================
- * FOOTPRINTS - 旅行票根档案样式表
- * 响应式票根墙布局 | 图片/视频支持 | 自适应网格
+ * 个人旅行足迹地图 - 样式表
+ * My Travel Footprint Map - Stylesheet
  * =========================================================
  * 
  * 目录:
- * 1. Google Fonts 导入
- * 2. CSS 变量定义
- * 3. 全局重置与基础样式
- * 4. 背景层样式（地图/暗角/纸纹）
- * 5. Logo 与导航样式
- * 6. 移动端抽屉导航
- * 7. 主舞台与票根墙布局
- * 8. 票根卡片样式（含悬停效果）
- * 9. 放大查看器样式
- * 10. 响应式断点适配
+ * 1. CSS 变量定义
+ * 2. 全局重置与基础样式
+ * 3. 地图容器样式
+ * 4. 蓝色标记点样式 (Custom Marker)
+ * 5. 照片弹窗 Modal 样式
+ * 6. 页面标题样式
+ * 7. 响应式设计适配
  * 
  * =========================================================
  */
 
-/* =========================================================
-   1. Google Fonts - 导入等宽字体和手写风格字体
-   ========================================================= */
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap');
-
-/* =========================================================
-   2. CSS 变量定义 - 统一配色与尺寸
-   修改此处可快速调整整体视觉风格
-   ========================================================= */
+/* ==================== 1. CSS 变量定义 ==================== */
 :root {
-    /* 颜色变量 */
-    --paper: #e9e4da;          /* 票根纸张底色 - 暖米色 */
-    --ink: #262420;            /* 主墨色 - 深棕黑，用于主要文字 */
-    --ink-soft: #6b665c;       /* 次墨色 - 灰棕色，用于次要信息 */
-    --wall: #c4c2bc;           /* 墙面底色 - 中灰色背景 */
-    --color-border: rgba(0, 0, 0, 0.55);  /* 边框颜色 - 半透明黑 */
+    /* 颜色 */
+    --color-primary: #3b82f6;        /* 主蓝色 - 标记点 */
+    --color-primary-dark: #2563eb;   /* 深蓝色 */
+    --color-primary-light: #93c5fd;  /* 浅蓝色 */
+    --color-bg: #f8fafc;             /* 背景色 */
+    --color-text: #1e293b;           /* 文字颜色 */
+    --color-text-secondary: #64748b; /* 次要文字 */
+    --color-white: #ffffff;          /* 白色 */
+    --color-overlay: rgba(0, 0, 0, 0.75); /* 遮罩层颜色 */
     
-    /* 尺寸变量 */
-    --notch: 7px;              /* 票根缺口半径 - 小票根 */
-    --notch-lg: 12px;          /* 放大票根缺口半径 - 大票根 */
+    /* 阴影 */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     
-    /* 间距变量 */
-    --gap-x: 26px;             /* 票根水平间距 */
-    --gap-y: 30px;             /* 票根垂直间距 */
+    /* 圆角 */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-full: 9999px;
+    
+    /* 动画 */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
 }
 
-/* =========================================================
-   3. 全局重置与基础样式
-   ========================================================= */
-* { 
-    margin: 0; 
-    padding: 0; 
-    box-sizing: border-box; 
+/* ==================== 2. 全局重置与基础样式 ==================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-html { 
-    scroll-behavior: smooth;   /* 平滑滚动 */
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* 防止滚动，地图占满全屏 */
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: var(--wall);
-    color: var(--ink);
-    min-height: 100vh;
-    overflow-x: hidden;        /* 禁止横向滚动 */
+    font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.6;
+}
+
+/* ==================== 3. 地图容器样式 ==================== */
+#map {
+    width: 100%;
+    height: 100vh;
     position: relative;
+    z-index: 1;
 }
 
-/* =========================================================
-   4. 背景层样式 - 三层叠加创造复古质感
-   z-index: 0 确保背景在最底层
-   ========================================================= */
-
-/* 背景层 1：世界地图铅笔素描（fixed + multiply 融合灰墙） */
-.bg-map {
-    position: fixed; 
-    inset: 0; 
-    z-index: 0;
-    /* 背景图已更换为新的 URL */
-    background-image: url('https://img.yubaos.com/bg.webp');
-    background-size: cover; 
-    background-position: center; 
-    background-repeat: no-repeat;
-    mix-blend-mode: multiply;  /* 正片叠底混合模式，与墙面自然融合 */
-    opacity: .55; 
-    pointer-events: none;      /* 不响应鼠标事件 */
+/* Leaflet 自定义样式覆盖 */
+.leaflet-container {
+    font-family: inherit;
+    background-color: var(--color-bg);
 }
 
-/* 背景层 2：暗角效果，聚焦中心票根墙 */
-.bg-vignette {
-    position: fixed; 
-    inset: 0; 
-    z-index: 0; 
-    pointer-events: none;
-    background: radial-gradient(ellipse at center,
-        rgba(196,194,188,0) 38%,      /* 中心透明 */
-        rgba(150,148,142,.35) 78%,     /* 中间过渡 */
-        rgba(120,118,112,.6) 100%);    /* 边缘深色 */
+.leaflet-control-zoom {
+    border: none !important;
+    box-shadow: var(--shadow-md) !important;
+    border-radius: var(--radius-md) !important;
+    overflow: hidden;
 }
 
-/* 背景层 3：极淡纸纹颗粒，增加质感 */
-.bg-grain {
-    position: fixed; 
-    inset: 0; 
-    z-index: 0; 
-    pointer-events: none; 
-    opacity: .06;
-    /* SVG 噪点纹理 - 无需外部图片 */
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+.leaflet-control-zoom a {
+    background-color: var(--color-white) !important;
+    color: var(--color-text) !important;
+    border: none !important;
+    width: 36px !important;
+    height: 36px !important;
+    line-height: 36px !important;
+    font-size: 18px !important;
+    font-weight: 500;
 }
 
-/* =========================================================
-   左上角 LOGO —— 返回主页按钮（内联 SVG：三横条 + 斜插票根）
-   部署时把 href="#" 改为真实主页地址
-   移动端（≤1099）隐藏：回主页职责改由抽屉头部的 HOME 承担
-   ========================================================= */
-.logo{
-    position:fixed;
-    top:calc(28px + env(safe-area-inset-top, 0px));
-    left:calc(42px + env(safe-area-inset-left, 0px));
-    z-index:120; width:42px; height:52px; display:block; cursor:pointer;
-    text-decoration:none; color:var(--ink); -webkit-tap-highlight-color:transparent;
-}
-.logo svg{
-    display:block; width:100%; height:100%; overflow:visible;
-    transition:transform .3s ease, filter .3s ease, color .3s ease;
-    filter:drop-shadow(0 1px 0 rgba(0,0,0,.18));
-}
-.logo:hover svg, .logo:focus-visible svg{
-    transform:translateY(-3px);
-    filter:drop-shadow(0 7px 9px rgba(0,0,0,.32)); color:#000;
-}
-.logo:focus-visible{outline:none;}
-
-/* =========================================================
-   右侧导航菜单（fixed 垂直居中，仅宽屏显示）
-   与首页保持一致的简洁风格
-   ========================================================= */
-.nav-menu{
-    position:fixed; right:7vw; top:50%; transform:translateY(-50%);
-    z-index:120; display:flex; flex-direction:column; gap:14px; text-align:right;
-}
-.nav-menu a{
-    position:relative; text-decoration:none; color:var(--ink);
-    font-size:16px; font-weight:400; letter-spacing:0;
-    transition:opacity 0.3s ease;
-}
-.nav-menu a:hover{opacity:0.45;}
-
-/* =========================================================
-   移动端菜单按钮（仅窄屏显示，右上角，与 logo 对称）
-   ========================================================= */
-.menu-btn{
-    position:fixed;
-    top:calc(30px + env(safe-area-inset-top, 0px));
-    right:calc(24px + env(safe-area-inset-right, 0px));
-    z-index:260; display:none;
-    align-items:center; gap:11px;
-    background:transparent; border:none; cursor:pointer;
-    color:var(--ink); -webkit-tap-highlight-color:transparent; padding:8px 4px;
-}
-.menu-btn .bars{ position:relative; width:24px; height:14px; flex:0 0 auto; }
-.menu-btn .bars i{
-    position:absolute; left:0; width:100%; height:2px; background:currentColor; border-radius:1px;
-    transition:transform .4s cubic-bezier(.2,.8,.2,1), top .4s cubic-bezier(.2,.8,.2,1), opacity .25s ease;
-}
-.menu-btn .bars i:nth-child(1){top:0;}
-.menu-btn .bars i:nth-child(2){top:12px;}
-.menu-btn .lbl{ font-family: Arial, Helvetica, sans-serif; font-size:16px; font-weight:400; letter-spacing:0; }
-.menu-btn .lbl .t-close{display:none;}
-.menu-btn.open .bars i:nth-child(1){top:6px; transform:rotate(45deg);}
-.menu-btn.open .bars i:nth-child(2){top:6px; transform:rotate(-45deg);}
-.menu-btn.open .lbl .t-open{display:none;}
-.menu-btn.open .lbl .t-close{display:inline;}
-
-/* 抽屉遮罩 */
-.drawer-backdrop{
-    position:fixed; inset:0; z-index:240;
-    background:rgba(20,19,17,.5); backdrop-filter:blur(4px);
-    opacity:0; visibility:hidden; transition:opacity .4s ease, visibility .4s;
-}
-.drawer-backdrop.open{opacity:1; visibility:visible;}
-
-/* 抽屉面板：纸色档案卡，右侧滑入 */
-.nav-drawer{
-    position:fixed; top:0; right:0; z-index:250;
-    width:min(82vw, 330px); height:100%;
-    height:calc(100% + env(safe-area-inset-top, 0px));
-    padding-top:env(safe-area-inset-top, 0px);
-    background:var(--paper);
-    box-shadow:-22px 0 60px rgba(0,0,0,.32);
-    transform:translateX(102%);
-    transition:transform .55s cubic-bezier(.2,.85,.25,1);
-    display:flex; flex-direction:column;
-    border-left:3px solid var(--ink);
-}
-.nav-drawer.open{transform:translateX(0);}
-.nav-drawer::before{
-    content:''; position:absolute; top:26px; right:24px;
-    width:14px; height:14px; border-radius:50%;
-    background:var(--wall); box-shadow:inset 0 1px 3px rgba(0,0,0,.3);
-}
-/* 抽屉头部：HOME 回主页链接（移动端 logo 隐藏后，由此承担回主页职责） */
-.drawer-home{
-    display:inline-flex; align-items:center; gap:8px;
-    margin:78px 34px 0; align-self:flex-start;
-    text-decoration:none; color:var(--ink-soft);
-    font-size:16px; font-weight:400; letter-spacing:0;
-    padding:6px 0; transition:color .3s ease, gap .3s ease;
-    font-family: Arial, Helvetica, sans-serif;
-}
-.drawer-home .arr{ transition:transform .3s cubic-bezier(.2,.8,.2,1); }
-.drawer-home:active{color:var(--ink); gap:4px;}
-.drawer-home:active .arr{transform:translateX(-4px);}
-.drawer-head{
-    padding:18px 34px 0;
-    font-size:16px; letter-spacing:0; color:var(--ink-soft); text-transform:none;
-    font-family: Arial, Helvetica, sans-serif; font-weight: 400;
-}
-.drawer-head b{
-    display:block; font-family: Arial, Helvetica, sans-serif; font-size:16px;
-    letter-spacing:0; color:var(--ink); margin-top:6px; font-weight: 400;
-}
-.drawer-list{ list-style:none; margin:auto 0; padding:0 34px; counter-reset:didx; }
-.drawer-list li{
-    counter-increment:didx; opacity:0; transform:translateX(22px);
-    transition:opacity .45s ease, transform .45s cubic-bezier(.2,.8,.2,1);
-}
-.nav-drawer.open .drawer-list li{opacity:1; transform:translateX(0);}
-.nav-drawer.open .drawer-list li:nth-child(1){transition-delay:.12s;}
-.nav-drawer.open .drawer-list li:nth-child(2){transition-delay:.18s;}
-.nav-drawer.open .drawer-list li:nth-child(3){transition-delay:.24s;}
-.nav-drawer.open .drawer-list li:nth-child(4){transition-delay:.30s;}
-.nav-drawer.open .drawer-list li:nth-child(5){transition-delay:.36s;}
-.drawer-list a{
-    display:flex; align-items:baseline; gap:14px; text-decoration:none; color:var(--ink);
-    font-size:16px; font-weight:400; letter-spacing:0;
-    padding:15px 0; border-bottom:1px solid var(--color-border);
-    transition:padding-left .3s ease, color .3s ease;
-}
-.drawer-list a::before{
-    content:counter(didx, decimal-leading-zero);
-    font-size:16px; font-weight:400; letter-spacing:0; color:var(--ink-soft);
-    font-family: Arial, Helvetica, sans-serif;
-}
-.drawer-list a:active{padding-left:8px; color:#000;}
-.drawer-foot{
-    padding:0 34px 34px; padding-bottom:calc(34px + env(safe-area-inset-bottom, 0px));
-    font-size:16px; letter-spacing:0; color:var(--ink-soft); line-height:1.8;
-    font-family: Arial, Helvetica, sans-serif; font-weight: 400;
+.leaflet-control-zoom a:hover {
+    background-color: var(--color-bg) !important;
 }
 
-/* =========================================================
-   主舞台：票根墙整体居中自适应
-   ========================================================= */
-.stage{
-    position:relative; z-index:2; width:100%;
-    max-width:min(1500px, calc(100vw - 360px));
-    margin:0 auto; padding:118px 60px 90px;
+.leaflet-control-zoom-in {
+    border-radius: var(--radius-md) var(--radius-md) 0 0 !important;
 }
 
-.archive-head{
-    border-bottom:2px solid rgba(0, 0, 0, 0.85);
-    padding-bottom:14px; margin-bottom:42px;
-}
-.archive-head .ah-title{
-    font-family: Arial, Helvetica, sans-serif;
-    font-size:16px; letter-spacing:0; color:var(--ink);
-    font-weight: 400;
-}
-.archive-head .ah-title small{
-    display:block; font-family: Arial, Helvetica, sans-serif;
-    font-size:16px; letter-spacing:0; color:var(--ink); margin-top:4px;
-    font-weight: 400;
+.leaflet-control-zoom-out {
+    border-radius: 0 0 var(--radius-md) var(--radius-md) !important;
+    border-top: 1px solid rgba(0,0,0,0.1) !important;
 }
 
-.ticket-grid{
-    display:flex; flex-wrap:wrap; justify-content:center;
-    align-content:flex-start; gap:30px 26px;
+/* ==================== 4. 蓝色标记点样式 ==================== */
+.blue-marker {
+    background: transparent;
+    border: none;
 }
 
-/* =========================================================
-   票根外层 wrap —— 旋转 / 阴影 / 入场 / hover 抬起
-   票根整体采用 2:3 比例设计（宽:高 = 2:3，即 160px:240px）
-   票根内图片/视频区域采用 5:4 比例
-   ========================================================= */
-.ticket-wrap{
-    --rot:0deg;
-    position:relative; width:160px; cursor:pointer;
-    transform:rotate(var(--rot));
-    filter:drop-shadow(0 2px 3px rgba(0,0,0,.16)) drop-shadow(0 1px 0 rgba(0,0,0,.10));
-    transition:transform .4s cubic-bezier(.2,.8,.2,1), filter .4s ease;
-    opacity:0; translate:0 26px; -webkit-tap-highlight-color:transparent;
-}
-.ticket-wrap.in{
-    opacity:1; translate:0 0;
-    transition:transform .4s cubic-bezier(.2,.8,.2,1), filter .4s ease,
-               opacity .7s ease, translate .7s cubic-bezier(.2,.8,.2,1);
-}
-.ticket-wrap:hover{
-    transform:rotate(0deg) translateY(-9px) scale(1.035);
-    filter:drop-shadow(0 18px 26px rgba(0,0,0,.30)) drop-shadow(0 3px 4px rgba(0,0,0,.18));
-    z-index:5;
-}
-.ticket-wrap:focus-visible{outline:none;}
-.ticket-wrap:focus-visible .ticket{outline:2px dashed var(--ink); outline-offset:3px;}
-
-/* =========================================================
-   票根本体 —— 纸张 + 圆角 + 透明缺口（mask 挖洞）
-   缺口位置：垂直方向 2/3 处（从顶部算起）
-   总高度 240px（保持 2:3 比例：160px 宽 × 240px 高）
-   ========================================================= */
-.ticket{
-    width:160px; height:240px; background:var(--paper); border-radius:3px; position:relative;
-    box-sizing:border-box; overflow:hidden;
-    -webkit-mask-image:
-        radial-gradient(circle at 0% 66.67%,   #0000 var(--notch), #000 calc(var(--notch) + .6px)),
-        radial-gradient(circle at 100% 66.67%, #0000 var(--notch), #000 calc(var(--notch) + .6px));
-    -webkit-mask-repeat:no-repeat; -webkit-mask-composite:source-in;
-    mask-image:
-        radial-gradient(circle at 0% 66.67%,   #0000 var(--notch), #000 calc(var(--notch) + .6px)),
-        radial-gradient(circle at 100% 66.67%, #0000 var(--notch), #000 calc(var(--notch) + .6px));
-    mask-repeat:no-repeat; mask-composite:intersect;
+.marker-dot {
+    width: 16px;
+    height: 16px;
+    background-color: var(--color-primary);
+    border: 3px solid var(--color-white);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+    position: relative;
+    cursor: pointer;
+    transition: transform var(--transition-fast);
 }
 
-/* 模拟撕票口的虚线：连接两侧孔位 */
-.ticket::before{
-    content:'';
-    position:absolute;
-    top:158px;
-    left:12px;
-    right:12px;
-    height:0;
-    border-top:2px dashed rgba(0,0,0,0.35);
-    z-index:1;
+.marker-dot:hover {
+    transform: scale(1.2);
 }
 
-/* 两侧的半圆孔（与 mask 缺口对齐）—— 只保留左侧一个孔 */
-.ticket::after{
-    content:'';
-    position:absolute;
-    top:152px;
-    left:-6px;
-    width:12px;
-    height:12px;
-    background:var(--wall);
-    border-radius:50%;
-    z-index:2;
-}
-
-.t-photo{
-    width:138px; height:110px; margin:18px auto 0;
-    overflow:hidden; border-radius:2px; background:#bdb8ad; position:relative;
-    aspect-ratio:5/4;
-}
-.t-photo img, .t-photo video{
-    width:100%; height:100%; object-fit:cover; display:block; border-radius:2px;
-}
-
-/* 视频票根标识：中央播放徽章 + 脉冲环，暗示“此张为动态影像” */
-.play-badge{
-    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    width:34px; height:34px; border-radius:50%;
-    background:rgba(20,19,17,.55); backdrop-filter:blur(2px);
-    display:flex; align-items:center; justify-content:center;
-    box-shadow:0 2px 8px rgba(0,0,0,.35);
-    transition:transform .3s ease, background .3s ease;
-    pointer-events:auto;
-    z-index:5;
-}
-.play-badge svg{ width:13px; height:13px; fill:#f4f1ea; margin-left:2px; }
-.play-badge::after{
-    content:''; position:absolute; inset:0; border-radius:50%;
-    border:1.5px solid rgba(244,241,234,.7);
-}
-.ticket-wrap:hover .play-badge{transform:translate(-50%,-50%) scale(1.12); background:rgba(20,19,17,.72);}
-
-/* 票根信息区：位置、日期、分隔线、经纬度（位于虚线下方，统一调整到票根下 1/3 处） */
-.t-info{
-    padding:0 6px 6px;
-    text-align:center;
-    position:absolute;
-    top:168px;
-    left:0;
-    right:0;
-    z-index:2;
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-start;
-    align-items:center;
-}
-.t-loc{
-    font-size:13px; font-weight:600; letter-spacing:0; color:var(--ink);
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    font-family: Arial, Helvetica, sans-serif;
-    margin-bottom:2px;
-}
-.t-date{
-    font-size:15px; color:var(--ink-soft); margin-top:0; letter-spacing:0; font-weight: 500; font-family: Arial, Helvetica, sans-serif;
-    margin-bottom:4px;
-}
-.t-perf{height:0; margin:0 12px 4px; border-top:1.5px solid var(--color-border);}
-/* 票根底部：经纬度（两位小数，单行；窄屏缩字防溢出） */
-.t-code{
-    padding:0 6px 2px; text-align:center;
-    font-size:14px; letter-spacing:0; color:var(--ink-soft); white-space:nowrap;
-    font-family: Arial, Helvetica, sans-serif; font-weight: 500;
-    margin-top:0;
-}
-
-/* =========================================================
-   放大查看层（遮罩 + 大票根 + 上一张 / 下一张）
-   ========================================================= */
-.overlay{
-    position:fixed; inset:0; z-index:300;
-    display:flex; align-items:center; justify-content:center; padding:24px;
-    background:rgba(20,19,17,0); backdrop-filter:blur(0px); visibility:hidden;
-    transition:background .45s ease, backdrop-filter .45s ease, visibility .45s;
-}
-.overlay.open{ background:rgba(20,19,17,.84); backdrop-filter:none; visibility:visible; }
-
-.viewer-wrap{
-    position:relative; width:min(94vw, 1040px);
-    filter:drop-shadow(0 40px 80px rgba(0,0,0,.6));
-}
-.viewer{
-    position:relative; width:100%; background:var(--paper);
-    border-radius:6px; padding:30px 30px 34px;
-    transform:scale(.82) translateY(20px); opacity:0;
-    transition:transform .5s cubic-bezier(.2,.9,.25,1), opacity .45s ease;
-    -webkit-mask-image:
-        radial-gradient(circle at 0% 66.67%,   #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px)),
-        radial-gradient(circle at 100% 66.67%, #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px));
-    -webkit-mask-repeat:no-repeat; -webkit-mask-composite:source-in;
-    mask-image:
-        radial-gradient(circle at 0% 66.67%,   #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px)),
-        radial-gradient(circle at 100% 66.67%, #0000 var(--notch-lg), #000 calc(var(--notch-lg) + .8px));
-    mask-repeat:no-repeat; mask-composite:intersect;
-}
-.overlay.open .viewer{transform:scale(1) translateY(0); opacity:1;}
-
-/* 媒体容器：承载 img 或 video，整体淡入切换 */
-/* 上方留有背景边框：通过 padding-top 实现 */
-.v-photo{
-    width:100%; height:clamp(420px, 66vh, 720px);
-    overflow:hidden; border-radius:3px; background:#15140f; position:relative;
-    transition:opacity .3s ease;
-}
-.v-photo::before{
-    content:''; position:absolute; top:0; left:0; right:0;
-    height:18px; background:var(--paper);
-    border-bottom:1px solid rgba(0,0,0,0.15);
-    z-index:10; pointer-events:none;
-}
-.v-photo.swap{opacity:0;}
-.v-photo img, .v-photo video{
-    width:100%; height:100%; object-fit:cover; display:block; pointer-events:auto !important;
-}
-.v-photo video{ background:#000; }
-
-/* 隐藏视频默认控制条，实现极简无边框效果 */
-.v-photo video::-webkit-media-controls {
-    display: none !important;
-}
-.v-photo video::-webkit-media-controls-panel {
-    display: none !important;
-}
-.v-photo video::-webkit-media-controls-play-button {
-    display: none !important;
-}
-.v-photo video::-webkit-media-controls-current-time-display,
-.v-photo video::-webkit-media-controls-time-remaining-display {
-    display: none !important;
-}
-
-/* 视频播放/暂停按钮：居中显示，仅在暂停时可见 */
-.v-photo .play-center-btn {
+/* 脉冲动画 */
+.marker-pulse {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 68px;
-    height: 68px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-primary);
     border-radius: 50%;
-    background: rgba(20, 19, 17, 0.7);
+    animation: pulse 2s infinite;
+    opacity: 0;
+}
+
+@keyframes pulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(3);
+        opacity: 0;
+    }
+}
+
+/* 标记点 Tooltip */
+.marker-tooltip {
+    background-color: var(--color-white) !important;
+    color: var(--color-text) !important;
+    border: none !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: var(--shadow-lg) !important;
+    padding: 6px 12px !important;
+    font-size: 14px !important;
+    font-weight: 500;
+}
+
+.leaflet-tooltip-bottom:before {
+    border-bottom-color: var(--color-white) !important;
+}
+
+/* ==================== 5. 照片弹窗 Modal 样式 ==================== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: var(--color-overlay);
     backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-    pointer-events: none;
+    z-index: 1000;
     opacity: 0;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-    z-index: 20;
+    visibility: hidden;
+    transition: opacity var(--transition-normal), visibility var(--transition-normal);
 }
-.v-photo .play-center-btn svg {
-    width: 28px;
-    height: 28px;
-    fill: #f4f1ea;
-    margin-left: 3px;
-}
-.v-photo.video-paused .play-center-btn {
+
+.modal-overlay.active {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-}
-.v-photo.video-playing .play-center-btn {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.9);
+    visibility: visible;
 }
 
-.v-info{
-    display:flex; justify-content:space-between; align-items:flex-end;
-    flex-wrap:wrap; gap:8px; padding:26px 4px 16px;
-}
-.v-loc{ font-family: Arial, Helvetica, sans-serif; font-size:clamp(24px,3.4vw,40px); letter-spacing:0; color:var(--ink); font-weight: 400; }
-.v-date{ font-size:clamp(14px,1.8vw,18px); color:var(--ink-soft); letter-spacing:0; font-weight: 400; }
-.v-note{ padding:0 4px 18px; font-size:clamp(13px,1.5vw,16px); line-height:1.75; color:var(--ink-soft); max-width:70ch; font-family: Arial, Helvetica, sans-serif; }
-.v-perf{ border-top:1.5px solid var(--color-border); margin:0 4px; }
-.v-foot{
+.modal-content {
+    background-color: var(--color-white);
+    border-radius: var(--radius-lg);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-xl);
     position: relative;
-    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;
-    padding:16px 4px 2px; font-size:16px; letter-spacing:0; color:var(--ink-soft);
-    font-family: Arial, Helvetica, sans-serif; font-weight: 400;
+    transform: translateY(20px);
+    transition: transform var(--transition-normal);
 }
-.v-foot .v-idx{color:var(--ink); font-weight:400;}
-/* 视频票根在底部多一个 MEDIA 标签，标明影像类型 */
-.v-foot .v-media{
-    font-size:16px; letter-spacing:0; color:var(--ink);
-    border:1px solid var(--color-border); border-radius:2px; padding:2px 7px;
-    font-family: Arial, Helvetica, sans-serif; font-weight: 400;
+
+.modal-overlay.active .modal-content {
+    transform: translateY(0);
+}
+
+.modal-close {
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    transition: background-color var(--transition-fast);
+    z-index: 10;
 }
 
-.v-close{
-    position:absolute; top:-50px; right:0; width:40px; height:40px;
-    border:none; background:transparent; color:#f2efe8; font-size:36px; line-height:1; cursor:pointer;
-    transition:transform .4s ease, color .3s ease;
+.modal-close:hover {
+    background-color: rgba(0, 0, 0, 0.1);
 }
-.v-close:hover{transform:rotate(90deg); color:#fff;}
 
-.v-nav{
-    position:absolute; top:50%; transform:translateY(-50%);
-    width:52px; height:52px; border-radius:50%;
-    border:1px solid rgba(242,239,232,.5); background:rgba(20,19,17,.35);
-    color:#f2efe8; font-size:22px; cursor:pointer;
-    display:flex; align-items:center; justify-content:center;
-    transition:background .3s ease, transform .3s ease, border-color .3s ease; z-index:2;
+.modal-body {
+    padding: 0;
 }
-.v-nav:hover{background:rgba(20,19,17,.7); border-color:#f2efe8;}
-.v-prev{left:-78px;}
-.v-next{right:-78px;}
-.v-prev:hover{transform:translateY(-50%) translateX(-3px);}
-.v-next:hover{transform:translateY(-50%) translateX(3px);}
 
-/* 触摸设备：取消 hover 抬起，改 :active 按压反馈 */
-@media (hover:none){
-    .ticket-wrap:hover{
-        transform:rotate(var(--rot));
-        filter:drop-shadow(0 2px 3px rgba(0,0,0,.16)) drop-shadow(0 1px 0 rgba(0,0,0,.10));
+.modal-photo {
+    width: 100%;
+    aspect-ratio: 16/10;
+    overflow: hidden;
+    background-color: var(--color-bg);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.modal-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.modal-info {
+    padding: 24px;
+}
+
+.modal-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 8px;
+}
+
+.modal-date {
+    font-size: 14px;
+    color: var(--color-primary);
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+.modal-desc {
+    font-size: 15px;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+}
+
+/* ==================== 6. 页面标题样式 ==================== */
+.page-header {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 500;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    padding: 16px 24px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    pointer-events: none; /* 让点击穿透到地图 */
+}
+
+.page-header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 4px;
+}
+
+.page-header .subtitle {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    font-weight: 400;
+}
+
+/* ==================== 7. 响应式设计适配 ==================== */
+
+/* 平板端 (≤768px) */
+@media screen and (max-width: 768px) {
+    .page-header {
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        padding: 12px 16px;
     }
-    .ticket-wrap:hover .t-photo img{transform:none; filter:saturate(.92) contrast(1.02);}
-    .ticket-wrap:hover .play-badge{transform:translate(-50%,-50%); background:rgba(20,19,17,.55);}
-    .ticket-wrap:active{transform:rotate(var(--rot)) scale(.95);}
-    .logo:hover svg{transform:none; filter:drop-shadow(0 1px 0 rgba(0,0,0,.18));}
-}
-
-/* 桌面端：图片悬停效果 */
-@media (hover:hover){
-    .t-photo img{
-        filter:saturate(.92) contrast(1.02);
-        transition:transform .6s cubic-bezier(.2,.8,.2,1), filter .4s ease;
+    
+    .page-header h1 {
+        font-size: 18px;
     }
-    .ticket-wrap:hover .t-photo img{transform:scale(1.08); filter:saturate(1.05) contrast(1.05);}
-}
-
-/* =========================================================
-   响应式断点
-   ========================================================= */
-@media (max-width:1320px){
-    .v-prev{left:10px; background:rgba(20,19,17,.6);}
-    .v-next{right:10px; background:rgba(20,19,17,.6);}
-}
-
-/* ≤1099：隐藏右侧竖排 nav + 左上 logo，启用汉堡抽屉；舞台全宽居中 */
-@media (max-width:1099px){
-    .nav-menu{display:none;}
-    .logo{display:none;}                       /* 移动端不展示 logo，回主页由抽屉 HOME 承担 */
-    .menu-btn{display:flex;}
-    .stage{
-        max-width:1500px; padding:108px 28px 70px;
-        padding-left:calc(28px + env(safe-area-inset-left, 0px));
-        padding-right:calc(28px + env(safe-area-inset-right, 0px));
+    
+    .page-header .subtitle {
+        font-size: 12px;
+    }
+    
+    .modal-content {
+        width: 95%;
+        max-height: 85vh;
+    }
+    
+    .modal-title {
+        font-size: 20px;
+    }
+    
+    .modal-photo {
+        aspect-ratio: 4/3;
     }
 }
 
-/* 放大查看器：平板 / 大手机适配 */
-@media (max-width:680px){
-    :root{--notch-lg:9px;}
-    .overlay{padding:14px;}
-    .viewer{padding:20px 18px 24px; border-radius:5px;}
-    .v-photo{height:clamp(220px, 40vh, 360px);}
-    .v-close{top:-44px; right:2px; font-size:32px; width:36px; height:36px;}
-    .v-info{padding:18px 2px 12px;}
-    .v-note{font-size:13px; line-height:1.7; padding:0 2px 14px;}
-    .v-foot{padding:13px 2px 2px; font-size:11px;}
-    .v-nav{width:46px; height:46px; font-size:22px;}
-    .v-prev{left:6px; background:rgba(20,19,17,.55);}
-    .v-next{right:6px; background:rgba(20,19,17,.55);}
+/* 手机端 (≤480px) */
+@media screen and (max-width: 480px) {
+    .page-header {
+        top: 0;
+        left: 0;
+        right: 0;
+        border-radius: 0 0 var(--radius-md) var(--radius-md);
+        padding: 12px 16px;
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .page-header h1 {
+        font-size: 16px;
+    }
+    
+    .page-header .subtitle {
+        font-size: 11px;
+    }
+    
+    .modal-content {
+        width: 100%;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+    }
+    
+    .modal-photo {
+        aspect-ratio: 16/9;
+    }
+    
+    .modal-info {
+        padding: 20px;
+    }
+    
+    .modal-title {
+        font-size: 18px;
+    }
+    
+    .modal-close {
+        top: 8px;
+        right: 8px;
+        width: 32px;
+        height: 32px;
+    }
+    
+    /* 移动端调整标记点大小 */
+    .marker-dot {
+        width: 14px;
+        height: 14px;
+        border-width: 2px;
+    }
 }
 
-/* 手机：票根两列网格 */
-@media (max-width:560px){
-    .menu-btn{top:calc(20px + env(safe-area-inset-top, 0px)); right:calc(18px + env(safe-area-inset-right, 0px));}
-    .stage{
-        padding:84px 18px 56px;                /* logo 隐藏后顶部收紧 */
-        padding-left:calc(18px + env(safe-area-inset-left, 0px));
-        padding-right:calc(18px + env(safe-area-inset-right, 0px));
+/* 安全区域适配 (iPhone 等) */
+@supports (padding: max(0px)) {
+    .page-header {
+        padding-left: max(16px, env(safe-area-inset-left));
+        padding-right: max(16px, env(safe-area-inset-right));
+        padding-top: max(12px, env(safe-area-inset-top));
     }
-    .archive-head{margin-bottom:26px; padding-bottom:12px;}
-    .ticket-grid{
-        display:grid; grid-template-columns:repeat(2, 1fr);
-        gap:22px 14px; justify-items:center;
+    
+    .modal-content {
+        border-radius: max(var(--radius-lg), env(safe-area-inset-bottom));
     }
-    .ticket-wrap{width:100%; max-width:160px;}
-    .ticket{width:160px; height:240px;}
-    .t-photo{width:calc(100% - 22px); max-width:138px; height:auto; margin-top:18px; aspect-ratio:5/4;}
 }
 
-/* 超小屏 */
-@media (max-width:380px){
-    .stage{
-        padding:78px 12px 48px;
-        padding-left:calc(12px + env(safe-area-inset-left, 0px));
-        padding-right:calc(12px + env(safe-area-inset-right, 0px));
+/* 深色模式支持 (可选) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-bg: #0f172a;
+        --color-text: #f1f5f9;
+        --color-text-secondary: #94a3b8;
+        --color-white: #1e293b;
+        --color-overlay: rgba(0, 0, 0, 0.85);
     }
-    .ticket-grid{gap:18px 10px;}
-    .t-photo{height:auto; aspect-ratio:5/4;}
-    .play-badge{width:30px; height:30px;}
-    .play-badge svg{width:11px; height:11px;}
-    .drawer-home{margin-left:26px; margin-right:26px;}
-    .drawer-head{padding-left:26px; padding-right:26px;}
-    .drawer-list{padding-left:26px; padding-right:26px;}
-    .drawer-foot{padding-left:26px; padding-right:26px;}
+    
+    .page-header {
+        background-color: rgba(30, 41, 59, 0.95);
+    }
+    
+    .leaflet-control-zoom a {
+        background-color: #1e293b !important;
+        color: #f1f5f9 !important;
+    }
+    
+    .marker-dot {
+        border-color: #1e293b;
+    }
+    
+    .marker-tooltip {
+        background-color: #1e293b !important;
+        color: #f1f5f9 !important;
+    }
+    
+    .leaflet-tooltip-bottom:before {
+        border-bottom-color: #1e293b !important;
+    }
 }
 
-/* 横屏手机 */
-@media (max-height:520px) and (orientation:landscape){
-    .v-photo{height:clamp(150px, 52vh, 260px);}
-    .viewer{padding:14px 18px 16px;}
-    .v-info{padding:12px 2px 8px;}
-    .v-note{display:none;}
+/* 打印样式 */
+@media print {
+    .page-header,
+    .modal-overlay,
+    .leaflet-control-zoom {
+        display: none;
+    }
+    
+    #map {
+        height: 100vh;
+    }
 }
-</style>
