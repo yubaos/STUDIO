@@ -434,6 +434,12 @@ body {
 .fp-region.is-active { animation: regionMarch 1.2s linear infinite; }
 @keyframes regionMarch { to { stroke-dashoffset: -12; } }
 
+/* 确保标点脉冲动画不受 prefers-reduced-motion 影响 */
+.fp-dot-ring, .fp-flight, .fp-region.is-active {
+  animation-duration: inherit !important;
+  animation-iteration-count: inherit !important;
+}
+
 /* 兜底：不让浏览器为 SVG 路径绘制外接矩形焦点框。 */
 .leaflet-pane > svg path.leaflet-interactive:focus { outline: none; }
 
@@ -559,7 +565,7 @@ body {
   transition: visibility 0s .35s;
 }
 /* 确保弹窗打开时 head-top 不会被遮挡 */
-body.modal-open .instax-overlay { z-index: 1050; }
+body.modal-open .instax-overlay { z-index: 1049; }
 .instax-overlay.open { visibility: visible; transition: visibility 0s 0s; }
 .instax-backdrop {
   position: absolute; inset: 0;
@@ -744,7 +750,13 @@ body.modal-open .instax-overlay { z-index: 1050; }
 
   /* 照片弹窗打开时，确保 sidebar 的 head-top 仍然可见可点击 */
   body.modal-open .sidebar { z-index: 1300; }
-  body.modal-open .head-top { pointer-events: auto; visibility: visible; opacity: 1; }
+  body.modal-open .head-top { 
+    pointer-events: auto; 
+    visibility: visible; 
+    opacity: 1; 
+    position: relative;
+    z-index: 1301;
+  }
   body.modal-open .side-head { display: block; }
 
   .sheet-handle {
@@ -808,9 +820,10 @@ body.modal-open .instax-overlay { z-index: 1050; }
   .instax-hint { font-size: 9px; letter-spacing: .18em; bottom: 12px; }
 }
 
-/* 尊重系统减弱动效 */
+/* 尊重系统减弱动效：保留基础结构和交互，仅减缓装饰性动画 */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  /* 仅减缓装饰性动画，不影响功能性动画（如小飞机飞行、标点脉冲） */
+  .loader-orbit, .tl-item, .instax-card, .sheet-handle::before {
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
