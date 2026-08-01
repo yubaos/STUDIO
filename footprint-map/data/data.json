@@ -7,7 +7,29 @@
       "style": {
         "color": "#3b82f6",
         "fillColor": "#3b82f6",
-        "fillOpacity": 0.3,
+        "fillOpacity": 0.35,
+        "weight": 2
+      }
+    },
+    {
+      "id": "beijing",
+      "name": "北京市",
+      "geoJsonUrl": "https://raw.githubusercontent.com/aliyun/china-geojson/main/geojson/110000.json",
+      "style": {
+        "color": "#3b82f6",
+        "fillColor": "#3b82f6",
+        "fillOpacity": 0.35,
+        "weight": 2
+      }
+    },
+    {
+      "id": "shanghai",
+      "name": "上海市",
+      "geoJsonUrl": "https://raw.githubusercontent.com/aliyun/china-geojson/main/geojson/310000.json",
+      "style": {
+        "color": "#3b82f6",
+        "fillColor": "#3b82f6",
+        "fillOpacity": 0.35,
         "weight": 2
       }
     }

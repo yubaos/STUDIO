@@ -191,12 +191,14 @@
                 
                 // 创建 GeoJSON 图层，使用更醒目的样式
                 const layer = L.geoJSON(geoJsonData, {
-                    style: {
-                        color: region.style.color || '#3b82f6',
-                        weight: region.style.weight || 2,
-                        opacity: 1,
-                        fillColor: region.style.fillColor || '#3b82f6',
-                        fillOpacity: region.style.fillOpacity || 0.4
+                    style: function(feature) {
+                        return {
+                            color: region.style.color || '#3b82f6',
+                            weight: region.style.weight || 2,
+                            opacity: 1,
+                            fillColor: region.style.fillColor || '#3b82f6',
+                            fillOpacity: region.style.fillOpacity || 0.35
+                        };
                     },
                     onEachFeature: function(feature, layer) {
                         // 添加鼠标悬停效果
@@ -212,18 +214,22 @@
                             mouseout: function(e) {
                                 const targetLayer = e.target;
                                 targetLayer.setStyle({
-                                    fillOpacity: region.style.fillOpacity || 0.4,
+                                    fillOpacity: region.style.fillOpacity || 0.35,
                                     weight: region.style.weight || 2,
                                     color: region.style.color || '#3b82f6'
                                 });
                             }
                         });
                         
-                        // 添加点击事件
+                        // 添加点击事件 - 点击区域平滑缩放
                         layer.on('click', function(e) {
-                            // 获取区域中心点并飞过去
-                            const center = e.target.getBounds().getCenter();
-                            flyToLocation(center.lat, center.lng, 8);
+                            e.originalEvent.stopPropagation();
+                            // 获取区域边界并计算中心点
+                            const bounds = e.target.getBounds();
+                            if (bounds) {
+                                const center = bounds.getCenter();
+                                flyToLocation(center.lat, center.lng, 9);
+                            }
                         });
                     }
                 }).addTo(regionsLayer);
