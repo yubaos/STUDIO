@@ -14,25 +14,7 @@
   };
 
   /**
-   * Debounce function to limit execution rate
-   * @param {Function} func - Function to debounce
-   * @param {number} wait - Wait time in milliseconds
-   * @returns {Function} Debounced function
-   */
-  function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
-  }
-
-  /**
-   * Initialize grid perspective effect
+   * Initialize grid perspective effect with requestAnimationFrame
    * @param {HTMLElement} gridElement - The grid element to apply effects to
    */
   function initGridEffect(gridElement) {
@@ -45,30 +27,44 @@
     gridElement.style.transformStyle = 'preserve-3d';
     gridElement.style.transition = `transform ${CONFIG.transitionDuration}s ease-out`;
 
+    let rafId = null;
+    let latestX = 0;
+    let latestY = 0;
+
     /**
      * Update grid transform based on mouse position
-     * @param {MouseEvent} event - Mouse move event
      */
-    const updateTransform = (event) => {
-      const x = (event.clientX / window.innerWidth - 0.5) * 2;
-      const y = (event.clientY / window.innerHeight - 0.5) * 2;
-
+    const updateTransform = () => {
+      rafId = null;
       gridElement.style.transform = `
         perspective(${CONFIG.perspective}px) 
-        rotateY(${x * CONFIG.rotationMultiplier}deg) 
-        rotateX(${-y * CONFIG.rotationMultiplier}deg)
+        rotateY(${latestX * CONFIG.rotationMultiplier}deg) 
+        rotateX(${-latestY * CONFIG.rotationMultiplier}deg)
       `;
     };
 
-    // Use debounced version for better performance
-    const debouncedUpdate = debounce(updateTransform, 16); // ~60fps
+    /**
+     * Handle mouse move event
+     * @param {MouseEvent} event - Mouse move event
+     */
+    const handleMouseMove = (event) => {
+      latestX = (event.clientX / window.innerWidth - 0.5) * 2;
+      latestY = (event.clientY / window.innerHeight - 0.5) * 2;
 
-    // Add event listener
-    document.addEventListener('mousemove', debouncedUpdate, { passive: true });
+      if (!rafId) {
+        rafId = requestAnimationFrame(updateTransform);
+      }
+    };
+
+    // Add event listener with passive option for better scroll performance
+    document.addEventListener('mousemove', handleMouseMove, { passive: true });
 
     // Cleanup function (for potential SPA usage)
     return () => {
-      document.removeEventListener('mousemove', debouncedUpdate);
+      document.removeEventListener('mousemove', handleMouseMove);
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
     };
   }
 
