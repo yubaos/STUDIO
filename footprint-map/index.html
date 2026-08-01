@@ -437,15 +437,11 @@ body {
 /* 兜底：不让浏览器为 SVG 路径绘制外接矩形焦点框。 */
 .leaflet-pane > svg path.leaflet-interactive:focus { outline: none; }
 
-/* ---- 缩放控件（紧凑版 26px，纸面主题） ---- */
-.leaflet-bar { border: none; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(9,25,38,.26); }
-.leaflet-control-zoom a {
-  width: 26px; height: 26px; line-height: 26px;
-  background: var(--paper); color: var(--ink-3);
-  border: none; font-size: 14px;
-  transition: background .2s ease;
-}
-.leaflet-control-zoom a:hover { background: var(--paper-2); color: var(--red); }
+/* ---- 缩放控件（紧凑版 26px，纸面主题）---- 
+ * 已移除：电脑端使用鼠标滚轮控制缩放，手机端使用触控手势控制缩放。
+ * 不再显示 +/- 按钮。
+ */
+.leaflet-control-zoom { display: none !important; }
 .leaflet-control-attribution {
   background: rgba(248,246,240,.78);
   font-family: var(--font-mono); font-size: 9px; color: #55636e;
@@ -734,13 +730,17 @@ body {
 
   .sidebar {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 1200;
-    max-height: 46dvh;
+    max-height: 25dvh;
     border-radius: 18px 18px 0 0;
     box-shadow: 0 -14px 40px rgba(4,14,24,.45);
     transition: max-height .4s cubic-bezier(.2,.9,.3,1);
   }
   .sidebar.expanded { max-height: 82dvh; }
   .sidebar::before { display: none; }
+
+  /* 照片弹窗打开时，确保 sidebar 的 head-top 仍然可见可点击 */
+  body.modal-open .sidebar { z-index: 1250; }
+  body.modal-open .head-top { pointer-events: auto; visibility: visible; }
 
   .sheet-handle {
     display: block; flex: none;
@@ -1106,6 +1106,60 @@ body {
     return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
   }
 
+  /* 修复：小飞机动画需要连续帧更新，REDUCED_MOTION 时也要至少渲染初始位置 */
+  function startPlane() {
+    if (!state.planePath.length) return;
+    if (state.planeFrame) cancelAnimationFrame(state.planeFrame);
+    if (state.planeMarker) state.map.removeLayer(state.planeMarker);
+
+    const icon = L.divIcon({
+      className: 'fp-plane-wrap',
+      html: `<div class="fp-plane"><svg viewBox="0 0 24 24" aria-hidden="true">
+               <path d="M22 16v-2l-8.5-5V3.5C13.5 2.67 12.83 2 12 2s-1.5.67-1.5 1.5V9L2 14v2l8.5-2.5V19L8 20.5V22l4-1 4 1v-1.5L13.5 19v-5.5L22 16z"/>
+      </svg></div>`,
+      iconSize: [26, 26], iconAnchor: [13, 13]
+    });
+    const mk = L.marker(state.planePath[0], { icon, interactive: false, keyboard: false }).addTo(state.map);
+    state.planeMarker = mk;
+    
+    /* 即使用户选择减弱动效，也要显示飞机在起点位置 */
+    if (REDUCED_MOTION) {
+      const node = mk.getElement() && mk.getElement().querySelector('.fp-plane');
+      if (node && state.planePath.length > 1) {
+        const p1 = state.planePath[0];
+        const p2 = state.planePath[1];
+        const brg = bearing(p1, p2);
+        node.style.transform = `rotate(${brg.toFixed(1)}deg)`;
+      }
+      return;
+    }
+
+    /* 单一 requestAnimationFrame 时钟：位置和朝向同帧更新，避免 CSS 过渡叠加拖影。 */
+    const DURATION = 48000;
+    let elapsed = 0;
+    let previous = performance.now();
+    (function frame(now) {
+      const delta = Math.min(now - previous, 50);
+      previous = now;
+      /* 视图移动时，飞机与其内部旋转同时冻结；地图稳定后从原位置继续。 */
+      if (!state.isMapMoving) {
+        elapsed = (elapsed + delta) % DURATION;
+        const t = elapsed / DURATION;
+        const f = t * (state.planePath.length - 1);
+        const i = Math.floor(f), frac = f - i;
+        const p1 = state.planePath[i];
+        const p2 = state.planePath[Math.min(i + 1, state.planePath.length - 1)];
+        mk.setLatLng([p1[0] + (p2[0] - p1[0]) * frac, p1[1] + (p2[1] - p1[1]) * frac]);
+        const node = mk.getElement() && mk.getElement().querySelector('.fp-plane');
+        if (node) {
+          const brg = bearing({ lat: p1[0], lng: p1[1] }, { lat: p2[0], lng: p2[1] });
+          node.style.transform = `rotate(${brg.toFixed(1)}deg)`;
+        }
+      }
+      state.planeFrame = requestAnimationFrame(frame);
+    })(previous);
+  }
+
   /* ---------------- 2. 内置 TopoJSON 解码器 ----------------
    * 替代 topojson-client 外部脚本：量化还原 + 差分解码 + 弧段拼接，
    * 避免额外 CDN 依赖（阻塞式 <script> 曾导致页面卡死）。 */
@@ -1321,14 +1375,15 @@ body {
     const map = L.map('map', {
       zoomControl: false, minZoom: 3, maxZoom: 17,
       worldCopyJump: true, attributionControl: true,
-      fadeAnimation: false, markerZoomAnimation: false
+      fadeAnimation: false, markerZoomAnimation: false,
+      scrollWheelZoom: true, touchZoom: true, doubleClickZoom: true
     });
     /* 飞行缩放期间复用当前瓦片，等视图稳定后再更新，防止中间层频繁淡入淡出。 */
     L.tileLayer(TILE_URL, {
       attribution: TILE_ATTR, subdomains: 'abcd', maxZoom: 19,
       updateWhenZooming: false, updateWhenIdle: true, keepBuffer: 4
     }).addTo(map);
-    L.control.zoom({ position: 'topright' }).addTo(map);
+    /* 已移除缩放控件：电脑端使用鼠标滚轮控制，手机端使用触控手势控制。 */
     L.control.scale({ position: 'bottomleft', imperial: false }).addTo(map);
     map.on('movestart', () => {
       state.isMapMoving = true;
@@ -1529,48 +1584,6 @@ body {
     L.polyline(path, { className: 'fp-flight-glow', color: '#1d6fd1', weight: 7, opacity: .10, lineCap: 'round', interactive: false }).addTo(state.map);
     L.polyline(path, { className: 'fp-flight', color: '#1d6fd1', weight: 2, opacity: .65, dashArray: '2 9', lineCap: 'round', interactive: false }).addTo(state.map);
     startPlane();
-  }
-
-  function startPlane() {
-    if (!state.planePath.length) return;
-    if (state.planeFrame) cancelAnimationFrame(state.planeFrame);
-    if (state.planeMarker) state.map.removeLayer(state.planeMarker);
-
-    const icon = L.divIcon({
-      className: 'fp-plane-wrap',
-      html: `<div class="fp-plane"><svg viewBox="0 0 24 24" aria-hidden="true">
-               <path d="M22 16v-2l-8.5-5V3.5C13.5 2.67 12.83 2 12 2s-1.5.67-1.5 1.5V9L2 14v2l8.5-2.5V19L8 20.5V22l4-1 4 1v-1.5L13.5 19v-5.5L22 16z"/>
-      </svg></div>`,
-      iconSize: [26, 26], iconAnchor: [13, 13]
-    });
-    const mk = L.marker(state.planePath[0], { icon, interactive: false, keyboard: false }).addTo(state.map);
-    state.planeMarker = mk;
-    if (REDUCED_MOTION) return;
-
-    /* 单一 requestAnimationFrame 时钟：位置和朝向同帧更新，避免 CSS 过渡叠加拖影。 */
-    const DURATION = 48000;
-    let elapsed = 0;
-    let previous = performance.now();
-    (function frame(now) {
-      const delta = Math.min(now - previous, 50);
-      previous = now;
-      /* 视图移动时，飞机与其内部旋转同时冻结；地图稳定后从原位置继续。 */
-      if (!state.isMapMoving) {
-        elapsed = (elapsed + delta) % DURATION;
-        const t = elapsed / DURATION;
-        const f = t * (state.planePath.length - 1);
-        const i = Math.floor(f), frac = f - i;
-        const p1 = state.planePath[i];
-        const p2 = state.planePath[Math.min(i + 1, state.planePath.length - 1)];
-        mk.setLatLng([p1[0] + (p2[0] - p1[0]) * frac, p1[1] + (p2[1] - p1[1]) * frac]);
-        const node = mk.getElement() && mk.getElement().querySelector('.fp-plane');
-        if (node) {
-          const brg = bearing({ lat: p1[0], lng: p1[1] }, { lat: p2[0], lng: p2[1] });
-          node.style.transform = `rotate(${brg.toFixed(1)}deg)`;
-        }
-      }
-      state.planeFrame = requestAnimationFrame(frame);
-    })(previous);
   }
 
   /* ---------------- 9. 侧栏渲染（统计 / chips / 时间线） ---------------- */
@@ -1849,6 +1862,17 @@ body {
       state.spots = newSpots;
       state.regions.clear();
       registerRegions(data.regions || []);
+      // 清理旧标记和航线
+      Object.values(state.spotMarkers).forEach(mk => state.map.removeLayer(mk));
+      state.spotMarkers = {};
+      if (state.planeMarker) state.map.removeLayer(state.planeMarker);
+      state.planeMarker = null;
+      if (state.planeFrame) cancelAnimationFrame(state.planeFrame);
+      state.planeFrame = null;
+      // 移除所有 polyline 层（航线）
+      state.map.eachLayer(layer => {
+        if (layer instanceof L.Polyline) state.map.removeLayer(layer);
+      });
       buildSpots();
       buildFlightPath();
       renderSidebar();
