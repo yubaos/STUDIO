@@ -1336,7 +1336,9 @@ body.modal-open .head-top {
         // 重新计算飞行时长以适配新的缩放级别
         let totalMeters = 0;
         for (let i = 0; i < state.planePath.length - 1; i++) {
-          totalMeters += getDistance(state.planePath[i], state.planePath[i + 1]);
+          const p1 = state.planePath[i], p2 = state.planePath[i + 1];
+          // planePath 中的点是 [lat, lng] 数组格式，需要转换为对象
+          totalMeters += getDistance({ lat: p1[0], lng: p1[1] }, { lat: p2[0], lng: p2[1] });
         }
         const zoom = state.map.getZoom();
         const zoomFactor = Math.pow(1.3, zoom - 6);
