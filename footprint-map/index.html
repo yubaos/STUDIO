@@ -514,7 +514,6 @@ body {
 
 /* 地图飞行时暂缓装饰层重绘，避免它们与 Leaflet 的视图变换相互叠加而闪烁。 */
 .leaflet-container.is-moving .fp-region.is-active,
-.leaflet-container.is-moving .fp-dot-ring,
 .leaflet-container.is-moving .fp-flight { animation-play-state: paused; }
 .leaflet-container.is-moving .fp-dot-wrap:hover .fp-dot-core { transform: none; }
 
@@ -734,7 +733,7 @@ body {
 
   .sidebar {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 1200;
-    max-height: 46dvh;
+    max-height: 28dvh;
     border-radius: 18px 18px 0 0;
     box-shadow: 0 -14px 40px rgba(4,14,24,.45);
     transition: max-height .4s cubic-bezier(.2,.9,.3,1);
@@ -810,6 +809,11 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
+}
+
+/* 弹窗打开时隐藏侧栏头部，避免遮挡 */
+body.modal-open .head-top {
+  visibility: hidden;
 }
 
 
@@ -1295,14 +1299,15 @@ body {
     const map = L.map('map', {
       zoomControl: false, minZoom: 3, maxZoom: 17,
       worldCopyJump: true, attributionControl: true,
-      fadeAnimation: false, markerZoomAnimation: false
+      fadeAnimation: false, markerZoomAnimation: false,
+      scrollWheelZoom: true, touchZoom: true
     });
     /* 飞行缩放期间复用当前瓦片，等视图稳定后再更新，防止中间层频繁淡入淡出。 */
     L.tileLayer(TILE_URL, {
       attribution: TILE_ATTR, subdomains: 'abcd', maxZoom: 19,
       updateWhenZooming: false, updateWhenIdle: true, keepBuffer: 4
     }).addTo(map);
-    L.control.zoom({ position: 'topright' }).addTo(map);
+    // 不添加缩放按钮：电脑使用鼠标滚轮，手机使用触控缩放
     L.control.scale({ position: 'bottomleft', imperial: false }).addTo(map);
     map.on('movestart', () => {
       state.isMapMoving = true;
@@ -1519,7 +1524,7 @@ body {
     });
     const mk = L.marker(state.planePath[0], { icon, interactive: false, keyboard: false }).addTo(state.map);
     state.planeMarker = mk;
-    if (REDUCED_MOTION) return;
+    // 始终启动飞机动画，不再因 REDUCED_MOTION 跳过
 
     /* 单一 requestAnimationFrame 时钟：位置和朝向同帧更新，避免 CSS 过渡叠加拖影。 */
     const DURATION = 48000;
