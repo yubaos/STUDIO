@@ -189,22 +189,33 @@
                 
                 const geoJsonData = await response.json();
                 
-                // 创建 GeoJSON 图层
+                // 创建 GeoJSON 图层，使用更醒目的样式
                 const layer = L.geoJSON(geoJsonData, {
-                    style: region.style,
+                    style: {
+                        color: region.style.color || '#3b82f6',
+                        weight: region.style.weight || 2,
+                        opacity: 1,
+                        fillColor: region.style.fillColor || '#3b82f6',
+                        fillOpacity: region.style.fillOpacity || 0.4
+                    },
                     onEachFeature: function(feature, layer) {
                         // 添加鼠标悬停效果
                         layer.on({
                             mouseover: function(e) {
                                 const targetLayer = e.target;
                                 targetLayer.setStyle({
-                                    fillOpacity: 0.5,
-                                    weight: 3
+                                    fillOpacity: 0.7,
+                                    weight: 3,
+                                    color: '#2563eb'
                                 });
                             },
                             mouseout: function(e) {
                                 const targetLayer = e.target;
-                                targetLayer.setStyle(region.style);
+                                targetLayer.setStyle({
+                                    fillOpacity: region.style.fillOpacity || 0.4,
+                                    weight: region.style.weight || 2,
+                                    color: region.style.color || '#3b82f6'
+                                });
                             }
                         });
                         
