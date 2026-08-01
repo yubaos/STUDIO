@@ -1239,10 +1239,15 @@ body {
     return path.endsWith('/') ? path : (path.substring(0, path.lastIndexOf('/') + 1) || '/');
   }
 
+  // 自动更新配置：每 5 分钟检查一次数据更新
+  const AUTO_REFRESH_INTERVAL = 5 * 60 * 1000;
+  let refreshTimer = null;
+
   async function loadData() {
     try {
       const basePath = getBasePath();
-      const dataUrl = `${basePath}data/data.json`;
+      // 添加时间戳参数避免浏览器缓存
+      const dataUrl = `${basePath}data/data.json?t=${Date.now()}`;
       console.log('[footprint] 尝试加载 data.json:', dataUrl);
       const res = await fetchWithTimeout(dataUrl, 5000);
       if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -1617,6 +1622,54 @@ body {
     document.querySelectorAll('.tl-item').forEach((n) => io.observe(n));
   }
 
+  /* ---------------- 9.5 自动更新数据 ---------------- */
+  async function refreshData() {
+    try {
+      console.log('[footprint] 自动刷新数据...');
+      const basePath = getBasePath();
+      const dataUrl = `${basePath}data/data.json?t=${Date.now()}`;
+      const res = await fetchWithTimeout(dataUrl, 5000);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const newData = await res.json();
+      
+      // 检测数据是否变化
+      const oldSpotsCount = state.spots.length;
+      const newSpotsCount = (newData.spots || []).length;
+      const oldRegionsCount = state.regions.size;
+      const newRegionsCount = (newData.regions || []).length;
+      
+      if (oldSpotsCount !== newSpotsCount || oldRegionsCount !== newRegionsCount) {
+        console.log('[footprint] 数据已更新，重新渲染页面...');
+        // 清除所有标记和图层
+        Object.values(state.spotMarkers).forEach((m) => state.map.removeLayer(m));
+        state.spotMarkers = {};
+        state.regions.forEach((rec) => { if (rec.layer) state.map.removeLayer(rec.layer); rec.layer = null; });
+        
+        // 更新状态
+        state.spots = (newData.spots || []).slice().sort((a, b) => a.date.localeCompare(b.date));
+        state.regions.clear();
+        registerRegions(newData.regions || []);
+        
+        // 重新构建地图元素
+        buildSpots();
+        buildFlightPath();
+        renderSidebar();
+        
+        toast('数据已更新 · Data refreshed');
+      } else {
+        console.log('[footprint] 数据无变化');
+      }
+    } catch (err) {
+      console.warn('[footprint] 自动刷新失败:', err);
+    }
+  }
+
+  function startAutoRefresh() {
+    if (refreshTimer) clearInterval(refreshTimer);
+    refreshTimer = setInterval(refreshData, AUTO_REFRESH_INTERVAL);
+    console.log('[footprint] 自动刷新已启动，间隔:', AUTO_REFRESH_INTERVAL / 1000, '秒');
+  }
+
   /* ---------------- 10. Instax Wide 弹窗（大画幅 · 无可见控件） ---------------- */
   function openInstax(idx, isNav = false) {
     state.modalIndex = (idx + state.spots.length) % state.spots.length;
@@ -1817,6 +1870,9 @@ body {
     bindUI();
     hideLoader();
     loadRegionsAsync(data.regions || []);  /* 边界后台加载，互不阻塞 */
+    
+    // 启动自动刷新
+    startAutoRefresh();
   }
 
   /* 入口：等待 Leaflet 动态加载完成后启动，超时则展示错误页 */
