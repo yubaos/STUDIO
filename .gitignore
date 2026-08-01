@@ -1,48 +1,16 @@
-# Compiled and build artifacts
-*.pyc
-__pycache__/
-*.o
-*.obj
-*.class
-*.exe
-*.dll
-*.so
-*.a
-*.out
+# Examples
+- src/main.py
+- README.md
+- config.json
 
-# Dependencies
-node_modules/
-venv/
-.venv/
-.env
-.env.local
-.env.*
+# Deleted files:
+- old/unused.py
 
-# Logs and temp files
-*.log
-*.tmp
-*.swp
-*.swo
+# Modified files:
+- utils.py
 
-# Editors
-.vscode/
-.idea/
+# Current .gitignore Content
+(empty)
 
-# System files
-.DS_Store
-Thumbs.db
-
-# Coverage
-coverage/
-htmlcov/
-.coverage
-
-# Build directories
-dist/
-build/
-target/
-.gradle/
-
-# Python cache
-.mypy_cache/
-.pytest_cache/
+# Expected Output
+(empty - output nothing)

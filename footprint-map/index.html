@@ -490,6 +490,8 @@ body {
   border: 2px solid rgba(29,111,209,.75);
   animation: dotPulse 2.4s ease-out infinite;
   animation-delay: var(--dot-delay, 0s);
+  /* 确保动画始终运行，不受地图移动影响 */
+  animation-play-state: running !important;
 }
 .fp-dot-wrap:hover .fp-dot-core { transform: scale(1.4); }
 @keyframes dotPulse {
@@ -512,7 +514,11 @@ body {
 }
 .fp-plane svg { width: 20px; height: 20px; fill: var(--paper); stroke: var(--ink-3); stroke-width: 1.1; }
 
-/* 标点脉冲动画始终运行，不受地图移动影响 */
+/* 确保航线和标点动画始终运行，不受地图移动影响 */
+.leaflet-container.is-moving .fp-flight,
+.leaflet-container.is-moving .fp-dot-ring {
+  animation-play-state: running !important;
+}
 
 /* ---- 地图浮层：重置按钮 & 图例 ---- */
 .map-reset {
@@ -735,7 +741,7 @@ body {
     box-shadow: 0 -14px 40px rgba(4,14,24,.45);
     transition: max-height .4s cubic-bezier(.2,.9,.3,1);
   }
-  .sidebar.expanded { max-height: 82dvh; }
+  .sidebar.expanded { max-height: 75dvh; }
   .sidebar::before { display: none; }
 
   .sheet-handle {
@@ -808,9 +814,10 @@ body {
   }
 }
 
-/* 弹窗打开时隐藏侧栏头部，避免遮挡 */
+/* 弹窗打开时保持侧栏头部可见，不隐藏 */
 body.modal-open .head-top {
   visibility: visible;
+  opacity: 1;
 }
 
 
