@@ -486,6 +486,7 @@ body {
   border: 2px solid rgba(29,111,209,.75);
   animation: dotPulse 2.4s ease-out infinite;
   animation-delay: var(--dot-delay, 0s);
+  will-change: transform, opacity;
 }
 .fp-dot-wrap:hover .fp-dot-core { transform: scale(1.4); }
 @keyframes dotPulse {
@@ -510,7 +511,6 @@ body {
 
 /* 地图飞行时暂缓装饰层重绘，避免它们与 Leaflet 的视图变换相互叠加而闪烁。 */
 .leaflet-container.is-moving .fp-region.is-active,
-.leaflet-container.is-moving .fp-dot-ring,
 .leaflet-container.is-moving .fp-flight { animation-play-state: paused; }
 .leaflet-container.is-moving .fp-dot-wrap:hover .fp-dot-core { transform: none; }
 
@@ -558,6 +558,8 @@ body {
   visibility: hidden;
   transition: visibility 0s .35s;
 }
+/* 确保弹窗打开时 head-top 不会被遮挡 */
+body.modal-open .instax-overlay { z-index: 1050; }
 .instax-overlay.open { visibility: visible; transition: visibility 0s 0s; }
 .instax-backdrop {
   position: absolute; inset: 0;
@@ -728,19 +730,22 @@ body {
   body { display: block; }
   .map-wrap { position: fixed; inset: 0; z-index: 0; }
 
+  /* sidebar 置于下方 1/4 处 */
   .sidebar {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 1200;
     max-height: 25dvh;
     border-radius: 18px 18px 0 0;
     box-shadow: 0 -14px 40px rgba(4,14,24,.45);
     transition: max-height .4s cubic-bezier(.2,.9,.3,1);
+    transform: translateY(0);
   }
   .sidebar.expanded { max-height: 82dvh; }
   .sidebar::before { display: none; }
 
   /* 照片弹窗打开时，确保 sidebar 的 head-top 仍然可见可点击 */
-  body.modal-open .sidebar { z-index: 1250; }
-  body.modal-open .head-top { pointer-events: auto; visibility: visible; }
+  body.modal-open .sidebar { z-index: 1300; }
+  body.modal-open .head-top { pointer-events: auto; visibility: visible; opacity: 1; }
+  body.modal-open .side-head { display: block; }
 
   .sheet-handle {
     display: block; flex: none;
