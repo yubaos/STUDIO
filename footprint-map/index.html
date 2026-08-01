@@ -1222,7 +1222,7 @@ body {
     return gj;
   }
 
-  /* ---------------- 4. 数据加载 ---------------- */
+  /* ---------------- 4. 配置与数据加载 ---------------- */
   // 获取基础路径（兼容 Cloudflare Pages 部署）
   function getBasePath() {
     const path = window.location.pathname;
@@ -1239,18 +1239,44 @@ body {
     return path.endsWith('/') ? path : (path.substring(0, path.lastIndexOf('/') + 1) || '/');
   }
 
+  // 全局配置对象
+  let appConfig = {
+    dataSource: 'data/data.json',
+    autoRefresh: { enabled: false, interval: 300000 },
+    retry: { maxAttempts: 3, delay: 5000 }
+  };
+
+  // 从外部 config.json 加载配置
+  async function loadConfig() {
+    try {
+      const basePath = getBasePath();
+      const configUrl = `${basePath}config.json`;
+      console.log('[footprint] 尝试加载 config.json:', configUrl);
+      const res = await fetchWithTimeout(configUrl, 3000);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const config = await res.json();
+      appConfig = Object.assign(appConfig, config);
+      console.log('[footprint] config.json 加载成功:', appConfig);
+      return appConfig;
+    } catch (err) {
+      console.warn('[footprint] config.json 加载失败，使用默认配置:', err);
+      return appConfig;
+    }
+  }
+
+  // 从外部 JSON 文件加载数据
   async function loadData() {
     try {
       const basePath = getBasePath();
-      const dataUrl = `${basePath}data/data.json`;
-      console.log('[footprint] 尝试加载 data.json:', dataUrl);
+      const dataUrl = `${basePath}${appConfig.dataSource}`;
+      console.log('[footprint] 尝试加载数据文件:', dataUrl);
       const res = await fetchWithTimeout(dataUrl, 5000);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
-      console.log('[footprint] data.json 加载成功，区域数量:', data.regions?.length || 0);
+      console.log('[footprint] 数据文件加载成功，区域数量:', data.regions?.length || 0);
       return data;
     } catch (err) {
-      console.warn('[footprint] data.json 加载失败，使用内置兜底数据：', err);
+      console.warn('[footprint] 数据文件加载失败，使用内置兜底数据：', err);
       window.__FP_OFFLINE__ = true;
       return FALLBACK_DATA;
     }
@@ -1805,8 +1831,54 @@ body {
     if (sub) sub.textContent = 'ERROR · ' + (err && err.message ? String(err.message).slice(0, 60) : 'UNKNOWN');
   }
 
+  // 刷新数据（用于自动更新）
+  async function refreshData() {
+    try {
+      console.log('[footprint] 开始刷新数据...');
+      const data = await loadData();
+      const newSpots = (data.spots || []).slice().sort((a, b) => a.date.localeCompare(b.date));
+      
+      // 检查数据是否有变化
+      const hasChanged = JSON.stringify(newSpots) !== JSON.stringify(state.spots);
+      if (!hasChanged) {
+        console.log('[footprint] 数据无变化，跳过刷新');
+        return false;
+      }
+      
+      console.log('[footprint] 数据已更新，重新渲染页面');
+      state.spots = newSpots;
+      state.regions.clear();
+      registerRegions(data.regions || []);
+      buildSpots();
+      buildFlightPath();
+      renderSidebar();
+      bindUI();
+      loadRegionsAsync(data.regions || []);
+      toast('数据已自动更新');
+      return true;
+    } catch (err) {
+      console.warn('[footprint] 数据刷新失败:', err);
+      return false;
+    }
+  }
+
+  // 启动自动刷新定时器
+  let autoRefreshTimer = null;
+  function startAutoRefresh() {
+    if (autoRefreshTimer) clearInterval(autoRefreshTimer);
+    if (appConfig.autoRefresh && appConfig.autoRefresh.enabled && appConfig.autoRefresh.interval > 0) {
+      const interval = appConfig.autoRefresh.interval;
+      console.log('[footprint] 启动自动刷新，间隔:', interval, 'ms');
+      autoRefreshTimer = setInterval(() => {
+        refreshData();
+      }, interval);
+    }
+  }
+
   async function boot() {
     if (typeof L === 'undefined') throw new Error('Leaflet 未能加载（底图库 CDN 不可达）');
+    // 先加载配置，再加载数据
+    await loadConfig();
     const data = await loadData();
     state.spots = (data.spots || []).slice().sort((a, b) => a.date.localeCompare(b.date));
     registerRegions(data.regions || []);   /* 先注册定义：chips / 图例立即可用 */
@@ -1817,6 +1889,8 @@ body {
     bindUI();
     hideLoader();
     loadRegionsAsync(data.regions || []);  /* 边界后台加载，互不阻塞 */
+    // 启动自动刷新
+    startAutoRefresh();
   }
 
   /* 入口：等待 Leaflet 动态加载完成后启动，超时则展示错误页 */

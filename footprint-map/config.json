@@ -1,0 +1,11 @@
+{
+  "dataSource": "data/data.json",
+  "autoRefresh": {
+    "enabled": true,
+    "interval": 300000
+  },
+  "retry": {
+    "maxAttempts": 3,
+    "delay": 5000
+  }
+}
