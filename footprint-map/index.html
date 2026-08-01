@@ -3,12 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>TIME MACHINE — 时光机</title>
+<title>FOOTPRINT MAP — 足迹地图</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<!-- Preload critical font to prevent flash of unstyled text -->
-<link rel="preload" href="https://fonts.yubaos.com/fonts.woff2" as="font" type="font/woff2" crossorigin>
 <!-- Google Fonts - Space Mono & Special Elite -->
-<link rel="preconnect" href="https://fonts.yubaos.com" crossorigin>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -25,7 +22,7 @@
 
     <!-- =========================================================
          左上角 LOGO：返回主页按钮
-         注意：部署时请将 href="#/" 改为真实主页地址
+         注意：部署时请将 href="#" 改为真实主页地址
          移动端（≤1099px）会自动隐藏，由抽屉导航的 HOME 按钮替代
          ========================================================= -->
     <a href="/" class="logo" id="logo" title="返回主页 / HOME" aria-label="返回主页">
@@ -44,6 +41,7 @@
         <a href="/#work">WORK</a>
         <a href="/about/">ABOUT</a>
         <a href="/ticket-stub/">TICKET STUB</a>
+        <a href="/footprint-map/">FOOTPRINT MAP</a>
         <a href="/time-machine/">TIME MACHINE</a>
         <a href="/#contact">CONTACT</a>
     </nav>
@@ -77,6 +75,7 @@
             <li><a href="/#work">WORK</a></li>
             <li><a href="/about/">ABOUT</a></li>
             <li><a href="/ticket-stub/">TICKET STUB</a></li>
+            <li><a href="/footprint-map/">FOOTPRINT MAP</a></li>
             <li><a href="/time-machine/">TIME MACHINE</a></li>
             <li><a href="/#contact">CONTACT</a></li>
         </ul>
@@ -86,37 +85,18 @@
     </aside>
 
     <!-- =========================================================
-         主舞台：时光机宫格容器
-         宫格网格（自适应布局，无限滚动加载）
+         主舞台：足迹地图容器
          ========================================================= -->
     <main class="stage">
-        <!-- 时光机宫格容器 -->
-        <section class="grid-container" id="gridContainer" aria-label="时光机宫格"></section>
-    </main>
-
-    <!-- =========================================================
-         放大查看器（Overlay）
-         点击宫格后弹出的全屏查看界面
-         ========================================================= -->
-    <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="大图查看">
-        <button class="v-nav v-prev" id="vPrev" aria-label="上一张">&#8249;</button>
-        <div class="viewer-wrap">
-            <div class="viewer" id="viewer">
-                <button class="v-close" id="vClose" aria-label="关闭">&times;</button>
-                <div class="v-photo" id="vPhoto"></div>
-                <div class="v-info">
-                    <div class="v-title" id="vTitle"></div>
-                    <div class="v-date" id="vDate"></div>
-                </div>
-                <p class="v-note" id="vNote"></p>
-                <div class="v-perf"></div>
-                <div class="v-foot">
-                    <span class="v-idx" id="vIdx"></span>
-                </div>
+        <header class="archive-head">
+            <div class="ah-title">
+                FOOTPRINT MAP
+                <small>足迹地图 · A JOURNEY MAP</small>
             </div>
-        </div>
-        <button class="v-nav v-next" id="vNext" aria-label="下一张">&#8250;</button>
-    </div>
+        </header>
+        <!-- 地图容器：JS 将在此处动态渲染地图标记 -->
+        <section class="map-container" id="mapContainer" aria-label="足迹地图"></section>
+    </main>
 
     <script src="js/script.js"></script>
 </body>
