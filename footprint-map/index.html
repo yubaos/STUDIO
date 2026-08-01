@@ -514,12 +514,6 @@ body {
 }
 .fp-plane svg { width: 20px; height: 20px; fill: var(--paper); stroke: var(--ink-3); stroke-width: 1.1; }
 
-/* 确保航线和标点动画始终运行，不受地图移动影响 */
-.leaflet-container.is-moving .fp-flight,
-.leaflet-container.is-moving .fp-dot-ring {
-  animation-play-state: running !important;
-}
-
 /* ---- 地图浮层：重置按钮 & 图例 ---- */
 .map-reset {
   position: absolute; top: 14px; left: 14px; z-index: 500;
@@ -736,7 +730,7 @@ body {
 
   .sidebar {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 1200;
-    max-height: 25dvh;
+    max-height: 28dvh;
     border-radius: 18px 18px 0 0;
     box-shadow: 0 -14px 40px rgba(4,14,24,.45);
     transition: max-height .4s cubic-bezier(.2,.9,.3,1);
@@ -805,19 +799,23 @@ body {
   .instax-hint { font-size: 9px; letter-spacing: .18em; bottom: 12px; }
 }
 
-/* 尊重系统减弱动效 */
+/* 弹窗打开时隐藏侧栏头部，避免遮挡视线 */
+body.modal-open .head-top {
+  visibility: hidden;
+}
+
+/* 小飞机和标点动画不受系统减弱动效影响，始终正常播放 */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
-}
-
-/* 弹窗打开时保持侧栏头部可见，不隐藏 */
-body.modal-open .head-top {
-  visibility: visible;
-  opacity: 1;
+  /* 例外：小飞机航线、标点脉冲动画保持正常速度 */
+  .fp-flight, .fp-dot-ring, .fp-plane {
+    animation-duration: initial !important;
+    animation-iteration-count: initial !important;
+  }
 }
 
 
@@ -1325,13 +1323,12 @@ body.modal-open .head-top {
     }).addTo(map);
     // 不添加缩放按钮：电脑使用鼠标滚轮，手机使用触控缩放
     L.control.scale({ position: 'bottomleft', imperial: false }).addTo(map);
+    // 移除 is-moving 相关代码，小飞机和标点动画不再受地图移动影响
     map.on('movestart', () => {
       state.isMapMoving = true;
-      map.getContainer().classList.add('is-moving');
     });
     map.on('moveend', () => {
       state.isMapMoving = false;
-      map.getContainer().classList.remove('is-moving');
     });
     /* 监听缩放变化，动态调整飞机速度以保持视觉一致性 */
     map.on('zoomend', () => {
