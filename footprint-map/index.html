@@ -132,18 +132,28 @@ body {
   border-bottom: 1px dashed rgba(236,231,219,.18);
 }
 
-/* ---- LOGO 占位符（42×52，返回主页） ---- */
+/* ---- LOGO（与 about 页面统一样式） ---- */
 .head-top { display: flex; align-items: center; gap: 15px; margin-bottom: 18px; }
 .home-logo {
-  flex: none; display: inline-flex;
+  flex: none; display: block;
+  width: 42px; height: 52px;
+  cursor: pointer; text-decoration: none;
   color: var(--paper-2);
-  transition: color .25s ease, transform .25s ease;
+  -webkit-tap-highlight-color: transparent;
+  transition: color .3s ease, transform .3s ease;
 }
-.home-logo svg { display: block; overflow: visible; }
-.home-logo:hover { color: var(--gold); transform: translateY(-2px); }
-.home-logo:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 8px; }
-.logo-frame { animation: logoDash 14s linear infinite; }
-@keyframes logoDash { to { stroke-dashoffset: -64; } }
+.home-logo svg {
+  display: block; width: 100%; height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,.18));
+  transition: transform .3s ease, filter .3s ease, color .3s ease;
+}
+.home-logo:hover svg, .home-logo:focus-visible svg {
+  transform: translateY(-3px);
+  filter: drop-shadow(0 7px 9px rgba(0,0,0,.32));
+  color: var(--paper-2);
+}
+.home-logo:focus-visible { outline: none; }
 .head-text { min-width: 0; }
 .overline {
   margin: 0 0 5px;
@@ -813,7 +823,7 @@ body {
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>行迹山海 · 个人旅行足迹地图</title>
   <meta name="description" content="一张纯静态的个人旅行足迹地图：Leaflet 底图、省份/国家 GeoJSON 高亮、蓝色脉冲打卡点、Instax Wide 风格照片手账弹窗。">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
   <!-- ★ 字体：全部异步加载（media=print → onload 切回 all），任一 CDN 挂起都不阻塞首屏 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/zcool-xiaowei/index.css" media="print" onload="this.media='all'">
@@ -848,16 +858,12 @@ body {
 
     <header class="side-head">
       <div class="head-top">
-        <!-- ★ 42×52 LOGO 占位符：替换内部 <svg> 为实际 logo 即可，href="/" 即返回主页 -->
-        <a class="home-logo" href="/" title="返回主页" aria-label="返回主页">
-          <svg width="42" height="52" viewBox="0 0 42 52" fill="none" aria-hidden="true">
-            <rect class="logo-frame" x="1.5" y="1.5" width="39" height="49" rx="7"
-                  stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4"/>
-            <path d="M21 11l2.7 6.6 6.6 2.7-6.6 2.7L21 29.6l-2.7-6.6-6.6-2.7 6.6-2.7L21 11z"
-                  fill="currentColor" opacity=".9"/>
-            <path d="M13 36.5h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".5"/>
-            <text x="21" y="45.5" text-anchor="middle" font-size="5.5" letter-spacing="2"
-                  fill="currentColor" opacity=".75">HOME</text>
+        <!-- ★ LOGO：与 about 页面统一样式 -->
+        <a class="home-logo" href="/" title="返回主页 / HOME" aria-label="返回主页">
+          <svg viewBox="404 343 494 614" xmlns="http://www.w3.org/2000/svg"
+               style="shape-rendering:geometricPrecision;text-rendering:geometricPrecision;image-rendering:optimizeQuality;fill-rule:evenodd;clip-rule:evenodd"
+               aria-hidden="true" focusable="false">
+            <path fill="currentColor" stroke="none" d="M414.99 453c0-33.17.01-66.34.03-99.5.66-5.09 3.49-8.21 8.49-9.39 150.66-.11 301.32-.15 451.99-.11 6.68.13 10.89 4.85 10.51 11.5 0 33.34-.01 66.67-.03 100-1.1 6.44-4.93 9.61-11.48 9.51q-225 0-450-.03c-6.59-.74-9.91-5.5-9.51-11.98Zm2 196c0-33.17.01-66.34.03-99.5.66-5.09 3.49-8.21 8.49-9.39 149.99-.11 299.99-.15 449.99-.11 6.68.13 10.89 4.85 10.51 11.5 0 33.34-.01 66.67-.03 100-1.1 6.44-4.93 9.61-11.48 9.51-149.34 0-298.67-.01-448-.03-6.59-.74-9.91-5.5-9.51-11.98Zm239.17 30.05c-.11-1.19 1.6-1.03 2.32-1.06q67.515.015 135.03 0c.87.01 1.71.16 2.51.47 18.52 9.86 20.19 26.4 23.75 45.05 5.25 31.78 9.94 63.37 16.99 94.82-.61.6-1.36.83-2.24.68-51.26.06-102.51-.05-153.75-.31-.38-.32-.58-.74-.58-1.24-5.6-46.04-15.62-92.72-24.03-138.41ZM416.99 944c0-32.84.01-65.67.03-98.5.66-5.09 3.49-8.21 8.49-9.39 149.99-.11 299.99-.15 449.99-.11 6.68.13 10.89 4.85 10.51 11.5q0 49.5-.03 99c-1.1 6.44-4.93 9.61-11.48 9.51-149.34 0-298.67-.01-448-.03-6.59-.74-9.91-5.5-9.51-11.98Z"/>
           </svg>
         </a>
         <div class="head-text">
