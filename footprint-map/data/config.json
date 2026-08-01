@@ -1,0 +1,13 @@
+{
+  "dataFile": "data/data.json",
+  "geoJsonPath": "data/",
+  "autoRefresh": {
+    "enabled": true,
+    "interval": 300000
+  },
+  "timeout": 5000,
+  "fallback": {
+    "useBuiltIn": false,
+    "showToast": true
+  }
+}

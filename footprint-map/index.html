@@ -1041,6 +1041,30 @@ body {
     ]
   };
 
+  /* ---------------- 0.5 配置加载：从外部 config.json 读取 ---------------- */
+  let APP_CONFIG = {
+    dataFile: 'data/data.json',
+    geoJsonPath: 'data/',
+    autoRefresh: { enabled: true, interval: 300000 },
+    timeout: 5000,
+    fallback: { useBuiltIn: true, showToast: true }
+  };
+
+  async function loadConfig() {
+    try {
+      const basePath = getBasePath();
+      const configUrl = `${basePath}data/config.json?t=${Date.now()}`;
+      console.log('[footprint] 尝试加载 config.json:', configUrl);
+      const res = await fetchWithTimeout(configUrl, 3000);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const cfg = await res.json();
+      APP_CONFIG = { ...APP_CONFIG, ...cfg };
+      console.log('[footprint] config.json 加载成功:', APP_CONFIG);
+    } catch (err) {
+      console.warn('[footprint] config.json 加载失败，使用默认配置:', err);
+    }
+  }
+
   /* ---------------- 1. 全局状态 & 工具函数 ---------------- */
   const state = {
     map: null, spots: [], regions: new Map(),
@@ -1242,17 +1266,16 @@ body {
     return path.endsWith('/') ? path : (path.substring(0, path.lastIndexOf('/') + 1) || '/');
   }
 
-  // 自动更新配置：每 5 分钟检查一次数据更新
-  const AUTO_REFRESH_INTERVAL = 5 * 60 * 1000;
+  // 自动更新配置：从 config.json 读取，默认每 5 分钟检查一次数据更新
   let refreshTimer = null;
 
   async function loadData() {
     try {
       const basePath = getBasePath();
-      // 添加时间戳参数避免浏览器缓存
-      const dataUrl = `${basePath}data/data.json?t=${Date.now()}`;
+      // 使用配置中的数据文件路径，添加时间戳参数避免浏览器缓存
+      const dataUrl = `${basePath}${APP_CONFIG.dataFile}?t=${Date.now()}`;
       console.log('[footprint] 尝试加载 data.json:', dataUrl);
-      const res = await fetchWithTimeout(dataUrl, 5000);
+      const res = await fetchWithTimeout(dataUrl, APP_CONFIG.timeout);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
       console.log('[footprint] data.json 加载成功，区域数量:', data.regions?.length || 0);
@@ -1260,19 +1283,22 @@ body {
     } catch (err) {
       console.warn('[footprint] data.json 加载失败，使用内置兜底数据：', err);
       window.__FP_OFFLINE__ = true;
-      return FALLBACK_DATA;
+      if (APP_CONFIG.fallback.showToast) {
+        setTimeout(() => toast('提示：未通过本地服务加载 data.json，已使用内置数据'), 900);
+      }
+      return APP_CONFIG.fallback.useBuiltIn ? FALLBACK_DATA : { regions: [], spots: [] };
     }
   }
 
   async function fetchRegionGeoJSON(def) {
     if (def.geo && def.geo.type === 'datav') {
       const adcode = def.geo.adcode;
-      // 优先尝试从本地 data 目录加载（使用绝对路径兼容 Cloudflare Pages）
+      // 优先尝试从本地 data 目录加载（使用配置的路径）
       const basePath = getBasePath();
-      const localUrl = `${basePath}data/${adcode}.json`;
+      const localUrl = `${basePath}${APP_CONFIG.geoJsonPath}${adcode}.json`;
       console.log(`[footprint] 区域 ${def.name} 尝试从本地加载：${localUrl}`);
       try {
-        const res = await fetchWithTimeout(localUrl, 3000);
+        const res = await fetchWithTimeout(localUrl, APP_CONFIG.timeout);
         if (res.ok) {
           console.log(`[footprint] 区域 ${def.name} 从本地加载成功：${localUrl}`);
           return correctGeoJSON(await res.json());
@@ -1285,7 +1311,7 @@ body {
       // 本地失败则从远程 CDN 加载
       const remoteUrl = DATAV_URL(adcode);
       console.log(`[footprint] 区域 ${def.name} 从远程 CDN 加载：${remoteUrl}`);
-      const res = await fetchWithTimeout(remoteUrl, 9000);
+      const res = await fetchWithTimeout(remoteUrl, APP_CONFIG.timeout * 2);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       return correctGeoJSON(await res.json());          /* GCJ-02 → WGS-84 */
     }
@@ -1627,10 +1653,16 @@ body {
   /* ---------------- 9.5 自动更新数据 ---------------- */
   async function refreshData() {
     try {
+      // 检查是否启用自动刷新
+      if (!APP_CONFIG.autoRefresh?.enabled) {
+        console.log('[footprint] 自动刷新已禁用');
+        return;
+      }
+      
       console.log('[footprint] 自动刷新数据...');
       const basePath = getBasePath();
-      const dataUrl = `${basePath}data/data.json?t=${Date.now()}`;
-      const res = await fetchWithTimeout(dataUrl, 5000);
+      const dataUrl = `${basePath}${APP_CONFIG.dataFile}?t=${Date.now()}`;
+      const res = await fetchWithTimeout(dataUrl, APP_CONFIG.timeout);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const newData = await res.json();
       
@@ -1668,8 +1700,12 @@ body {
 
   function startAutoRefresh() {
     if (refreshTimer) clearInterval(refreshTimer);
-    refreshTimer = setInterval(refreshData, AUTO_REFRESH_INTERVAL);
-    console.log('[footprint] 自动刷新已启动，间隔:', AUTO_REFRESH_INTERVAL / 1000, '秒');
+    if (APP_CONFIG.autoRefresh?.enabled) {
+      refreshTimer = setInterval(refreshData, APP_CONFIG.autoRefresh.interval);
+      console.log('[footprint] 自动刷新已启动，间隔:', APP_CONFIG.autoRefresh.interval / 1000, '秒');
+    } else {
+      console.log('[footprint] 自动刷新已禁用');
+    }
   }
 
   /* ---------------- 10. Instax Wide 弹窗（大画幅 · 无可见控件） ---------------- */
@@ -1846,9 +1882,7 @@ body {
     const l = $('#loader');
     l.classList.add('done');
     setTimeout(() => l.remove(), 700);
-    if (window.__FP_OFFLINE__) {
-      setTimeout(() => toast('提示：未通过本地服务加载 data.json，已使用内置数据'), 900);
-    }
+    // 注意：__FP_OFFLINE__ 提示已移至 loadData 中处理，避免重复显示
   }
 
   function fatal(err) {
@@ -1864,6 +1898,8 @@ body {
 
   async function boot() {
     if (typeof L === 'undefined') throw new Error('Leaflet 未能加载（底图库 CDN 不可达）');
+    // 先加载配置，再加载数据
+    await loadConfig();
     const data = await loadData();
     state.spots = (data.spots || []).slice().sort((a, b) => a.date.localeCompare(b.date));
     registerRegions(data.regions || []);   /* 先注册定义：chips / 图例立即可用 */
