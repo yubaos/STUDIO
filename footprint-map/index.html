@@ -821,11 +821,10 @@ body {
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-sc/index.css" media="print" onload="this.media='all'">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono/index.css" media="print" onload="this.media='all'">
 
-  <!-- ★ Leaflet 完整样式：同样异步加载（关键结构样式已内置于 style.css，加载失败也不影响地图可用） -->
+  <!-- ★ Leaflet 完整样式：同样异步加载（关键结构样式已内置于内联 style，加载失败也不影响地图可用） -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" media="print" onload="this.media='all'">
 
-  <!-- 本地样式：唯一阻塞渲染的样式表，保证加载层与页面骨架瞬间可见 -->
-  <link rel="stylesheet" href="css/style.css">
+  <!-- 本地样式已内联到 <style> 标签中，无需单独加载 css/style.css -->
 </head>
 <body>
 
@@ -951,7 +950,6 @@ body {
     tryNext();
   })();
   </script>
-  <script src="js/app.js"></script>
 </body>
 </html>
 
@@ -973,7 +971,6 @@ body {
   /* ---------------- 0. 常量配置 ---------------- */
   const TILE_URL  = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
   const TILE_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>';
-  const DATA_FILE = 'data/data.json';
 
   /* 中国大陆省/市边界：DataV GeoAtlas（GCJ-02，加载后统一纠偏） */
   const DATAV_URL = (adcode) => `https://geo.datav.aliyun.com/areas_v3/bound/${adcode}.json`;
@@ -1220,11 +1217,32 @@ body {
   }
 
   /* ---------------- 4. 数据加载 ---------------- */
+  // 获取基础路径（兼容 Cloudflare Pages 部署）
+  function getBasePath() {
+    const path = window.location.pathname;
+    // 处理各种部署场景：
+    // - 本地开发：/footprint-map/index.html 或 /footprint-map/
+    // - Cloudflare Pages: /footprint-map/ 或 /
+    // - 根目录部署：/index.html 或 /
+    const segments = path.split('/').filter(Boolean);
+    if (segments.includes('footprint-map')) {
+      const idx = segments.indexOf('footprint-map');
+      return '/' + segments.slice(0, idx + 1).join('/') + '/';
+    }
+    // 默认返回当前目录
+    return path.endsWith('/') ? path : (path.substring(0, path.lastIndexOf('/') + 1) || '/');
+  }
+
   async function loadData() {
     try {
-      const res = await fetchWithTimeout(DATA_FILE, 5000);
+      const basePath = getBasePath();
+      const dataUrl = `${basePath}data/data.json`;
+      console.log('[footprint] 尝试加载 data.json:', dataUrl);
+      const res = await fetchWithTimeout(dataUrl, 5000);
       if (!res.ok) throw new Error('HTTP ' + res.status);
-      return await res.json();
+      const data = await res.json();
+      console.log('[footprint] data.json 加载成功，区域数量:', data.regions?.length || 0);
+      return data;
     } catch (err) {
       console.warn('[footprint] data.json 加载失败，使用内置兜底数据：', err);
       window.__FP_OFFLINE__ = true;
@@ -1234,7 +1252,26 @@ body {
 
   async function fetchRegionGeoJSON(def) {
     if (def.geo && def.geo.type === 'datav') {
-      const res = await fetchWithTimeout(DATAV_URL(def.geo.adcode), 9000);
+      const adcode = def.geo.adcode;
+      // 优先尝试从本地 data 目录加载（使用绝对路径兼容 Cloudflare Pages）
+      const basePath = getBasePath();
+      const localUrl = `${basePath}data/${adcode}.json`;
+      console.log(`[footprint] 区域 ${def.name} 尝试从本地加载：${localUrl}`);
+      try {
+        const res = await fetchWithTimeout(localUrl, 3000);
+        if (res.ok) {
+          console.log(`[footprint] 区域 ${def.name} 从本地加载成功：${localUrl}`);
+          return correctGeoJSON(await res.json());
+        } else {
+          console.log(`[footprint] 区域 ${def.name} 本地文件 HTTP ${res.status}，回退到远程 CDN`);
+        }
+      } catch (localErr) {
+        console.log(`[footprint] 区域 ${def.name} 本地文件请求失败:`, localErr.message, '回退到远程 CDN');
+      }
+      // 本地失败则从远程 CDN 加载
+      const remoteUrl = DATAV_URL(adcode);
+      console.log(`[footprint] 区域 ${def.name} 从远程 CDN 加载：${remoteUrl}`);
+      const res = await fetchWithTimeout(remoteUrl, 9000);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       return correctGeoJSON(await res.json());          /* GCJ-02 → WGS-84 */
     }
@@ -1297,20 +1334,34 @@ body {
   }
 
   function loadRegionsAsync(defs) {
+    const retrySet = new Set();
     Promise.allSettled(defs.map(async (def) => {
       const rec = state.regions.get(def.id);
       if (!rec) return;
-      const gj = await fetchRegionGeoJSON(def);
-      rec.layer = createRegionLayer(def, gj);
-      /* 边界到达时若该区域恰为选中态，补齐行军蚁样式。 */
-      if (state.activeRegion === def.id) {
-        setRegionStyle(def.id, ACTIVE_STYLE);
-        setRegionActiveClass(def.id, true);
+      try {
+        const gj = await fetchRegionGeoJSON(def);
+        rec.layer = createRegionLayer(def, gj);
+        /* 边界到达时若该区域恰为选中态，补齐行军蚁样式。 */
+        if (state.activeRegion === def.id) {
+          setRegionStyle(def.id, ACTIVE_STYLE);
+          setRegionActiveClass(def.id, true);
+        }
+      } catch (err) {
+        console.warn(`[footprint] 区域 ${def.name} 边界加载失败:`, err);
+        retrySet.add(def);
+        // 第一次失败后尝试重试一次
+        try {
+          const gj = await fetchRegionGeoJSON(def);
+          rec.layer = createRegionLayer(def, gj);
+          retrySet.delete(def);
+        } catch (retryErr) {
+          console.warn(`[footprint] 区域 ${def.name} 重试仍失败`);
+        }
       }
-    })).then((results) => {
-      const failed = results.filter((r) => r.status === 'rejected').length;
+    })).then(() => {
+      const failed = retrySet.size;
       if (failed > 0) {
-        console.warn('[footprint] 部分区域边界加载失败');
+        console.warn('[footprint] 部分区域边界最终加载失败');
         toast(`${failed} 个区域边界加载失败，点击 chips 仍可定位`);
       }
     });
@@ -1394,7 +1445,11 @@ body {
     markCurrent(id);
     const target = L.latLng(spot.lat, spot.lng);
     const targetZoom = spot.zoom || 9;
-    if (state._openAfterMove) state.map.off('moveend', state._openAfterMove);
+    // 清理之前的 moveend 监听器，避免重复触发
+    if (state._openAfterMove) {
+      state.map.off('moveend', state._openAfterMove);
+      state._openAfterMove = null;
+    }
     state._openAfterMove = () => {
       state._openAfterMove = null;
       openInstax(idx);
@@ -1557,50 +1612,72 @@ body {
   }
 
   /* ---------------- 10. Instax Wide 弹窗（大画幅 · 无可见控件） ---------------- */
-  function openInstax(idx) {
+  function openInstax(idx, isNav = false) {
     state.modalIndex = (idx + state.spots.length) % state.spots.length;
     const spot = state.spots[state.modalIndex];
     const overlay = $('#instaxOverlay');
     const media = $('#instaxMedia');
 
-    stopCurrentMedia();
-    media.classList.remove('is-video');
+    // 导航切换时保留视频状态，仅更新内容；首次打开则完全重置
+    if (!isNav) {
+      stopCurrentMedia();
+      media.classList.remove('is-video');
+      media.innerHTML = '';
+    }
 
     const tilt = ((state.modalIndex % 5) - 2) * 1.4;
     $('#instaxCard').style.setProperty('--tilt', tilt.toFixed(1) + 'deg');
 
-    media.innerHTML = '';
+    // 如果是导航且已有媒体元素，只需更新 src，避免重建导致状态丢失
     let node;
     if (spot.media === 'video') {
-      node = document.createElement('video');
-      node.className = 'instax-asset developing';
-      node.loop = true; node.muted = true;
-      node.setAttribute('playsinline', '');
-      node.setAttribute('preload', 'metadata');
-      node.setAttribute('controlslist', 'nodownload');
-      node.setAttribute('disablepictureinpicture', '');
-      if (spot.poster) node.poster = previewImageUrl(spot.poster, IMAGE_VARIANT.modal);
-      node.addEventListener('loadeddata', () => node.classList.remove('developing'), { once: true });
-      node.addEventListener('error', () => mediaFailed(media), { once: true });
-      node.src = spot.src;
+      if (isNav && media.querySelector('video')) {
+        node = media.querySelector('video');
+        node.pause();
+        node.src = spot.src;
+        if (spot.poster) node.poster = previewImageUrl(spot.poster, IMAGE_VARIANT.modal);
+        node.load();
+        node.play().catch(() => {});
+      } else {
+        media.classList.remove('is-video');
+        media.innerHTML = '';
+        node = document.createElement('video');
+        node.className = 'instax-asset developing';
+        node.loop = true; node.muted = true;
+        node.setAttribute('playsinline', '');
+        node.setAttribute('preload', 'metadata');
+        node.setAttribute('controlslist', 'nodownload');
+        node.setAttribute('disablepictureinpicture', '');
+        if (spot.poster) node.poster = previewImageUrl(spot.poster, IMAGE_VARIANT.modal);
+        node.addEventListener('loadeddata', () => node.classList.remove('developing'), { once: true });
+        node.addEventListener('error', () => mediaFailed(media), { once: true });
+        node.src = spot.src;
 
-      const vstate = el('span', 'instax-vstate is-paused', '▶');
-      media.appendChild(node);
-      media.appendChild(vstate);
-      media.classList.add('is-video');
-      node.addEventListener('play',  () => vstate.classList.remove('is-paused'));
-      node.addEventListener('pause', () => { vstate.textContent = '▶'; vstate.classList.add('is-paused'); });
+        const vstate = el('span', 'instax-vstate is-paused', '▶');
+        media.appendChild(node);
+        media.appendChild(vstate);
+        media.classList.add('is-video');
+        node.addEventListener('play',  () => vstate.classList.remove('is-paused'));
+        node.addEventListener('pause', () => { vstate.textContent = '▶'; vstate.classList.add('is-paused'); });
 
-      node.play().catch(() => {});
+        node.play().catch(() => {});
+      }
     } else {
-      node = new Image();
-      node.className = 'instax-asset developing';
-      node.alt = spot.name;
-      node.draggable = false;
-      node.addEventListener('load', () => node.classList.remove('developing'), { once: true });
-      node.addEventListener('error', () => mediaFailed(media), { once: true });
-      node.src = previewImageUrl(spot.src, IMAGE_VARIANT.modal);
-      media.appendChild(node);
+      if (isNav && media.querySelector('img')) {
+        node = media.querySelector('img');
+        node.src = previewImageUrl(spot.src, IMAGE_VARIANT.modal);
+      } else {
+        media.classList.remove('is-video');
+        media.innerHTML = '';
+        node = new Image();
+        node.className = 'instax-asset developing';
+        node.alt = spot.name;
+        node.draggable = false;
+        node.addEventListener('load', () => node.classList.remove('developing'), { once: true });
+        node.addEventListener('error', () => mediaFailed(media), { once: true });
+        node.src = previewImageUrl(spot.src, IMAGE_VARIANT.modal);
+        media.appendChild(node);
+      }
     }
 
     $('#instaxName').textContent = spot.name;
@@ -1640,11 +1717,14 @@ body {
 
   function navInstax(dir) {
     if (state.modalIndex < 0) return;
+    const prevIdx = state.modalIndex;
     const next = (state.modalIndex + dir + state.spots.length) % state.spots.length;
+    if (next === prevIdx) return;
+    
     const spot = state.spots[next];
     state.map.flyTo([spot.lat, spot.lng], spot.zoom || 9, { duration: .8 });
     markCurrent(spot.id);
-    openInstax(next);
+    openInstax(next, true);
   }
 
   function onMediaClick() {
