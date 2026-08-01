@@ -1524,10 +1524,17 @@ body.modal-open .head-top {
     });
     const mk = L.marker(state.planePath[0], { icon, interactive: false, keyboard: false }).addTo(state.map);
     state.planeMarker = mk;
-    // 始终启动飞机动画，不再因 REDUCED_MOTION 跳过
 
-    /* 单一 requestAnimationFrame 时钟：位置和朝向同帧更新，避免 CSS 过渡叠加拖影。 */
-    const DURATION = 48000;
+    /* 计算路径总像素长度，按恒定速度（约 300 像素/秒）动态计算飞行时长 */
+    let totalPixels = 0;
+    for (let i = 0; i < state.planePath.length - 1; i++) {
+      const p1 = state.planePath[i], p2 = state.planePath[i + 1];
+      const pt1 = state.map.latLngToContainerPoint(p1), pt2 = state.map.latLngToContainerPoint(p2);
+      totalPixels += Math.hypot(pt2.x - pt1.x, pt2.y - pt1.y);
+    }
+    const SPEED = 300; // 像素/秒
+    const DURATION = Math.max(2000, (totalPixels / SPEED) * 1000); // 至少 2 秒
+
     let elapsed = 0;
     let previous = performance.now();
     (function frame(now) {
@@ -1817,11 +1824,12 @@ body.modal-open .head-top {
     registerRegions(data.regions || []);   /* 先注册定义：chips / 图例立即可用 */
     initMap();
     buildSpots();
-    buildFlightPath();
     renderSidebar();
     bindUI();
     hideLoader();
     loadRegionsAsync(data.regions || []);  /* 边界后台加载，互不阻塞 */
+    // 延迟构建航线和飞机，确保地图容器已完全渲染，像素距离计算准确
+    setTimeout(buildFlightPath, 100);
   }
 
   /* 入口：等待 Leaflet 动态加载完成后启动，超时则展示错误页 */
