@@ -512,10 +512,7 @@ body {
 }
 .fp-plane svg { width: 20px; height: 20px; fill: var(--paper); stroke: var(--ink-3); stroke-width: 1.1; }
 
-/* 地图飞行时暂缓装饰层重绘，避免它们与 Leaflet 的视图变换相互叠加而闪烁。 */
-.leaflet-container.is-moving .fp-region.is-active,
-.leaflet-container.is-moving .fp-flight { animation-play-state: paused; }
-.leaflet-container.is-moving .fp-dot-wrap:hover .fp-dot-core { transform: none; }
+/* 标点脉冲动画始终运行，不受地图移动影响 */
 
 /* ---- 地图浮层：重置按钮 & 图例 ---- */
 .map-reset {
@@ -1576,22 +1573,19 @@ body.modal-open .head-top {
     (function frame(now) {
       const delta = Math.min(now - previous, 50);
       previous = now;
-      /* 视图移动时，飞机与其内部旋转同时冻结；地图稳定后从原位置继续。 */
-      if (!state.isMapMoving) {
-        // 使用最新的 DURATION 值（可能被 zoomend 更新）
-        const currentDuration = window._planeDuration || DURATION;
-        elapsed = (elapsed + delta) % currentDuration;
-        const t = elapsed / currentDuration;
-        const f = t * (state.planePath.length - 1);
-        const i = Math.floor(f), frac = f - i;
-        const p1 = state.planePath[i];
-        const p2 = state.planePath[Math.min(i + 1, state.planePath.length - 1)];
-        mk.setLatLng([p1[0] + (p2[0] - p1[0]) * frac, p1[1] + (p2[1] - p1[1]) * frac]);
-        const node = mk.getElement() && mk.getElement().querySelector('.fp-plane');
-        if (node) {
-          const brg = bearing({ lat: p1[0], lng: p1[1] }, { lat: p2[0], lng: p2[1] });
-          node.style.transform = `rotate(${brg.toFixed(1)}deg)`;
-        }
+      // 始终更新飞机位置，不再因地图移动而暂停
+      const currentDuration = window._planeDuration || DURATION;
+      elapsed = (elapsed + delta) % currentDuration;
+      const t = elapsed / currentDuration;
+      const f = t * (state.planePath.length - 1);
+      const i = Math.floor(f), frac = f - i;
+      const p1 = state.planePath[i];
+      const p2 = state.planePath[Math.min(i + 1, state.planePath.length - 1)];
+      mk.setLatLng([p1[0] + (p2[0] - p1[0]) * frac, p1[1] + (p2[1] - p1[1]) * frac]);
+      const node = mk.getElement() && mk.getElement().querySelector('.fp-plane');
+      if (node) {
+        const brg = bearing({ lat: p1[0], lng: p1[1] }, { lat: p2[0], lng: p2[1] });
+        node.style.transform = `rotate(${brg.toFixed(1)}deg)`;
       }
       state.planeFrame = requestAnimationFrame(frame);
     })(previous);
