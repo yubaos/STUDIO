@@ -973,7 +973,6 @@ body {
   /* ---------------- 0. 常量配置 ---------------- */
   const TILE_URL  = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
   const TILE_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>';
-  const DATA_FILE = 'data/data.json';
 
   /* 中国大陆省/市边界：DataV GeoAtlas（GCJ-02，加载后统一纠偏） */
   const DATAV_URL = (adcode) => `https://geo.datav.aliyun.com/areas_v3/bound/${adcode}.json`;
@@ -1220,11 +1219,32 @@ body {
   }
 
   /* ---------------- 4. 数据加载 ---------------- */
+  // 获取基础路径（兼容 Cloudflare Pages 部署）
+  function getBasePath() {
+    const path = window.location.pathname;
+    // 处理各种部署场景：
+    // - 本地开发：/footprint-map/index.html 或 /footprint-map/
+    // - Cloudflare Pages: /footprint-map/ 或 /
+    // - 根目录部署：/index.html 或 /
+    const segments = path.split('/').filter(Boolean);
+    if (segments.includes('footprint-map')) {
+      const idx = segments.indexOf('footprint-map');
+      return '/' + segments.slice(0, idx + 1).join('/') + '/';
+    }
+    // 默认返回当前目录
+    return path.endsWith('/') ? path : (path.substring(0, path.lastIndexOf('/') + 1) || '/');
+  }
+
   async function loadData() {
     try {
-      const res = await fetchWithTimeout(DATA_FILE, 5000);
+      const basePath = getBasePath();
+      const dataUrl = `${basePath}data/data.json`;
+      console.log('[footprint] 尝试加载 data.json:', dataUrl);
+      const res = await fetchWithTimeout(dataUrl, 5000);
       if (!res.ok) throw new Error('HTTP ' + res.status);
-      return await res.json();
+      const data = await res.json();
+      console.log('[footprint] data.json 加载成功，区域数量:', data.regions?.length || 0);
+      return data;
     } catch (err) {
       console.warn('[footprint] data.json 加载失败，使用内置兜底数据：', err);
       window.__FP_OFFLINE__ = true;
@@ -1235,19 +1255,25 @@ body {
   async function fetchRegionGeoJSON(def) {
     if (def.geo && def.geo.type === 'datav') {
       const adcode = def.geo.adcode;
-      // 优先尝试从本地 data 目录加载
+      // 优先尝试从本地 data 目录加载（使用绝对路径兼容 Cloudflare Pages）
+      const basePath = getBasePath();
+      const localUrl = `${basePath}data/${adcode}.json`;
+      console.log(`[footprint] 区域 ${def.name} 尝试从本地加载：${localUrl}`);
       try {
-        const localUrl = `data/${adcode}.json`;
         const res = await fetchWithTimeout(localUrl, 3000);
         if (res.ok) {
-          console.log(`[footprint] 区域 ${def.name} 从本地加载：${localUrl}`);
+          console.log(`[footprint] 区域 ${def.name} 从本地加载成功：${localUrl}`);
           return correctGeoJSON(await res.json());
+        } else {
+          console.log(`[footprint] 区域 ${def.name} 本地文件 HTTP ${res.status}，回退到远程 CDN`);
         }
       } catch (localErr) {
-        console.log(`[footprint] 区域 ${def.name} 本地文件不存在，回退到远程 CDN`);
+        console.log(`[footprint] 区域 ${def.name} 本地文件请求失败:`, localErr.message, '回退到远程 CDN');
       }
       // 本地失败则从远程 CDN 加载
-      const res = await fetchWithTimeout(DATAV_URL(adcode), 9000);
+      const remoteUrl = DATAV_URL(adcode);
+      console.log(`[footprint] 区域 ${def.name} 从远程 CDN 加载：${remoteUrl}`);
+      const res = await fetchWithTimeout(remoteUrl, 9000);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       return correctGeoJSON(await res.json());          /* GCJ-02 → WGS-84 */
     }
