@@ -1,0 +1,97 @@
+{
+  "title": "我的旅行足迹",
+  "description": "记录每一次旅行的美好瞬间",
+  "locations": [
+    {
+      "id": 1,
+      "display": "鼓浪屿，厦门",
+      "date": "2014.04.10",
+      "image": "https://img.yubaos.com/xiamen.webp",
+      "lat": 24.4450,
+      "lng": 118.0743,
+      "note": "鼓浪屿碧海青松，英雄永驻。"
+    },
+    {
+      "id": 2,
+      "display": "吉隆坡，马来西亚",
+      "date": "2016.10.03",
+      "image": "https://img.yubaos.com/kualalumpur.webp",
+      "lat": 3.1589,
+      "lng": 101.7108,
+      "note": "拥抱双子塔的宏伟，定格异国旅途的偏爱。"
+    },
+    {
+      "id": 3,
+      "display": "兰卡威，马来西亚",
+      "date": "2016.10.05",
+      "image": "https://img.yubaos.com/langkawi.webp",
+      "lat": 6.2620,
+      "lng": 99.7362,
+      "note": "碧海远山，云卷云舒，藏在兰卡威的夏天。"
+    },
+    {
+      "id": 4,
+      "display": "普吉岛，泰国",
+      "date": "2016.10.08",
+      "image": "https://img.yubaos.com/phuket.webp",
+      "lat": 7.8632,
+      "lng": 98.3995,
+      "note": "普吉岛九皇斋节，信徒穿刺显虔诚。"
+    },
+    {
+      "id": 5,
+      "display": "曼谷，泰国",
+      "date": "2016.10.11",
+      "image": "https://img.yubaos.com/bangkok.webp",
+      "lat": 13.7501,
+      "lng": 100.4920,
+      "note": "金顶巍峨，皇家风范，游客如织。"
+    },
+    {
+      "id": 6,
+      "display": "广州，中国",
+      "date": "2017.10.19",
+      "image": "https://img.yubaos.com/zhujiang.webp",
+      "lat": 23.1291,
+      "lng": 113.2644,
+      "note": "碧水蓝天映衬，珠江两岸摩天大楼林立，繁华都市气象万千。"
+    },
+    {
+      "id": 7,
+      "display": "香港，中国",
+      "date": "2018.09.05",
+      "image": "https://img.yubaos.com/hongkong.webp",
+      "lat": 22.2930,
+      "lng": 114.1706,
+      "note": "维港波光粼粼，摩天大楼依山而建，尽显东方之珠的繁华。"
+    },
+    {
+      "id": 8,
+      "display": "北京，中国",
+      "date": "2019.07.03",
+      "image": "https://img.yubaos.com/beijing.webp",
+      "lat": 39.9063,
+      "lng": 116.3912,
+      "note": "雄伟天安门前留影，定格首都日光下的庄严与青春。"
+    },
+    {
+      "id": 9,
+      "display": "姬路，日本",
+      "date": "2023.10.17",
+      "image": "https://img.yubaos.com/castle.webp",
+      "lat": 34.8394,
+      "lng": 134.6939,
+      "note": "白鹭城，樱花把整座天守阁框成一幅画。"
+    },
+    {
+      "id": 10,
+      "display": "上海，中国",
+      "date": "2023.10.18",
+      "image": "https://img.yubaos.com/shanghai.webp",
+      "lat": 31.2397,
+      "lng": 121.4995,
+      "note": "江风带着潮气，对岸的灯一盏接一盏点亮。"
+    }
+  ],
+  "regions": []
+}
