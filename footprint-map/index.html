@@ -564,6 +564,12 @@ body.modal-open .sidebar { z-index: 2500 !important; }
   transition: visibility 0s .35s;
 }
 .instax-overlay.open { visibility: visible; transition: visibility 0s 0s; }
+.instax-overlay.open .instax-backdrop,
+.instax-overlay.open .instax-stage,
+.instax-overlay.open .instax-count,
+.instax-overlay.open .instax-hint {
+  pointer-events: auto;
+}
 .instax-backdrop {
   position: absolute; inset: 0;
   background: rgba(7,18,28,.66);
@@ -738,9 +744,9 @@ body.modal-open .sidebar { z-index: 2500 !important; }
     max-height: 25dvh;
     border-radius: 18px 18px 0 0;
     box-shadow: 0 -14px 40px rgba(4,14,24,.45);
-    transition: max-height .4s cubic-bezier(.2,.9,.3,1);
+    transition: max-height .4s cubic-bezier(.2,.9,.3,1), bottom .4s cubic-bezier(.2,.9,.3,1);
   }
-  .sidebar.expanded { max-height: 82dvh; }
+  .sidebar.expanded { max-height: 82dvh; bottom: 25dvh; }
   .sidebar::before { display: none; }
 
   .sheet-handle {
@@ -819,6 +825,8 @@ body.modal-open .sidebar { z-index: 2500 !important; }
     visibility: visible !important;
     opacity: 1 !important;
     pointer-events: auto !important;
+    z-index: 2600 !important;
+    position: relative;
   }
 }
 
