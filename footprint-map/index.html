@@ -44,6 +44,7 @@ body {
   color: var(--ink);
   background: var(--ink);
 }
+body.modal-open .sidebar { z-index: 2500 !important; }
 ::selection { background: var(--gold); color: var(--ink); }
 
 /* ==================== 加载层（含错误态） ==================== */
@@ -734,7 +735,7 @@ body {
 
   .sidebar {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 1200;
-    max-height: 46dvh;
+    max-height: 25dvh;
     border-radius: 18px 18px 0 0;
     box-shadow: 0 -14px 40px rgba(4,14,24,.45);
     transition: max-height .4s cubic-bezier(.2,.9,.3,1);
@@ -809,6 +810,15 @@ body {
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
+  }
+}
+
+/* 移动端打开照片弹窗时，确保 head-top 可见可点击 */
+@media (max-width: 900px) {
+  body.modal-open .sidebar .head-top {
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
   }
 }
 
@@ -1302,7 +1312,6 @@ body {
       attribution: TILE_ATTR, subdomains: 'abcd', maxZoom: 19,
       updateWhenZooming: false, updateWhenIdle: true, keepBuffer: 4
     }).addTo(map);
-    L.control.zoom({ position: 'topright' }).addTo(map);
     L.control.scale({ position: 'bottomleft', imperial: false }).addTo(map);
     map.on('movestart', () => {
       state.isMapMoving = true;
