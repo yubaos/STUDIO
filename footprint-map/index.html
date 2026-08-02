@@ -515,7 +515,6 @@ body.modal-open .sidebar { z-index: 2500 !important; }
 
 /* 地图飞行时暂缓装饰层重绘，避免它们与 Leaflet 的视图变换相互叠加而闪烁。 */
 .leaflet-container.is-moving .fp-region.is-active,
-.leaflet-container.is-moving .fp-dot-ring,
 .leaflet-container.is-moving .fp-flight { animation-play-state: paused; }
 .leaflet-container.is-moving .fp-dot-wrap:hover .fp-dot-core { transform: none; }
 
@@ -748,6 +747,12 @@ body.modal-open .sidebar { z-index: 2500 !important; }
   }
   .sidebar.expanded { max-height: 82dvh; bottom: 25dvh; }
   .sidebar::before { display: none; }
+  
+  /* 未展开时，侧栏位于底部约 1/4 处（留出更多地图可视区域） */
+  .sidebar:not(.expanded) {
+    bottom: 25dvh;
+    max-height: 18dvh;
+  }
 
   .sheet-handle {
     display: block; flex: none;
@@ -826,7 +831,12 @@ body.modal-open .sidebar { z-index: 2500 !important; }
     opacity: 1 !important;
     pointer-events: auto !important;
     z-index: 2600 !important;
-    position: relative;
+    position: sticky;
+    top: 0;
+    background: linear-gradient(165deg, #10293e, #0b1f30 55%, #0d2740);
+    padding: 10px 18px;
+    margin: -10px -18px 14px;
+    border-bottom: 1px dashed rgba(236,231,219,.18);
   }
 }
 
@@ -1013,7 +1023,7 @@ body.modal-open .sidebar { z-index: 2500 !important; }
   const HOVER_STYLE  = { weight: 2.0, opacity: .9, fillOpacity: .32, dashArray: null, lineJoin: 'round', lineCap: 'round' };
   const ACTIVE_STYLE = { weight: 2.4, opacity: 1,   fillOpacity: .38, dashArray: '5 7', lineJoin: 'round', lineCap: 'round' };
 
-  const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const REDUCED_MOTION = false; // window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* Cloudflare Image Transformations：所有页面预览均使用优化副本，不直接加载原图。 */
   const IMAGE_CDN_ORIGIN = 'https://img.yubaos.com';
