@@ -1355,8 +1355,11 @@ body.modal-open { overflow: hidden; }
       map.getContainer().classList.add('is-moving');
     });
     map.on('moveend', () => {
-      state.isMapMoving = false;
-      map.getContainer().classList.remove('is-moving');
+      // 使用 setTimeout 确保 moveend 事件完全处理后再设置状态
+      setTimeout(() => {
+        state.isMapMoving = false;
+        map.getContainer().classList.remove('is-moving');
+      }, 0);
     });
     // 监听缩放动画事件，确保 flyTo 等缩放操作也能正确更新状态
     map.on('zoomanim', () => {
@@ -1364,8 +1367,11 @@ body.modal-open { overflow: hidden; }
       map.getContainer().classList.add('is-moving');
     });
     map.on('zoomend', () => {
-      state.isMapMoving = false;
-      map.getContainer().classList.remove('is-moving');
+      // 使用 setTimeout 确保 zoomend 事件完全处理后再设置状态
+      setTimeout(() => {
+        state.isMapMoving = false;
+        map.getContainer().classList.remove('is-moving');
+      }, 0);
     });
     
     state.map = map;
@@ -1558,7 +1564,8 @@ body.modal-open { overflow: hidden; }
     state.planePath = path;
     L.polyline(path, { className: 'fp-flight-glow', color: '#1d6fd1', weight: 7, opacity: .10, lineCap: 'round', interactive: false }).addTo(state.map);
     L.polyline(path, { className: 'fp-flight', color: '#1d6fd1', weight: 2, opacity: .65, dashArray: '2 9', lineCap: 'round', interactive: false }).addTo(state.map);
-    startPlane();
+    // 等待地图初始化完成后再启动飞机动画
+    setTimeout(startPlane, 100);
   }
 
   function startPlane() {
@@ -1575,15 +1582,22 @@ body.modal-open { overflow: hidden; }
     });
     const mk = L.marker(state.planePath[0], { icon, interactive: false, keyboard: false }).addTo(state.map);
     state.planeMarker = mk;
+    
+    // 调试日志：确认飞机标记已创建
+    console.log('[footprint] 飞机标记已创建，路径点数:', state.planePath.length);
+    
     if (!ENABLE_ANIMATIONS) return;
 
     /* 单一 requestAnimationFrame 时钟：位置和朝向同帧更新，避免 CSS 过渡叠加拖影。 */
     const DURATION = 48000;
     let elapsed = 0;
     let previous = performance.now();
+    let debugFrameCount = 0;
     (function frame(now) {
       const delta = Math.min(now - previous, 50);
       previous = now;
+      debugFrameCount++;
+      
       /* 视图移动时，飞机与其内部旋转同时冻结；地图稳定后从原位置继续。 */
       if (!state.isMapMoving) {
         elapsed = (elapsed + delta) % DURATION;
@@ -1593,10 +1607,20 @@ body.modal-open { overflow: hidden; }
         const p1 = state.planePath[i];
         const p2 = state.planePath[Math.min(i + 1, state.planePath.length - 1)];
         mk.setLatLng([p1[0] + (p2[0] - p1[0]) * frac, p1[1] + (p2[1] - p1[1]) * frac]);
-        const node = mk.getElement() && mk.getElement().querySelector('.fp-plane');
+        const el = mk.getElement();
+        const node = el && el.querySelector('.fp-plane');
         if (node) {
           const brg = bearing({ lat: p1[0], lng: p1[1] }, { lat: p2[0], lng: p2[1] });
           node.style.transform = `rotate(${brg.toFixed(1)}deg)`;
+        }
+        // 每 60 帧打印一次调试信息
+        if (debugFrameCount % 60 === 0) {
+          console.log('[footprint] 飞机动画运行中，isMapMoving:', state.isMapMoving, 'elapsed:', elapsed);
+        }
+      } else {
+        // 每 30 帧打印一次等待信息
+        if (debugFrameCount % 30 === 0) {
+          console.log('[footprint] 等待地图静止，isMapMoving:', state.isMapMoving);
         }
       }
       state.planeFrame = requestAnimationFrame(frame);
