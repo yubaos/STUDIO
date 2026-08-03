@@ -1,47 +1,47 @@
-# Compiled and binary files
-*.pyc
-*.class
-*.o
-*.exe
-*.dll
-*.so
-*.a
-*.obj
-*.out
-
-# Dependencies
-node_modules/
-venv/
-.venv/
-__pycache__/
-dist/
-build/
-target/
-.gradle/
-.mypy_cache/
-.pytest_cache/
-
-# Editor/IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
+# Logs and temp files
+*.log
 *.tmp
+*.swp
 
-# System/Environment files
-.DS_Store
-Thumbs.db
+# Environment
 .env
 .env.local
 *.env.*
 
-# Logs and coverage
-*.log
-coverage/
-htmlcov/
-.coverage
+# Editors
+.vscode/
+.idea/
 
-# Compressed files
+# System files
+.DS_Store
+Thumbs.db
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+.venv.bak/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+.coverage
+htmlcov/
+.coverage.*
+.nyc_output
+istanbul.out
+coverage/lcov-report/
+
+# Compression files
 *.zip
 *.gz
 *.tar
@@ -64,3 +64,22 @@ htmlcov/
 *.tar.bz2
 *.tar.xz
 *.tar.zst
+
+# Other common ignores
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.git/
+!.gitignore
+README.md
+LICENSE
+COPYING
+.travis.yml
+.circleci
+.github
+.gitlab-ci.yml
+
+# Original rules preserved
+*.log
