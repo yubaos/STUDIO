@@ -735,15 +735,18 @@ body.modal-open { overflow: hidden; }
 
   .sidebar {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 1200;
-    max-height: 46dvh;
+    max-height: 38dvh;
     border-radius: 18px 18px 0 0;
     box-shadow: 0 -14px 40px rgba(4,14,24,.45);
     transition: max-height .4s cubic-bezier(.2,.9,.3,1);
-    /* 默认收起状态：只显示手柄和头部统计信息，隐藏时间线列表 */
+    /* 默认收起状态：只显示手柄和头部统计信息，隐藏区域选择和時間线列表 */
     display: flex;
     flex-direction: column;
   }
-  .sidebar.expanded { max-height: 82dvh; }
+  /* 第一段展开：显示区域选择 chips */
+  .sidebar.expanded { max-height: 58dvh; }
+  /* 第二段展开：显示完整时间线列表 */
+  .sidebar.expanded-full { max-height: 82dvh; }
   .sidebar::before { display: none; }
 
   .sheet-handle {
@@ -760,7 +763,8 @@ body.modal-open { overflow: hidden; }
     background: rgba(236,231,219,.35);
     transition: transform .3s ease;
   }
-  .sidebar.expanded .sheet-handle::before {
+  .sidebar.expanded .sheet-handle::before,
+  .sidebar.expanded-full .sheet-handle::before {
     transform: rotate(180deg);
   }
 
@@ -777,12 +781,16 @@ body.modal-open { overflow: hidden; }
     padding: 10px 16px 2px;
     flex: none;
   }
+  /* 区域选择区块：只在第一段展开和完全展开时显示 */
+  #regionBlock { display: none; }
+  .sidebar.expanded #regionBlock,
+  .sidebar.expanded-full #regionBlock { display: block; }
   .block-title { margin-bottom: 8px; font-size: 12px; }
   .chips { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
   .chips::-webkit-scrollbar { display: none; }
   .chip { flex: none; }
 
-  /* 时间线区块：默认收起，展开时才显示完整内容 */
+  /* 时间线区块：默认收起，完全展开时才显示完整内容 */
   .side-block--grow { 
     flex: 0 0 auto;
     max-height: 0;
@@ -791,7 +799,7 @@ body.modal-open { overflow: hidden; }
     opacity: 0;
     transition: max-height .4s cubic-bezier(.2,.9,.3,1), opacity .3s ease, padding .3s ease;
   }
-  .sidebar.expanded .side-block--grow {
+  .sidebar.expanded-full .side-block--grow {
     flex: 1 1 auto;
     max-height: none;
     overflow-y: auto;
@@ -807,16 +815,16 @@ body.modal-open { overflow: hidden; }
   }
   .tl-list::-webkit-scrollbar { display: none; }
   .tl-list::before { display: none; }
-  .sidebar.expanded .tl-list {
+  .sidebar.expanded-full .tl-list {
     flex-direction: column;
     overflow-y: auto; overflow-x: hidden;
     padding-left: 22px;
   }
-  .sidebar.expanded .tl-list::before { display: block; }
+  .sidebar.expanded-full .tl-list::before { display: block; }
   .tl-item { flex: 0 0 250px; margin: 0; scroll-snap-align: start; opacity: 1; transform: none; }
-  .sidebar.expanded .tl-item { flex: none; width: auto; margin-bottom: 14px; }
+  .sidebar.expanded-full .tl-item { flex: none; width: auto; margin-bottom: 14px; }
   .tl-node { display: none; }
-  .sidebar.expanded .tl-node { display: block; }
+  .sidebar.expanded-full .tl-node { display: block; }
 
   .map-legend { display: none; }
   .leaflet-control-attribution, .leaflet-control-scale { display: none; }
@@ -914,7 +922,7 @@ body.modal-open { overflow: hidden; }
       </div>
     </header>
 
-    <section class="side-block">
+    <section class="side-block" id="regionBlock">
       <h2 class="block-title"><i></i>区域高亮 <em>REGION HIGHLIGHT</em></h2>
       <div class="chips" id="chipList"></div>
     </section>
@@ -1735,6 +1743,15 @@ body.modal-open { overflow: hidden; }
     overlay.setAttribute('aria-hidden', 'false');
     document.body.classList.add('modal-open');
 
+    // 打开弹窗时自动收起侧边栏，避免在手机上遮挡地图内容
+    const sb = $('#sidebar');
+    if (sb) {
+      sb.classList.remove('expanded');
+      sb.classList.remove('expanded-full');
+      const handle = $('.sheet-handle');
+      if (handle) handle.setAttribute('aria-expanded', 'false');
+    }
+
     const card = $('#instaxCard');
     card.classList.remove('drop');
     void card.offsetWidth;
@@ -1758,6 +1775,15 @@ body.modal-open { overflow: hidden; }
     overlay.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('modal-open');
     state.modalIndex = -1;
+    
+    // 关闭弹窗时自动收起侧边栏，避免遮挡地图内容
+    const sb = $('#sidebar');
+    if (sb) {
+      sb.classList.remove('expanded');
+      sb.classList.remove('expanded-full');
+      const handle = $('.sheet-handle');
+      if (handle) handle.setAttribute('aria-expanded', 'false');
+    }
   }
 
   function navInstax(dir) {
@@ -1817,8 +1843,20 @@ body.modal-open { overflow: hidden; }
     if (handle) {
       handle.addEventListener('click', () => {
         const sb = $('#sidebar');
-        sb.classList.toggle('expanded');
-        handle.setAttribute('aria-expanded', String(sb.classList.contains('expanded')));
+        // 三段式展开逻辑：收起 -> 第一段展开（显示区域 chips）-> 第二段展开（显示时间线）-> 收起
+        if (!sb.classList.contains('expanded')) {
+          // 从收起状态到第一段展开
+          sb.classList.add('expanded');
+          sb.classList.remove('expanded-full');
+        } else if (!sb.classList.contains('expanded-full')) {
+          // 从第一段展开到完全展开
+          sb.classList.add('expanded-full');
+        } else {
+          // 从完全展开到收起
+          sb.classList.remove('expanded');
+          sb.classList.remove('expanded-full');
+        }
+        handle.setAttribute('aria-expanded', String(sb.classList.contains('expanded') || sb.classList.contains('expanded-full')));
       });
     }
   }
