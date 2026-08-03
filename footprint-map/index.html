@@ -739,36 +739,65 @@ body.modal-open { overflow: hidden; }
     border-radius: 18px 18px 0 0;
     box-shadow: 0 -14px 40px rgba(4,14,24,.45);
     transition: max-height .4s cubic-bezier(.2,.9,.3,1);
+    /* 默认收起状态：只显示手柄和头部统计信息，隐藏时间线列表 */
+    display: flex;
+    flex-direction: column;
   }
   .sidebar.expanded { max-height: 82dvh; }
   .sidebar::before { display: none; }
 
   .sheet-handle {
     display: block; flex: none;
-    width: 100%; height: 22px;
+    width: 100%; height: 42px;
     border: none; background: transparent; cursor: pointer;
     position: relative;
+    flex-shrink: 0;
   }
   .sheet-handle::before {
-    content: ""; position: absolute; top: 8px; left: 50%;
+    content: ""; position: absolute; top: 16px; left: 50%;
     width: 46px; height: 5px; margin-left: -23px;
     border-radius: 99px;
     background: rgba(236,231,219,.35);
+    transition: transform .3s ease;
+  }
+  .sidebar.expanded .sheet-handle::before {
+    transform: rotate(180deg);
   }
 
-  .side-head { padding: 4px 18px 14px; }
+  .side-head { 
+    padding: 4px 18px 14px;
+    flex: none;
+  }
   .head-top { gap: 12px; margin-bottom: 14px; }
   .overline { font-size: 9px; margin-bottom: 3px; }
   .overline-sub { font-size: 13px; letter-spacing: .16em; }
   .stat-num { font-size: 21px; }
 
-  .side-block { padding: 10px 16px 2px; }
+  .side-block { 
+    padding: 10px 16px 2px;
+    flex: none;
+  }
   .block-title { margin-bottom: 8px; font-size: 12px; }
   .chips { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
   .chips::-webkit-scrollbar { display: none; }
   .chip { flex: none; }
 
-  .side-block--grow { overflow: visible; padding-bottom: 4px; }
+  /* 时间线区块：默认收起，展开时才显示完整内容 */
+  .side-block--grow { 
+    flex: 0 0 auto;
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 16px;
+    opacity: 0;
+    transition: max-height .4s cubic-bezier(.2,.9,.3,1), opacity .3s ease, padding .3s ease;
+  }
+  .sidebar.expanded .side-block--grow {
+    flex: 1 1 auto;
+    max-height: none;
+    overflow-y: auto;
+    padding: 10px 16px 4px;
+    opacity: 1;
+  }
   .tl-list {
     display: flex; flex-direction: row; gap: 12px;
     padding: 4px 2px 16px;
@@ -811,6 +840,11 @@ body.modal-open { overflow: hidden; }
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
+}
+
+/* 强制启用脉冲点和飞机动画，即使用户系统设置减弱动效 */
+.fp-dot-ring, .fp-flight, .loader-orbit {
+  animation-play-state: running !important;
 }
 
 
@@ -1299,7 +1333,7 @@ body.modal-open { overflow: hidden; }
   function initMap() {
     const map = L.map('map', {
       zoomControl: false, minZoom: 3, maxZoom: 17,
-      worldCopyJump: true, attributionControl: true,
+      worldCopyJump: true, attributionControl: false,
       fadeAnimation: false, markerZoomAnimation: false
     });
     /* 飞行缩放期间复用当前瓦片，等视图稳定后再更新，防止中间层频繁淡入淡出。 */
@@ -1307,9 +1341,7 @@ body.modal-open { overflow: hidden; }
       attribution: TILE_ATTR, subdomains: 'abcd', maxZoom: 19,
       updateWhenZooming: false, updateWhenIdle: true, keepBuffer: 4
     }).addTo(map);
-    // 移除缩放控件：电脑使用鼠标滚轮控制，手机触控控制缩放
-    // L.control.zoom({ position: 'topright' }).addTo(map);
-    L.control.scale({ position: 'bottomleft', imperial: false }).addTo(map);
+    
     map.on('movestart', () => {
       state.isMapMoving = true;
       map.getContainer().classList.add('is-moving');
@@ -1318,6 +1350,7 @@ body.modal-open { overflow: hidden; }
       state.isMapMoving = false;
       map.getContainer().classList.remove('is-moving');
     });
+    
     state.map = map;
   }
 
