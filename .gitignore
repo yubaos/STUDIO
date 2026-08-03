@@ -1,49 +1,40 @@
-# Examples:
-#   node_modules/           # Dependency directories
-#   *.pyc                   # Compiled files
-#   .env                    # Environment files
-#   .vscode/                # Editor files
-#   __pycache__/            # Python cache
-#   .gitignore              # Self-referential
-
-# Dependencies
-node_modules/
-
-# Python
-__pycache__/
+```
+# Compiled and build artifacts
 *.pyc
-*.pyo
-*.pyd
-.Python
-venv/
-env/
-ENV/
-.venv/
-.env
-.env.local
-.env.*
-
-# Build outputs
+__pycache__/
+*.o
+*.obj
 dist/
 build/
 target/
-out/
 
-# Logs
+# Dependencies
+.venv/
+venv/
+node_modules/
+.mypy_cache/
+.pytest_cache/
+.gradle/
+
+# Logs and temp files
 *.log
+*.tmp
+*.swp
 
-# OS generated files
+# Environment
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
+
+# System files
 .DS_Store
 Thumbs.db
 
-# Editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-*.tmp
-
-# Coverage reports
+# Coverage
 coverage/
 htmlcov/
 .coverage
@@ -71,12 +62,4 @@ htmlcov/
 *.tar.bz2
 *.tar.xz
 *.tar.zst
-
-# Gradle
-.gradle/
-
-# MyPy
-.mypy_cache/
-
-# PyTest
-.pytest_cache/
+```
