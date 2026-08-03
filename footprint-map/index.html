@@ -1463,7 +1463,6 @@ body.modal-open { overflow: hidden; }
     } else if (rec.def.fallbackView) {
       state.map.flyTo(rec.def.fallbackView.center, rec.def.fallbackView.zoom, { duration: .9 });
     }
-    toast(`已聚焦：${rec.def.name} · ${rec.def.en}`);
   }
 
   function resetView() {
