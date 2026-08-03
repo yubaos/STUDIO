@@ -1358,6 +1358,15 @@ body.modal-open { overflow: hidden; }
       state.isMapMoving = false;
       map.getContainer().classList.remove('is-moving');
     });
+    // 监听缩放动画事件，确保 flyTo 等缩放操作也能正确更新状态
+    map.on('zoomanim', () => {
+      state.isMapMoving = true;
+      map.getContainer().classList.add('is-moving');
+    });
+    map.on('zoomend', () => {
+      state.isMapMoving = false;
+      map.getContainer().classList.remove('is-moving');
+    });
     
     state.map = map;
   }
