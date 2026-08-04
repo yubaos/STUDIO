@@ -630,11 +630,12 @@ body.modal-open { overflow: hidden; }
 }
 .instax-media {
   position: relative;
-  aspect-ratio: 99 / 62;
+  width: 100%;
   background: #0d1720;
   border-radius: 3px; overflow: hidden;
   box-shadow: inset 0 0 0 1px rgba(0,0,0,.18);
   -webkit-touch-callout: none;
+  transition: aspect-ratio .35s ease;
 }
 .instax-media.is-portrait { aspect-ratio: 62 / 46; }
 .instax-media.is-landscape { aspect-ratio: 99 / 62; }
@@ -1093,7 +1094,8 @@ body.modal-open { overflow: hidden; }
     spotMarkers: {}, allBounds: null,
     activeRegion: null, modalIndex: -1,
     planePath: [], planeMarker: null, planeFrame: 0,
-    isMapMoving: false, _openAfterMove: null
+    isMapMoving: false, _openAfterMove: null,
+    mediaResizeObserver: null
   };
 
   const $ = (sel, root) => (root || document).querySelector(sel);
@@ -1803,6 +1805,16 @@ body.modal-open { overflow: hidden; }
               media.classList.add('is-portrait');
             }
           };
+        } else {
+          // 无海报图时，根据视频实际尺寸设置方向
+          if (node && node.videoWidth && node.videoHeight) {
+            media.classList.remove('is-portrait', 'is-landscape');
+            if (node.videoWidth > node.videoHeight) {
+              media.classList.add('is-landscape');
+            } else {
+              media.classList.add('is-portrait');
+            }
+          }
         }
       };
       
@@ -1878,6 +1890,33 @@ body.modal-open { overflow: hidden; }
       }
     }
 
+    // 监听弹窗大小变化，确保媒体元素同步调整
+    const resizeObserver = new ResizeObserver(() => {
+      if (mediaType === 'video' || mediaType === 'mixed') {
+        const videoNode = media.querySelector('video');
+        if (videoNode && videoNode.videoWidth && videoNode.videoHeight) {
+          media.classList.remove('is-portrait', 'is-landscape');
+          if (videoNode.videoWidth > videoNode.videoHeight) {
+            media.classList.add('is-landscape');
+          } else {
+            media.classList.add('is-portrait');
+          }
+        }
+      } else {
+        const imgNode = media.querySelector('img');
+        if (imgNode && imgNode.naturalWidth && imgNode.naturalHeight) {
+          media.classList.remove('is-portrait', 'is-landscape');
+          if (imgNode.naturalWidth > imgNode.naturalHeight) {
+            media.classList.add('is-landscape');
+          } else {
+            media.classList.add('is-portrait');
+          }
+        }
+      }
+    });
+    resizeObserver.observe($('#instaxCard'));
+    state.mediaResizeObserver = resizeObserver;
+
     // 更新计数显示为照片序号和总数
     const photoLabel = totalPhotos > 1 ? `· ${currentPhotoIndex + 1}/${totalPhotos}` : '';
     $('#instaxName').textContent = spot.name;
@@ -1930,6 +1969,12 @@ body.modal-open { overflow: hidden; }
       sb.classList.remove('expanded-full');
       const handle = $('.sheet-handle');
       if (handle) handle.setAttribute('aria-expanded', 'false');
+    }
+    
+    // 清理 ResizeObserver
+    if (state.mediaResizeObserver) {
+      state.mediaResizeObserver.disconnect();
+      state.mediaResizeObserver = null;
     }
   }
 
