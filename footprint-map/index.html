@@ -636,12 +636,14 @@ body.modal-open { overflow: hidden; }
   box-shadow: inset 0 0 0 1px rgba(0,0,0,.18);
   -webkit-touch-callout: none;
   transition: aspect-ratio .35s ease;
+  display: grid;
+  place-items: center;
 }
 .instax-media.is-portrait { aspect-ratio: 62 / 46; }
 .instax-media.is-landscape { aspect-ratio: 99 / 62; }
 .instax-media.is-video { cursor: pointer; }
 .instax-asset {
-  width: 100%; height: 100%; object-fit: cover; display: block;
+  width: 100%; height: 100%; object-fit: contain; display: block;
   -webkit-user-drag: none;
   user-select: none;
 }
