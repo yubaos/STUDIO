@@ -265,16 +265,18 @@ body {
 .tl-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .tl-item.is-current .tl-card { box-shadow: 0 0 0 2px var(--gold), 0 12px 26px rgba(0,0,0,.38); }
 .tl-media {
-  position: relative; width: 60px; height: 60px;
-  border-radius: 6px; overflow: hidden;
+  position: relative;
+  width: 84px;
+  aspect-ratio: 1 / 1;
+  border-radius: 6px;
+  overflow: hidden;
   background: #dfe6e2;
-  -webkit-touch-callout: none;
 }
+
 .tl-media img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-  transition: transform .5s ease;
-  -webkit-user-drag: none;
-  user-select: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .tl-card:hover .tl-media img { transform: scale(1.14); }
 .tl-play {
@@ -600,7 +602,7 @@ body.modal-open { overflow: hidden; }
   padding: 20px;
 }
 
-/* 拍立得卡片：99 × 62 mm 画面比例 */
+/* 拍立得卡片：横版 Instax Wide 内容区 99×62，竖版 Instax Mini 内容区 62×46 */
 .instax-card {
   --tilt: 0deg;
   position: relative; margin: 0;
@@ -628,13 +630,14 @@ body.modal-open { overflow: hidden; }
 }
 .instax-media {
   position: relative;
+  aspect-ratio: 99 / 62;
   background: #0d1720;
   border-radius: 3px; overflow: hidden;
   box-shadow: inset 0 0 0 1px rgba(0,0,0,.18);
   -webkit-touch-callout: none;
 }
-.instax-media.is-portrait { aspect-ratio: 9 / 16; }
-.instax-media.is-landscape { aspect-ratio: 31 / 21; }
+.instax-media.is-portrait { aspect-ratio: 62 / 46; }
+.instax-media.is-landscape { aspect-ratio: 99 / 62; }
 .instax-media.is-video { cursor: pointer; }
 .instax-asset {
   width: 100%; height: 100%; object-fit: cover; display: block;
