@@ -74,7 +74,9 @@
       "lng": 118.0743,
       "zoom": 11,
       "media": "photo",
-      "src": "https://img.yubaos.com/Gallery/20140410xm.webp",
+      "photos": [
+        "https://img.yubaos.com/Gallery/20140410xm.webp"
+      ],
       "note": "鼓浪屿碧海青松，英雄永驻。"
     },
     {
@@ -89,7 +91,9 @@
       "lng": 101.7108,
       "zoom": 10,
       "media": "photo",
-      "src": "https://img.yubaos.com/Gallery/20161004kl.webp",
+      "photos": [
+        "https://img.yubaos.com/Gallery/20161004kl.webp"
+      ],
       "note": "拥抱双子塔的宏伟，定格异国旅途的偏爱。"
     },
     {
@@ -120,7 +124,9 @@
       "lng": 98.3995,
       "zoom": 10,
       "media": "photo",
-      "src": "https://img.yubaos.com/Gallery/Phuket.webp",
+      "photos": [
+        "https://img.yubaos.com/Gallery/Phuket.webp"
+      ],
       "note": "普吉岛九皇斋节，信徒穿刺显虔诚。"
     },
     {
@@ -135,7 +141,9 @@
       "lng": 100.4920,
       "zoom": 10,
       "media": "photo",
-      "src": "https://img.yubaos.com/Gallery/Bangkok.webp",
+      "photos": [
+        "https://img.yubaos.com/Gallery/Bangkok.webp"
+      ],
       "note": "金顶巍峨，皇家风范，游客如织。"
     },
     {
@@ -150,7 +158,9 @@
       "lng": 113.2644,
       "zoom": 10,
       "media": "photo",
-      "src": "https://img.yubaos.com/Gallery/zhujiang.webp",
+      "photos": [
+        "https://img.yubaos.com/Gallery/zhujiang.webp"
+      ],
       "note": "碧水蓝天映衬，珠江两岸摩天大楼林立，繁华都市气象万千。",
       "coordNote": "原始记录坐标有误，已修正为广州市区坐标"
     },
@@ -166,7 +176,9 @@
       "lng": 114.1706,
       "zoom": 11,
       "media": "photo",
-      "src": "https://img.yubaos.com/Gallery/hongkong.webp",
+      "photos": [
+        "https://img.yubaos.com/Gallery/hongkong.webp"
+      ],
       "note": "维港波光粼粼，摩天大楼依山而建，尽显东方之珠的繁华。"
     },
     {
@@ -181,7 +193,9 @@
       "lng": 116.3912,
       "zoom": 9,
       "media": "photo",
-      "src": "https://img.yubaos.com/Gallery/beijing.webp",
+      "photos": [
+        "https://img.yubaos.com/Gallery/beijing.webp"
+      ],
       "note": "雄伟天安门前留影，定格首都日光下的庄严与青春。"
     }
   ]

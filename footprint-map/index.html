@@ -265,7 +265,7 @@ body {
 .tl-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .tl-item.is-current .tl-card { box-shadow: 0 0 0 2px var(--gold), 0 12px 26px rgba(0,0,0,.38); }
 .tl-media {
-  position: relative; width: 84px; aspect-ratio: 1 / 1;
+  position: relative; width: 84px; aspect-ratio: 9 / 16;
   border-radius: 6px; overflow: hidden;
   background: #dfe6e2;
   -webkit-touch-callout: none;
@@ -628,7 +628,7 @@ body.modal-open { overflow: hidden; }
 }
 .instax-media {
   position: relative;
-  aspect-ratio: 99 / 62;   /* Instax Wide 画面比例 */
+  aspect-ratio: 9 / 16;   /* 竖版 16:9 比例 */
   background: #0d1720;
   border-radius: 3px; overflow: hidden;
   box-shadow: inset 0 0 0 1px rgba(0,0,0,.18);
@@ -969,7 +969,7 @@ body.modal-open { overflow: hidden; }
       </figure>
     </div>
 
-    <p class="instax-hint">点击空白处关闭 · 左右滑动 / 方向键切换</p>
+    <p class="instax-hint">点击空白处关闭 · 左右滑动 / 方向键切换 · 点击照片两侧切换多张照片</p>
   </div>
 
   <!-- ★ Leaflet 动态加载：主源 8s 超时自动切备源，非阻塞，任何一源挂起都不会冻结页面 -->
@@ -1046,7 +1046,7 @@ body.modal-open { overflow: hidden; }
   const IMAGE_CDN_ORIGIN = 'https://img.yubaos.com';
   const IMAGE_VARIANT = {
     thumb: 'width=240,height=240,fit=cover,quality=70,format=auto',
-    modal: 'width=1800,height=1128,fit=cover,quality=86,format=auto'
+    modal: 'width=1080,height=1920,fit=cover,quality=86,format=auto'
   };
   function previewImageUrl(src, variant) {
     if (!src) return '';
@@ -1695,6 +1695,8 @@ body.modal-open { overflow: hidden; }
   }
 
   /* ---------------- 10. Instax Wide 弹窗（大画幅 · 无可见控件） ---------------- */
+  let currentPhotoIndex = 0;
+  
   function openInstax(idx, isNav = false) {
     state.modalIndex = (idx + state.spots.length) % state.spots.length;
     const spot = state.spots[state.modalIndex];
@@ -1706,10 +1708,15 @@ body.modal-open { overflow: hidden; }
       stopCurrentMedia();
       media.classList.remove('is-video');
       media.innerHTML = '';
+      currentPhotoIndex = 0;
     }
 
     const tilt = ((state.modalIndex % 5) - 2) * 1.4;
     $('#instaxCard').style.setProperty('--tilt', tilt.toFixed(1) + 'deg');
+
+    // 获取当前地点的照片列表（支持多张照片）
+    const photos = spot.photos || (spot.src ? [spot.src] : []);
+    const totalPhotos = photos.length;
 
     // 如果是导航且已有媒体元素，只需更新 src，避免重建导致状态丢失
     let node;
@@ -1746,9 +1753,11 @@ body.modal-open { overflow: hidden; }
         node.play().catch(() => {});
       }
     } else {
+      // 照片模式：显示当前索引的照片
+      const currentPhotoSrc = photos[currentPhotoIndex] || '';
       if (isNav && media.querySelector('img')) {
         node = media.querySelector('img');
-        node.src = previewImageUrl(spot.src, IMAGE_VARIANT.modal);
+        node.src = previewImageUrl(currentPhotoSrc, IMAGE_VARIANT.modal);
       } else {
         media.classList.remove('is-video');
         media.innerHTML = '';
@@ -1758,16 +1767,18 @@ body.modal-open { overflow: hidden; }
         node.draggable = false;
         node.addEventListener('load', () => node.classList.remove('developing'), { once: true });
         node.addEventListener('error', () => mediaFailed(media), { once: true });
-        node.src = previewImageUrl(spot.src, IMAGE_VARIANT.modal);
+        node.src = previewImageUrl(currentPhotoSrc, IMAGE_VARIANT.modal);
         media.appendChild(node);
       }
     }
 
+    // 更新计数显示为照片序号和总数
+    const photoLabel = totalPhotos > 1 ? `· ${currentPhotoIndex + 1}/${totalPhotos}` : '';
     $('#instaxName').textContent = spot.name;
     $('#instaxMeta').innerHTML =
       `<b>${spot.en}</b><span>${spot.date}</span><span>${spot.lat.toFixed(4)}°N, ${spot.lng.toFixed(4)}°E</span>`;
     $('#instaxNote').textContent = spot.note;
-    $('#instaxCount').textContent = `${state.modalIndex + 1} / ${state.spots.length}`;
+    $('#instaxCount').textContent = `${state.modalIndex + 1} / ${state.spots.length}${photoLabel}`;
 
     overlay.classList.add('open');
     overlay.setAttribute('aria-hidden', 'false');
@@ -1818,13 +1829,29 @@ body.modal-open { overflow: hidden; }
 
   function navInstax(dir) {
     if (state.modalIndex < 0) return;
+    
+    const spot = state.spots[state.modalIndex];
+    const photos = spot.photos || (spot.src ? [spot.src] : []);
+    const totalPhotos = photos.length;
+    
+    // 如果是照片模式且有多张照片，先切换照片
+    if (spot.media !== 'video' && totalPhotos > 1) {
+      const newIndex = (currentPhotoIndex + dir + totalPhotos) % totalPhotos;
+      if (newIndex !== currentPhotoIndex) {
+        currentPhotoIndex = newIndex;
+        openInstax(state.modalIndex, true);
+        return;
+      }
+    }
+    
+    // 单张照片或视频模式，切换到下一个地点
     const prevIdx = state.modalIndex;
     const next = (state.modalIndex + dir + state.spots.length) % state.spots.length;
     if (next === prevIdx) return;
     
-    const spot = state.spots[next];
-    state.map.flyTo([spot.lat, spot.lng], spot.zoom || 9, { duration: .8 });
-    markCurrent(spot.id);
+    const nextSpot = state.spots[next];
+    state.map.flyTo([nextSpot.lat, nextSpot.lng], nextSpot.zoom || 9, { duration: .8 });
+    markCurrent(nextSpot.id);
     openInstax(next, true);
   }
 
@@ -1832,6 +1859,31 @@ body.modal-open { overflow: hidden; }
     const v = $('#instaxMedia video');
     if (!v) return;
     if (v.paused) v.play().catch(() => {}); else v.pause();
+  }
+  
+  /* 支持点击左右区域切换照片 */
+  function onInstaxOverlayClick(e) {
+    const overlay = $('#instaxOverlay');
+    if (!overlay.classList.contains('open')) return;
+    
+    const spot = state.spots[state.modalIndex];
+    const photos = spot.photos || (spot.src ? [spot.src] : []);
+    
+    // 只有照片模式且有多张照片时才响应左右点击切换
+    if (spot.media !== 'video' && photos.length > 1) {
+      const rect = overlay.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const thirdWidth = rect.width / 3;
+      
+      // 点击左侧 1/3 区域切换到上一张，右侧 1/3 区域切换到下一张
+      if (clickX < thirdWidth) {
+        currentPhotoIndex = (currentPhotoIndex - 1 + photos.length) % photos.length;
+        openInstax(state.modalIndex, true);
+      } else if (clickX > rect.width - thirdWidth) {
+        currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
+        openInstax(state.modalIndex, true);
+      }
+    }
   }
 
   /* ---------------- 11. 全局交互绑定 ---------------- */
@@ -1848,6 +1900,7 @@ body.modal-open { overflow: hidden; }
 
     const overlay = $('#instaxOverlay');
     overlay.querySelector('.instax-backdrop').addEventListener('click', closeInstax);
+    overlay.addEventListener('click', onInstaxOverlayClick);
 
     window.addEventListener('keydown', (e) => {
       if (!overlay.classList.contains('open')) return;
