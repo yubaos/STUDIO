@@ -1455,6 +1455,12 @@ body.modal-open { overflow: hidden; }
     state.regions.forEach((r, rid) => {
       setRegionStyle(rid, rid === id ? ACTIVE_STYLE : BASE_STYLE);
       setRegionActiveClass(rid, rid === id);
+      // 关闭所有区域的 tooltip 提示
+      if (r.layer) {
+        r.layer.eachLayer((lyr) => {
+          if (lyr.closeTooltip) lyr.closeTooltip();
+        });
+      }
     });
     syncChips();
     if (rec.layer) {
@@ -1469,6 +1475,12 @@ body.modal-open { overflow: hidden; }
     state.regions.forEach((r, rid) => {
       setRegionStyle(rid, BASE_STYLE);
       setRegionActiveClass(rid, false);
+      // 关闭所有区域的 tooltip 提示
+      if (r.layer) {
+        r.layer.eachLayer((lyr) => {
+          if (lyr.closeTooltip) lyr.closeTooltip();
+        });
+      }
     });
     syncChips();
     if (state.allBounds) state.map.flyToBounds(state.allBounds, { duration: .9 });
