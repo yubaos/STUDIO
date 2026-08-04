@@ -1,42 +1,45 @@
-# Compiled and binary files
-*.pyc
-*.class
-*.o
-*.exe
-*.dll
-*.so
-*.a
-*.obj
-*.out
+# Examples 1:
+(No content - empty because only source/config files)
 
-# Dependencies
-node_modules/
-venv/
-.venv/
+# Example 2 (Project with artifacts):
+# Compiled and build artifacts
+*.pyc
 __pycache__/
+*.o
+*.obj
 dist/
 build/
 target/
-.gradle/
+
+# Dependencies
+.venv/
+venv/
+node_modules/
 .mypy_cache/
 .pytest_cache/
+.gradle/
 
-# Editor/IDE files
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+
+# Environment
+.env
+.env.local
+.env.*
+
+# Editors
 .vscode/
 .idea/
 *.swp
 *.swo
-*.tmp
 
-# System/Environment files
+# System
 .DS_Store
 Thumbs.db
-.env
-.env.local
-*.env.*
 
-# Logs and coverage
-*.log
+# Coverage
 coverage/
 htmlcov/
 .coverage
