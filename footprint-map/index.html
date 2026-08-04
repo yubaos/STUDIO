@@ -1660,16 +1660,21 @@ body.modal-open { overflow: hidden; }
       const item = el('article', 'tl-item');
       item.dataset.id = spot.id;
       item.style.setProperty('--rc', color);
+      
+      // 获取媒体类型和缩略图
+      const mediaType = getMediaType(spot);
+      const posterSrc = getPosterSrc(spot);
       const thumbSrc = previewImageUrl(
-        spot.media === 'video' ? (spot.poster || '') : spot.src,
+        (mediaType === 'video' || mediaType === 'mixed') ? posterSrc : (getPhotos(spot)[0] || ''),
         IMAGE_VARIANT.thumb
       );
+      
       item.innerHTML = `
         <span class="tl-node" aria-hidden="true"></span>
         <div class="tl-card" role="button" tabindex="0" aria-label="查看 ${spot.name} 的打卡影像">
           <div class="tl-media">
             <img loading="lazy" decoding="async" width="84" height="84" draggable="false" src="${thumbSrc}" alt="${spot.name}" onerror="this.remove()">
-            ${spot.media === 'video' ? '<span class="tl-play">▶</span>' : ''}
+            ${(mediaType === 'video' || mediaType === 'mixed') ? '<span class="tl-play">▶</span>' : ''}
             <span class="tl-idx">${String(idx + 1).padStart(2, '0')}</span>
           </div>
           <div class="tl-body">
@@ -1697,11 +1702,43 @@ body.modal-open { overflow: hidden; }
   /* ---------------- 10. Instax Wide 弹窗（大画幅 · 无可见控件） ---------------- */
   let currentPhotoIndex = 0;
   
+  // 辅助函数：获取地点的媒体类型（支持旧的 media 字段和新的 mediaType 字段）
+  function getMediaType(spot) {
+    return spot.mediaType || spot.media || 'photo';
+  }
+  
+  // 辅助函数：获取地点的视频源
+  function getVideoSrc(spot) {
+    return spot.videoSrc || spot.src || '';
+  }
+  
+  // 辅助函数：获取地点的海报图
+  function getPosterSrc(spot) {
+    return spot.poster || (spot.photos && spot.photos.length > 0 ? spot.photos[0] : '');
+  }
+  
+  // 辅助函数：获取地点的照片列表
+  function getPhotos(spot) {
+    if (spot.photos && spot.photos.length > 0) {
+      return spot.photos;
+    }
+    if (spot.src) {
+      return [spot.src];
+    }
+    return [];
+  }
+  
   function openInstax(idx, isNav = false) {
     state.modalIndex = (idx + state.spots.length) % state.spots.length;
     const spot = state.spots[state.modalIndex];
     const overlay = $('#instaxOverlay');
     const media = $('#instaxMedia');
+    
+    // 获取媒体类型和相关资源
+    const mediaType = getMediaType(spot);
+    const videoSrc = getVideoSrc(spot);
+    const posterSrc = getPosterSrc(spot);
+    const photos = getPhotos(spot);
 
     // 导航切换时保留视频状态，仅更新内容；首次打开则完全重置
     if (!isNav) {
@@ -1714,18 +1751,16 @@ body.modal-open { overflow: hidden; }
     const tilt = ((state.modalIndex % 5) - 2) * 1.4;
     $('#instaxCard').style.setProperty('--tilt', tilt.toFixed(1) + 'deg');
 
-    // 获取当前地点的照片列表（支持多张照片）
-    const photos = spot.photos || (spot.src ? [spot.src] : []);
     const totalPhotos = photos.length;
 
     // 如果是导航且已有媒体元素，只需更新 src，避免重建导致状态丢失
     let node;
-    if (spot.media === 'video') {
+    if (mediaType === 'video' || mediaType === 'mixed') {
       if (isNav && media.querySelector('video')) {
         node = media.querySelector('video');
         node.pause();
-        node.src = spot.src;
-        if (spot.poster) node.poster = previewImageUrl(spot.poster, IMAGE_VARIANT.modal);
+        node.src = videoSrc;
+        if (posterSrc) node.poster = previewImageUrl(posterSrc, IMAGE_VARIANT.modal);
         node.load();
         node.play().catch(() => {});
       } else {
@@ -1738,10 +1773,10 @@ body.modal-open { overflow: hidden; }
         node.setAttribute('preload', 'metadata');
         node.setAttribute('controlslist', 'nodownload');
         node.setAttribute('disablepictureinpicture', '');
-        if (spot.poster) node.poster = previewImageUrl(spot.poster, IMAGE_VARIANT.modal);
+        if (posterSrc) node.poster = previewImageUrl(posterSrc, IMAGE_VARIANT.modal);
         node.addEventListener('loadeddata', () => node.classList.remove('developing'), { once: true });
         node.addEventListener('error', () => mediaFailed(media), { once: true });
-        node.src = spot.src;
+        node.src = videoSrc;
 
         const vstate = el('span', 'instax-vstate is-paused', '▶');
         media.appendChild(node);
@@ -1831,11 +1866,12 @@ body.modal-open { overflow: hidden; }
     if (state.modalIndex < 0) return;
     
     const spot = state.spots[state.modalIndex];
-    const photos = spot.photos || (spot.src ? [spot.src] : []);
+    const mediaType = getMediaType(spot);
+    const photos = getPhotos(spot);
     const totalPhotos = photos.length;
     
     // 如果是照片模式且有多张照片，先切换照片
-    if (spot.media !== 'video' && totalPhotos > 1) {
+    if (mediaType === 'photo' && totalPhotos > 1) {
       const newIndex = (currentPhotoIndex + dir + totalPhotos) % totalPhotos;
       if (newIndex !== currentPhotoIndex) {
         currentPhotoIndex = newIndex;
@@ -1844,7 +1880,7 @@ body.modal-open { overflow: hidden; }
       }
     }
     
-    // 单张照片或视频模式，切换到下一个地点
+    // 单张照片、视频模式或 mixed 模式，切换到下一个地点
     const prevIdx = state.modalIndex;
     const next = (state.modalIndex + dir + state.spots.length) % state.spots.length;
     if (next === prevIdx) return;
@@ -1867,10 +1903,11 @@ body.modal-open { overflow: hidden; }
     if (!overlay.classList.contains('open')) return;
     
     const spot = state.spots[state.modalIndex];
-    const photos = spot.photos || (spot.src ? [spot.src] : []);
+    const mediaType = getMediaType(spot);
+    const photos = getPhotos(spot);
     
-    // 只有照片模式且有多张照片时才响应左右点击切换
-    if (spot.media !== 'video' && photos.length > 1) {
+    // 只有纯照片模式且有多张照片时才响应左右点击切换
+    if (mediaType === 'photo' && photos.length > 1) {
       const rect = overlay.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
       const thirdWidth = rect.width / 3;

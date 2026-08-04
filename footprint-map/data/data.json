@@ -107,11 +107,12 @@
       "lat": 6.2620,
       "lng": 99.7362,
       "zoom": 10,
-      "media": "photo",
+      "mediaType": "mixed",
       "photos": [
         "https://img.yubaos.com/video/Langkawi.webp",
         "https://img.yubaos.com/Gallery/Langkawi.webp"
       ],
+      "videoSrc": "https://img.yubaos.com/video/Langkawi.mp4",
       "note": "碧海远山，云卷云舒，藏在兰卡威的夏天。"
     },
     {
