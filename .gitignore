@@ -1,23 +1,31 @@
-# Examples
+```
+# Compiled and build artifacts
 *.pyc
 __pycache__/
-*.class
 *.o
-*.exe
-*.dll
-*.so
-*.a
 *.obj
-*.out
+dist/
+build/
+target/
 
 # Dependencies
-node_modules/
-venv/
 .venv/
-.mypy_cache/
-.pytest_cache/
-target/
-.gradle/
+venv/
+node_modules/
+.julia/
+zig*/
+.deps/
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+*.env.*
 
 # Editors
 .vscode/
@@ -25,22 +33,24 @@ target/
 *.swp
 *.swo
 
-# System
+# System files
 .DS_Store
 Thumbs.db
-.env
-.env.local
-*.env.*
 
-# Logs
-*.log
+# Coverage
 coverage/
 htmlcov/
 .coverage
 
-# Build artifacts
-dist/
-build/
+# Python specific
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg-info/
+.eggs/
 
 # Compressed files
 *.zip
@@ -61,7 +71,4 @@ build/
 *.Z
 *.lz
 *.lzo
-*.tar.gz
-*.tar.bz2
-*.tar.xz
-*.tar.zst
+```
