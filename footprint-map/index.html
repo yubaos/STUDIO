@@ -1891,6 +1891,12 @@ body.modal-open { overflow: hidden; }
       }
     } else {
       // 照片模式：显示当前索引的照片，并检测方向
+      // 如果是 mixed 模式且从视频切换过来，需要清理视频相关的 DOM
+      if (mediaType === 'mixed' && media.classList.contains('is-video')) {
+        media.classList.remove('is-video');
+        const vstate = media.querySelector('.instax-vstate');
+        if (vstate) vstate.remove();
+      }
       const currentPhotoSrc = photos[currentPhotoIndex] || '';
       const updatePhotoOrientation = () => {
         const photoImg = new Image();
