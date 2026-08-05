@@ -114,16 +114,23 @@
   }
 
   /* =====================================================================
-     滚动监听 - 无限滚动加载
+     滚动监听 - 无限滚动加载 (使用节流优化性能)
      ===================================================================== */
+  let scrollTimeout = null;
   function handleScroll() {
-    const scrollTop = window.scrollY || window.pageYOffset;
-    const windowHeight = window.innerHeight;
-    const documentHeight = document.documentElement.scrollHeight;
+    if (scrollTimeout) return;
+    
+    scrollTimeout = setTimeout(() => {
+      const scrollTop = window.scrollY || window.pageYOffset;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
 
-    if (scrollTop + windowHeight >= documentHeight - 500) {
-      loadMoreGrids();
-    }
+      if (scrollTop + windowHeight >= documentHeight - 500) {
+        loadMoreGrids();
+      }
+      
+      scrollTimeout = null;
+    }, 100);
   }
 
   /* =====================================================================

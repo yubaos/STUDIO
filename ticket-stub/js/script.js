@@ -233,11 +233,17 @@
      参数：t - 票根数据对象
      返回：HTML 字符串
      ===================================================================== */
+  const imgCache = new Map(); // 缓存优化后的图片 URL
+  
   function mediaThumbHTML(t) {
     if (t.type === 'video' && t.poster) {
       // 视频票根：显示封面图 + 播放徽章（仅当有 poster 字段时才显示封面）
       // 使用 Cloudflare 缩略图优化
-      const thumbSrc = getThumbURL(t.poster, 400, 75);
+      let thumbSrc = imgCache.get(t.poster);
+      if (!thumbSrc) {
+        thumbSrc = getThumbURL(t.poster, 400, 75);
+        imgCache.set(t.poster, thumbSrc);
+      }
       return `<div class="t-photo">` +
              `<img src="${thumbSrc}" alt="${t.display}" loading="lazy">` +
              `<span class="play-badge" aria-hidden="true">${PLAY_SVG}</span>` +
@@ -246,7 +252,11 @@
     // 图片票根或无封面的视频票根：仅显示图片
     // 使用 Cloudflare 缩略图优化
     const imgSrc = t.image || t.poster || '';
-    const thumbSrc = getThumbURL(imgSrc, 400, 75);
+    let thumbSrc = imgCache.get(imgSrc);
+    if (!thumbSrc) {
+      thumbSrc = getThumbURL(imgSrc, 400, 75);
+      imgCache.set(imgSrc, thumbSrc);
+    }
     return `<div class="t-photo">` +
            `<img src="${thumbSrc}" alt="${t.display}" loading="lazy">` +
            `</div>`;
@@ -316,6 +326,7 @@
   /* =====================================================================
      滚动入场动画
      使用 IntersectionObserver API 实现票根进入视口时的渐显效果
+     性能优化：缓存索引避免重复计算
      ===================================================================== */
   function revealOnScroll() {
     const items = Array.from(document.querySelectorAll('.ticket-wrap'));
@@ -326,13 +337,19 @@
       return;
     }
     
+    // 预先缓存索引，避免在回调中重复计算
+    const indexMap = new Map();
+    items.forEach((el, idx) => {
+      indexMap.set(el, idx);
+    });
+    
     // 创建观察者
     const io = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const el = entry.target;
-          // 根据位置计算延迟，创造阶梯式入场效果
-          const delay = (Array.from(grid.children).indexOf(el) % 7) * 70;
+          // 使用缓存的索引计算延迟，创造阶梯式入场效果
+          const delay = (indexMap.get(el) % 7) * 70;
           setTimeout(() => el.classList.add('in'), delay);
           io.unobserve(el);  // 入场后停止观察
         }
