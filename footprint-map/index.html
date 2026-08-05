@@ -1832,9 +1832,12 @@ body.modal-open { overflow: hidden; }
 
     const totalPhotos = photos.length;
 
+    // 判断当前是否应该显示视频：仅当 mediaType 为 video，或 mixed 模式且当前索引为 0（第一张是视频海报）
+    const isVideoMode = mediaType === 'video' || (mediaType === 'mixed' && currentPhotoIndex === 0);
+
     // 如果是导航且已有媒体元素，只需更新 src，避免重建导致状态丢失
     let node;
-    if (mediaType === 'video' || mediaType === 'mixed') {
+    if (isVideoMode) {
       // 视频模式：检测视频海报图的方向
       const updateVideoOrientation = () => {
         if (posterSrc) {
