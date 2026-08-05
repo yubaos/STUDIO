@@ -1858,12 +1858,22 @@ body.modal-open { overflow: hidden; }
       
       if (isNav && media.querySelector('video')) {
         node = media.querySelector('video');
+        // 清理可能残留的 vstate 元素，避免切换视频时状态指示器重复或遗留
+        const existingVstate = media.querySelector('.instax-vstate');
+        if (existingVstate) existingVstate.remove();
+        
         node.pause();
         node.src = videoSrc;
         if (posterSrc) node.poster = previewImageUrl(posterSrc, IMAGE_VARIANT.modal);
         node.load();
         node.play().catch(() => {});
         updateVideoOrientation();
+        
+        // 重新创建 vstate 并绑定事件
+        const vstate = el('span', 'instax-vstate is-paused', '▶');
+        media.appendChild(vstate);
+        node.addEventListener('play',  () => vstate.classList.remove('is-paused'));
+        node.addEventListener('pause', () => { vstate.textContent = '▶'; vstate.classList.add('is-paused'); });
       } else {
         // 清理可能残留的照片或视频状态元素
         const existingImg = media.querySelector('img');
