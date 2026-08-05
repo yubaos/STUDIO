@@ -43,6 +43,15 @@
       "fallbackView": { "center": [26.50, 107.50], "zoom": 6 }
     },
     {
+      "id": "macao",
+      "name": "澳门",
+      "en": "MACAO",
+      "scope": "中国 · 特别行政区",
+      "color": "#a85c9e",
+      "geo": { "type": "datav", "adcode": "820000" },
+      "fallbackView": { "center": [22.19, 113.54], "zoom": 11 }
+    },
+    {
       "id": "hongkong",
       "name": "香港",
       "en": "HONG KONG",
@@ -213,7 +222,7 @@
     },
     {
       "id": "macao-2018",
-      "region": "hongkong",
+      "region": "macao",
       "country": "中国",
       "name": "澳门巴黎人",
       "place": "澳门，中国",
