@@ -1048,10 +1048,12 @@ body.modal-open { overflow: hidden; }
   /* 中国大陆省/市边界：DataV GeoAtlas（GCJ-02，加载后统一纠偏） */
   const DATAV_URL = (adcode) => `https://geo.datav.aliyun.com/areas_v3/bound/${adcode}.json`;
 
-  /* world-atlas 1:50m（Natural Earth · WGS-84）：主源 + 备源，超时自动切换
+  /* 简化版世界地图数据：仅包含泰国 (764)、马来西亚 (458)、中国香港 (344)
+   * 从 world-atlas 1:50m 提取并简化，文件大小从 738KB 降至 6.4KB（压缩率 99.1%）
    * 国家/地区 id 为 ISO 3166-1 数字码：泰国 764 / 马来西亚 458 / 中国香港 344
    * 扩展参考：新加坡 702 / 越南 704 / 印度尼西亚 360 / 柬埔寨 116 */
   const WORLD_SOURCES = [
+    'data/countries-selected.json',
     'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json',
     'https://fastly.jsdelivr.net/npm/world-atlas@2/countries-50m.json',
     'https://unpkg.com/world-atlas@2/countries-50m.json'
