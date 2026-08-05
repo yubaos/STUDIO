@@ -1,1 +1,48 @@
-Nothing needs to be added to the .gitignore file based on the provided changes. The modification of 'footprint-map/index.html' is a standard HTML file that should be tracked in version control.
+```
+# Data directory - assuming generated/processed data
+footprint-map/data/
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Environment
+.env
+.env.local
+.env.*
+
+# Editors
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Dependencies
+node_modules/
+.venv/
+venv/
+pip-log.txt
+pipenv.lock
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Coverage reports
+.coverage
+coverage/
+htmlcov/
+
+# IDE specific
+*.swp
+*.swo
+```

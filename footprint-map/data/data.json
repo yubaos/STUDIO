@@ -34,6 +34,24 @@
       "fallbackView": { "center": [40.00, 116.40], "zoom": 7 }
     },
     {
+      "id": "guizhou",
+      "name": "贵州",
+      "en": "GUIZHOU",
+      "scope": "中国 · 省",
+      "color": "#5b8c5a",
+      "geo": { "type": "datav", "adcode": "520000" },
+      "fallbackView": { "center": [26.50, 107.50], "zoom": 6 }
+    },
+    {
+      "id": "macao",
+      "name": "澳门",
+      "en": "MACAO",
+      "scope": "中国 · 特别行政区",
+      "color": "#a85c9e",
+      "geo": { "type": "datav", "adcode": "820000" },
+      "fallbackView": { "center": [22.19, 113.54], "zoom": 11 }
+    },
+    {
       "id": "hongkong",
       "name": "香港",
       "en": "HONG KONG",
@@ -167,6 +185,57 @@
       ],
       "note": "碧水蓝天映衬，珠江两岸摩天大楼林立，繁华都市气象万千。",
       "coordNote": "原始记录坐标有误，已修正为广州市区坐标"
+    },
+    {
+      "id": "libo-miao-2018",
+      "region": "guizhou",
+      "country": "中国",
+      "name": "荔波苗寨",
+      "place": "荔波，贵州 · 中国",
+      "en": "GUIZHOU, CHINA",
+      "date": "2018.02.17",
+      "lat": 25.5355,
+      "lng": 108.2680,
+      "zoom": 10,
+      "media": "photo",
+      "photos": [
+        "https://img.yubaos.com/Gallery/miaozai.webp"
+      ],
+      "note": "青山吊脚楼下，芦笙悠扬盛装舞，欢歌笑语漫苗寨。"
+    },
+    {
+      "id": "libo-xqk-2018",
+      "region": "guizhou",
+      "country": "中国",
+      "name": "小七孔",
+      "place": "荔波，贵州 · 中国",
+      "en": "GUIZHOU, CHINA",
+      "date": "2018.04.11",
+      "lat": 25.2660,
+      "lng": 107.6816,
+      "zoom": 10,
+      "media": "photo",
+      "photos": [
+        "https://img.yubaos.com/Gallery/xiaoqikong.webp"
+      ],
+      "note": "碧波万顷，青山倒映，一叶扁舟在荔波小七孔的仙境中悠然滑行。"
+    },
+    {
+      "id": "macao-2018",
+      "region": "macao",
+      "country": "中国",
+      "name": "澳门巴黎人",
+      "place": "澳门，中国",
+      "en": "MACAO, CHINA",
+      "date": "2018.04.24",
+      "lat": 22.1435,
+      "lng": 113.5632,
+      "zoom": 11,
+      "media": "photo",
+      "photos": [
+        "https://img.yubaos.com/Gallery/Macao.webp"
+      ],
+      "note": "澳门巴黎人铁塔华灯初上，璀璨紫光点亮不夜城，浪漫与繁华交织。"
     },
     {
       "id": "hongkong-2018",
