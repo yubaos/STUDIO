@@ -2009,8 +2009,8 @@ body.modal-open { overflow: hidden; }
     const photos = getPhotos(spot);
     const totalPhotos = photos.length;
     
-    // 如果是照片模式或 mixed 模式且有多张照片，先切换照片
-    if ((mediaType === 'photo' || mediaType === 'mixed') && totalPhotos > 1) {
+    // 如果是 mixed 模式且有多张照片，先切换照片
+    if (mediaType === 'mixed' && totalPhotos > 1) {
       const newIndex = (currentPhotoIndex + dir + totalPhotos) % totalPhotos;
       if (newIndex !== currentPhotoIndex) {
         currentPhotoIndex = newIndex;
