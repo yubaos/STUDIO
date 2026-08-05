@@ -720,6 +720,8 @@ body.modal-open { overflow: hidden; }
 /* 矮屏适配 */
 @media (max-height: 760px) {
   .instax-card { width: var(--card-width, min(82vw, 660px)); }
+  .instax-card.is-portrait { --card-width: min(48vw, 480px); }
+  .instax-card.is-landscape { --card-width: min(82vw, 660px); }
   .instax-caption { min-height: 118px; padding: 12px 6px 20px; }
   .instax-name { font-size: 28px; }
   .instax-note { font-size: 18px; }
@@ -845,11 +847,24 @@ body.modal-open { overflow: hidden; }
 @media (max-width: 640px) {
   .instax-stage { padding: 14px; }
   .instax-card { width: var(--card-width, min(96vw, 760px)); padding: 13px 13px 0; }
+  .instax-card.is-portrait { --card-width: min(72vw, 520px); }
+  .instax-card.is-landscape { --card-width: min(96vw, 760px); }
   .instax-name { font-size: 26px; }
   .instax-note { font-size: 17px; }
   .instax-caption { min-height: 112px; padding: 12px 5px 20px; }
   .instax-stamp { width: 48px; height: 48px; font-size: 8px; }
   .instax-hint { font-size: 9px; letter-spacing: .18em; bottom: 12px; }
+}
+
+/* 小屏手机进一步适配 */
+@media (max-width: 400px) {
+  .instax-card { width: var(--card-width, min(98vw, 680px)); padding: 11px 11px 0; }
+  .instax-card.is-portrait { --card-width: min(80vw, 460px); }
+  .instax-card.is-landscape { --card-width: min(98vw, 680px); }
+  .instax-name { font-size: 22px; }
+  .instax-note { font-size: 15px; }
+  .instax-caption { min-height: 96px; padding: 10px 4px 16px; }
+  .instax-stamp { width: 42px; height: 42px; font-size: 7px; }
 }
 
 /* 尊重系统减弱动效 */
