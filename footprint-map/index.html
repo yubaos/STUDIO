@@ -1802,7 +1802,12 @@ body.modal-open { overflow: hidden; }
     const photos = getPhotos(spot);
 
     // 导航切换时保留视频状态，仅更新内容；首次打开则完全重置
-    if (!isNav) {
+    // 但如果媒体类型发生变化（如从视频切换到照片），需要完全清理重置
+    const prevMediaType = media.classList.contains('is-video') ? 'video' : 'photo';
+    const isSwitchingToPhoto = prevMediaType === 'video' && !(mediaType === 'video' || mediaType === 'mixed');
+    const shouldReset = !isNav || isSwitchingToPhoto;
+    
+    if (shouldReset) {
       stopCurrentMedia();
       media.classList.remove('is-video');
       media.innerHTML = '';
@@ -1860,6 +1865,10 @@ body.modal-open { overflow: hidden; }
         node.play().catch(() => {});
         updateVideoOrientation();
       } else {
+        // 清理可能残留的照片或视频状态元素
+        const existingImg = media.querySelector('img');
+        if (existingImg) existingImg.remove();
+        
         media.classList.remove('is-video', 'is-portrait', 'is-landscape');
         media.innerHTML = '';
         node = document.createElement('video');
@@ -1907,6 +1916,10 @@ body.modal-open { overflow: hidden; }
         node.src = previewImageUrl(currentPhotoSrc, IMAGE_VARIANT.modal);
         updatePhotoOrientation();
       } else {
+        // 清理可能残留的视频状态元素（如 vstate）
+        const existingVstate = media.querySelector('.instax-vstate');
+        if (existingVstate) existingVstate.remove();
+        
         media.classList.remove('is-video', 'is-portrait', 'is-landscape');
         media.innerHTML = '';
         node = new Image();
