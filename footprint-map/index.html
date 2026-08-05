@@ -630,17 +630,17 @@ body.modal-open { overflow: hidden; }
 }
 .instax-media {
   position: relative;
-  aspect-ratio: 99 / 62;
+  /* aspect-ratio: 99 / 62; */
   background: #0d1720;
   border-radius: 3px; overflow: hidden;
   box-shadow: inset 0 0 0 1px rgba(0,0,0,.18);
   -webkit-touch-callout: none;
 }
-.instax-media.is-portrait { aspect-ratio: 62 / 46; }
-.instax-media.is-landscape { aspect-ratio: 99 / 62; }
+/* .instax-media.is-portrait { aspect-ratio: 62 / 46; } */
+/* .instax-media.is-landscape { aspect-ratio: 99 / 62; } */
 .instax-media.is-video { cursor: pointer; }
 .instax-asset {
-  width: 100%; height: 100%; object-fit: cover; display: block;
+  width: 100%; height: auto; display: block;
   -webkit-user-drag: none;
   user-select: none;
 }
@@ -1844,38 +1844,34 @@ body.modal-open { overflow: hidden; }
     } else {
       // 照片模式：显示当前索引的照片，并检测方向
       const currentPhotoSrc = photos[currentPhotoIndex] || '';
-      const updatePhotoOrientation = () => {
-        const photoImg = new Image();
-        photoImg.src = previewImageUrl(currentPhotoSrc, IMAGE_VARIANT.modal);
-        photoImg.onload = function() {
-          media.classList.remove('is-portrait', 'is-landscape');
-          if (this.width > this.height) {
-            media.classList.add('is-landscape');
-          } else {
-            media.classList.add('is-portrait');
-          }
-        };
-      };
-      
-      if (isNav && media.querySelector('img')) {
-        node = media.querySelector('img');
-        node.src = previewImageUrl(currentPhotoSrc, IMAGE_VARIANT.modal);
-        updatePhotoOrientation();
-      } else {
-        media.classList.remove('is-video', 'is-portrait', 'is-landscape');
-        media.innerHTML = '';
-        node = new Image();
-        node.className = 'instax-asset developing';
-        node.alt = spot.name;
-        node.draggable = false;
-        node.addEventListener('load', () => {
-          node.classList.remove('developing');
-          updatePhotoOrientation();
-        }, { once: true });
-        node.addEventListener('error', () => mediaFailed(media), { once: true });
-        node.src = previewImageUrl(currentPhotoSrc, IMAGE_VARIANT.modal);
-        media.appendChild(node);
-      }
+      media.classList.remove('is-video', 'is-portrait', 'is-landscape');
+      media.innerHTML = '';
+
+      const node = new Image();
+      node.className = 'instax-asset developing';
+      node.alt = spot.name;
+      node.draggable = false;
+
+      // 关键：图片加载完成后，让容器高度自适应
+      node.addEventListener('load', () => {
+        node.classList.remove('developing');
+        // 计算容器宽度，让高度跟随图片比例
+        const containerWidth = media.clientWidth || media.offsetWidth;
+        if (containerWidth > 0) {
+          const aspectRatio = node.naturalWidth / node.naturalHeight;
+          media.style.height = (containerWidth / aspectRatio) + 'px';
+        }
+        // 根据图片方向添加类（用于其他样式）
+        if (node.naturalWidth > node.naturalHeight) {
+          media.classList.add('is-landscape');
+        } else {
+          media.classList.add('is-portrait');
+        }
+      }, { once: true });
+
+      node.addEventListener('error', () => mediaFailed(media), { once: true });
+      node.src = previewImageUrl(currentPhotoSrc, IMAGE_VARIANT.modal);
+      media.appendChild(node);
     }
 
     // 更新计数显示为照片序号和总数
