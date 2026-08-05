@@ -602,16 +602,23 @@ body.modal-open { overflow: hidden; }
   padding: 20px;
 }
 
-/* 拍立得卡片：横版 Instax Wide 内容区 99×62，竖版 Instax Mini 内容区 62×46 */
+/* 拍立得卡片：横版 Instax Wide 内容区 99×62，竖版 Instax Mini 内容区 46×62 */
 .instax-card {
   --tilt: 0deg;
+  --card-width: min(92vw, 960px);
   position: relative; margin: 0;
-  width: min(92vw, 960px);
+  width: var(--card-width);
   background: #fdfdfa;
   border-radius: 8px;
   padding: 20px 20px 0;
   box-shadow: 0 30px 70px rgba(4,14,24,.52), inset 0 2px 0 rgba(255,255,255,.65);
   transform: rotate(var(--tilt));
+}
+.instax-card.is-portrait {
+  --card-width: min(56vw, 560px);
+}
+.instax-card.is-landscape {
+  --card-width: min(92vw, 960px);
 }
 .instax-card.drop { animation: cardDrop .55s cubic-bezier(.18,.9,.26,1.15) both; }
 @keyframes cardDrop {
@@ -636,7 +643,7 @@ body.modal-open { overflow: hidden; }
   box-shadow: inset 0 0 0 1px rgba(0,0,0,.18);
   -webkit-touch-callout: none;
 }
-.instax-media.is-portrait { aspect-ratio: 62 / 46; }
+.instax-media.is-portrait { aspect-ratio: 46 / 62; }
 .instax-media.is-landscape { aspect-ratio: 99 / 62; }
 .instax-media.is-video { cursor: pointer; }
 .instax-asset {
@@ -712,7 +719,7 @@ body.modal-open { overflow: hidden; }
 
 /* 矮屏适配 */
 @media (max-height: 760px) {
-  .instax-card { width: min(82vw, 660px); }
+  .instax-card { width: var(--card-width, min(82vw, 660px)); }
   .instax-caption { min-height: 118px; padding: 12px 6px 20px; }
   .instax-name { font-size: 28px; }
   .instax-note { font-size: 18px; }
@@ -837,7 +844,7 @@ body.modal-open { overflow: hidden; }
 
 @media (max-width: 640px) {
   .instax-stage { padding: 14px; }
-  .instax-card { width: min(96vw, 760px); padding: 13px 13px 0; }
+  .instax-card { width: var(--card-width, min(96vw, 760px)); padding: 13px 13px 0; }
   .instax-name { font-size: 26px; }
   .instax-note { font-size: 17px; }
   .instax-caption { min-height: 112px; padding: 12px 5px 20px; }
@@ -1788,7 +1795,25 @@ body.modal-open { overflow: hidden; }
     }
 
     const tilt = ((state.modalIndex % 5) - 2) * 1.4;
-    $('#instaxCard').style.setProperty('--tilt', tilt.toFixed(1) + 'deg');
+    const cardEl = $('#instaxCard');
+    cardEl.style.setProperty('--tilt', tilt.toFixed(1) + 'deg');
+    
+    // 监听媒体区域的方向变化，同步更新卡片的 is-portrait 类
+    const observer = new MutationObserver(() => {
+      if (media.classList.contains('is-portrait')) {
+        cardEl.classList.add('is-portrait');
+      } else {
+        cardEl.classList.remove('is-portrait');
+      }
+    });
+    observer.observe(media, { attributes: true, attributeFilter: ['class'] });
+    
+    // 初始化时同步一次方向状态
+    if (media.classList.contains('is-portrait')) {
+      cardEl.classList.add('is-portrait');
+    } else {
+      cardEl.classList.remove('is-portrait');
+    }
 
     const totalPhotos = photos.length;
 
