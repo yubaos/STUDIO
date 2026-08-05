@@ -640,7 +640,7 @@ body.modal-open { overflow: hidden; }
 .instax-media.is-landscape { aspect-ratio: 99 / 62; }
 .instax-media.is-video { cursor: pointer; }
 .instax-asset {
-  width: 100%; height: 100%; object-fit: cover; display: block;
+  width: 100%; height: 100%; object-fit: contain; display: block;
   -webkit-user-drag: none;
   user-select: none;
 }
@@ -1050,7 +1050,7 @@ body.modal-open { overflow: hidden; }
   const IMAGE_CDN_ORIGIN = 'https://img.yubaos.com';
   const IMAGE_VARIANT = {
     thumb: 'width=240,height=240,fit=cover,quality=70,format=auto',
-    modal: 'width=1080,height=1920,fit=cover,quality=86,format=auto'
+    modal: 'width=1920,height=1920,fit=scale-down,quality=86,format=auto'
   };
   function previewImageUrl(src, variant) {
     if (!src) return '';
