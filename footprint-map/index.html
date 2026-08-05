@@ -639,6 +639,8 @@ body.modal-open { overflow: hidden; }
 .instax-media.is-portrait { aspect-ratio: 62 / 46; }
 .instax-media.is-landscape { aspect-ratio: 99 / 62; }
 .instax-media.is-video { cursor: pointer; }
+/* mixed 模式下，无论显示视频还是照片，都显示点击提示光标 */
+.instax-media[data-mixed="true"] { cursor: pointer; }
 .instax-asset {
   width: 100%; height: 100%; object-fit: cover; display: block;
   -webkit-user-drag: none;
@@ -973,7 +975,7 @@ body.modal-open { overflow: hidden; }
       </figure>
     </div>
 
-    <p class="instax-hint">点击空白处关闭 · 左右滑动/方向键切换地点 · 上下滑动/方向键切换照片（mixed 模式：点击中间区域切换视频/照片）</p>
+    <p class="instax-hint">点击空白处关闭 · 左右滑动/方向键切换地点 · 上下滑动/方向键切换照片（mixed 模式：空格/回车或点击中间区域切换视频/照片）</p>
   </div>
 
   <!-- ★ Leaflet 动态加载：主源 8s 超时自动切备源，非阻塞，任何一源挂起都不会冻结页面 -->
@@ -1771,8 +1773,7 @@ body.modal-open { overflow: hidden; }
   }
   
   // 辅助函数：在 mixed 模式下切换显示类型
-  function toggleDisplayType(mediaType) {
-    if (!isMixedType(mediaType)) return mediaType;
+  function toggleDisplayType() {
     // mixed 模式下，在 video 和 photo 之间切换
     currentDisplayType = currentDisplayType === 'photo' ? 'video' : 'photo';
     return currentDisplayType;
@@ -1807,6 +1808,13 @@ body.modal-open { overflow: hidden; }
 
     // 确定实际渲染类型：mixed 模式根据 currentDisplayType 决定，其他模式直接使用 mediaType
     const renderType = isMixedType(mediaType) ? (currentDisplayType || 'video') : mediaType;
+    
+    // 设置 mixed 模式标记，用于 CSS 光标样式
+    if (isMixedType(mediaType)) {
+      media.setAttribute('data-mixed', 'true');
+    } else {
+      media.removeAttribute('data-mixed');
+    }
 
     // 如果是导航且已有媒体元素，只需更新 src，避免重建导致状态丢失
     let node;
@@ -1878,6 +1886,7 @@ body.modal-open { overflow: hidden; }
         };
       };
       
+      // 导航时复用 img 元素，但确保不是 video 元素
       if (isNav && media.querySelector('img')) {
         node = media.querySelector('img');
         node.src = previewImageUrl(currentPhotoSrc, IMAGE_VARIANT.modal);
@@ -2007,6 +2016,18 @@ body.modal-open { overflow: hidden; }
   }
 
   function onMediaClick() {
+    const spot = state.spots[state.modalIndex];
+    const mediaType = getMediaType(spot);
+    
+    // mixed 模式：点击视频区域切换媒体类型
+    if (isMixedType(mediaType)) {
+      toggleDisplayType();
+      currentPhotoIndex = 0;
+      openInstax(state.modalIndex, true);
+      return;
+    }
+    
+    // 非 mixed 模式：控制视频播放/暂停
     const v = $('#instaxMedia video');
     if (!v) return;
     if (v.paused) v.play().catch(() => {}); else v.pause();
@@ -2041,7 +2062,7 @@ body.modal-open { overflow: hidden; }
           openInstax(state.modalIndex, true);
         } else if (clickX > thirdWidth && clickX < rect.width - thirdWidth) {
           // 点击中间区域切换到视频
-          currentDisplayType = 'video';
+          toggleDisplayType();
           currentPhotoIndex = 0;
           openInstax(state.modalIndex, true);
         }
@@ -2053,7 +2074,7 @@ body.modal-open { overflow: hidden; }
           navInstax(1);
         } else if (photos.length > 0) {
           // 点击中间区域切换到照片
-          currentDisplayType = 'photo';
+          toggleDisplayType();
           currentPhotoIndex = 0;
           openInstax(state.modalIndex, true);
         }
@@ -2080,7 +2101,13 @@ body.modal-open { overflow: hidden; }
   /* ---------------- 11. 全局交互绑定 ---------------- */
   function bindUI() {
     $('#btnReset').addEventListener('click', resetView);
-    $('#instaxMedia').addEventListener('click', onMediaClick);
+    
+    // mixed 模式：点击媒体区域切换类型；非 mixed 模式：控制视频播放/暂停
+    $('#instaxMedia').addEventListener('click', (e) => {
+      // 阻止事件冒泡到 overlay，避免触发 onInstaxOverlayClick
+      e.stopPropagation();
+      onMediaClick();
+    });
 
     /* 影像保护：禁止右键另存 / 拖拽保存 */
     const guard = (e) => e.preventDefault();
@@ -2107,7 +2134,7 @@ body.modal-open { overflow: hidden; }
       } else if (isMixed) {
         // mixed 模式：根据当前显示类型决定行为
         if (currentDisplayType === 'photo' && isMultiPhoto) {
-          // 当前显示照片且有多张：上下方向键切换照片
+          // 当前显示照片且有多张：上下方向键切换照片，左右方向键切换地点
           if (e.key === 'ArrowUp') {
             currentPhotoIndex = (currentPhotoIndex - 1 + photos.length) % photos.length;
             openInstax(state.modalIndex, true);
@@ -2118,11 +2145,21 @@ body.modal-open { overflow: hidden; }
             navInstax(1);
           } else if (e.key === 'ArrowLeft') {
             navInstax(-1);
+          } else if (e.key === ' ' || e.key === 'Enter') {
+            // 空格或回车键切换媒体类型
+            toggleDisplayType();
+            currentPhotoIndex = 0;
+            openInstax(state.modalIndex, true);
           }
         } else {
-          // 当前显示视频或只有一张照片：左右方向键切换地点
+          // 当前显示视频或只有一张照片：左右方向键切换地点，空格/回车切换到照片
           if (e.key === 'ArrowRight') navInstax(1);
           else if (e.key === 'ArrowLeft') navInstax(-1);
+          else if (e.key === ' ' || e.key === 'Enter') {
+            toggleDisplayType();
+            currentPhotoIndex = 0;
+            openInstax(state.modalIndex, true);
+          }
         }
       } else if (isMultiPhoto) {
         // 纯照片模式且有多张：上下方向键切换照片
@@ -2159,7 +2196,7 @@ body.modal-open { overflow: hidden; }
       // mixed 模式：根据当前显示类型决定行为
       if (isMixed) {
         if (currentDisplayType === 'photo' && isMultiPhoto) {
-          // 当前显示照片且有多张：垂直滑动切换照片，水平滑动无效
+          // 当前显示照片且有多张：垂直滑动切换照片，水平滑动切换地点
           if (dy > 70 && Math.abs(dy) > Math.abs(dx)) {
             // 向下滑动切换到上一张
             currentPhotoIndex = (currentPhotoIndex - 1 + photos.length) % photos.length;
@@ -2168,9 +2205,12 @@ body.modal-open { overflow: hidden; }
             // 向上滑动切换到下一张
             currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
             openInstax(state.modalIndex, true);
+          } else if (Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy)) {
+            // 水平滑动切换地点
+            navInstax(dx < 0 ? 1 : -1);
           }
         } else {
-          // 当前显示视频或只有一张照片：垂直滑动关闭，水平滑动切换地点
+          // 当前显示视频或只有一张照片：垂直滑动关闭，水平滑动切换地点，双击切换媒体类型（由点击事件处理）
           if (dy > 70 && Math.abs(dy) > Math.abs(dx)) closeInstax();
           else if (Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy)) navInstax(dx < 0 ? 1 : -1);
         }
