@@ -630,14 +630,15 @@ body.modal-open { overflow: hidden; }
 }
 .instax-media {
   position: relative;
-  aspect-ratio: 99 / 62;
+  width: 100%;
+  height: clamp(320px, 56vh, 580px);
   background: #0d1720;
   border-radius: 3px; overflow: hidden;
   box-shadow: inset 0 0 0 1px rgba(0,0,0,.18);
   -webkit-touch-callout: none;
 }
-.instax-media.is-portrait { aspect-ratio: 62 / 46; }
-.instax-media.is-landscape { aspect-ratio: 99 / 62; }
+.instax-media.is-portrait { }
+.instax-media.is-landscape { }
 .instax-media.is-video { cursor: pointer; }
 .instax-asset {
   width: 100%; height: 100%; object-fit: cover; display: block;
@@ -716,6 +717,7 @@ body.modal-open { overflow: hidden; }
   .instax-caption { min-height: 118px; padding: 12px 6px 20px; }
   .instax-name { font-size: 28px; }
   .instax-note { font-size: 18px; }
+  .instax-media { height: clamp(240px, 48vh, 420px); }
 }
 
 /* ==================== Toast ==================== */
