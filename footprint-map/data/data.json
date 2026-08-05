@@ -2,7 +2,7 @@
   "meta": {
     "title": "行迹山海",
     "subtitle": "FOOTPRINT ATLAS",
-    "span": "2014 — 2019",
+    "span": "2014 — 2024",
     "updatedAt": "2026-08-01"
   },
   "regions": [
@@ -77,6 +77,24 @@
       "color": "#2fa08c",
       "geo": { "type": "world", "id": "458" },
       "fallbackView": { "center": [4.00, 109.00], "zoom": 5 }
+    },
+    {
+      "id": "hubei",
+      "name": "湖北",
+      "en": "HUBEI",
+      "scope": "中国 · 省",
+      "color": "#5a7c8f",
+      "geo": { "type": "datav", "adcode": "420000" },
+      "fallbackView": { "center": [30.50, 114.30], "zoom": 6 }
+    },
+    {
+      "id": "guangxi",
+      "name": "广西",
+      "en": "GUANGXI",
+      "scope": "中国 · 自治区",
+      "color": "#8f6b5a",
+      "geo": { "type": "datav", "adcode": "450000" },
+      "fallbackView": { "center": [23.80, 108.30], "zoom": 6 }
     }
   ],
   "spots": [
@@ -270,6 +288,57 @@
         "https://img.yubaos.com/Gallery/beijing.webp"
       ],
       "note": "雄伟天安门前留影，定格首都日光下的庄严与青春。"
+    },
+    {
+      "id": "shenzhen-2021",
+      "region": "guangdong",
+      "country": "中国",
+      "name": "弘法寺",
+      "place": "深圳，广东 · 中国",
+      "en": "SHENZHEN, GUANGDONG",
+      "date": "2021.01.03",
+      "lat": 22.5802,
+      "lng": 114.1773,
+      "zoom": 11,
+      "media": "photo",
+      "photos": [
+        "https://img.yubaos.com/Gallery/hongfasi.webp"
+      ],
+      "note": "梧桐山下弘法寺，黄瓦红墙映蓝天，佛光普照许安康。"
+    },
+    {
+      "id": "hechi-2024",
+      "region": "guangxi",
+      "country": "中国",
+      "name": "小三峡",
+      "place": "河池，广西 · 中国",
+      "en": "HECHI, GUANGXI",
+      "date": "2024.02.11",
+      "lat": 24.7651,
+      "lng": 107.8932,
+      "zoom": 10,
+      "media": "photo",
+      "photos": [
+        "https://img.yubaos.com/Gallery/xiaosanxia.webp"
+      ],
+      "note": "游船河池小三峡，碧水青山，赏碧水青山，意犹未尽。"
+    },
+    {
+      "id": "qichun-2024",
+      "region": "hubei",
+      "country": "中国",
+      "name": "蕲艾小镇",
+      "place": "蕲春，湖北 · 中国",
+      "en": "QICHUN, HUBEI",
+      "date": "2024.02.25",
+      "lat": 30.0889,
+      "lng": 115.3704,
+      "zoom": 10,
+      "media": "photo",
+      "photos": [
+        "https://img.yubaos.com/Gallery/qichun.webp"
+      ],
+      "note": "蕲艾小镇，古城巍峨，艾香悠远，传承千年中医文化。"
     }
   ]
 }
