@@ -630,17 +630,36 @@ body.modal-open { overflow: hidden; }
 }
 .instax-media {
   position: relative;
+  /* 默认比例：Instax Wide 99×62（比例未知时的回退值） */
   aspect-ratio: 99 / 62;
   background: #0d1720;
   border-radius: 3px; overflow: hidden;
   box-shadow: inset 0 0 0 1px rgba(0,0,0,.18);
   -webkit-touch-callout: none;
+  /* 高度限制：最大为视口高度的 58%，最小保持合理范围 */
+  max-height: calc(58vh - 180px);
+  min-height: 120px;
 }
-.instax-media.is-portrait { aspect-ratio: 62 / 46; }
-.instax-media.is-landscape { aspect-ratio: 99 / 62; }
-.instax-media.is-video { cursor: pointer; }
+/* 模糊氛围垫层：极端比例被夹取或容器受视口限高时，底层铺同一画面的高斯模糊放大版 */
+.instax-blur-bg {
+  position: absolute; inset: -20%;
+  width: 140%; height: 140%;
+  left: -20%; top: -20%;
+  background-size: cover !important;
+  background-position: center !important;
+  filter: blur(40px) brightness(.6) saturate(1.1);
+  opacity: 1;
+  transition: opacity .4s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+.instax-blur-bg.hidden { opacity: 0; }
+/* 媒体资源层：object-fit: contain 确保完整媒体等比缩放，永不裁切 */
 .instax-asset {
-  width: 100%; height: 100%; object-fit: cover; display: block;
+  position: relative; z-index: 1;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: block;
   -webkit-user-drag: none;
   user-select: none;
 }
@@ -650,6 +669,10 @@ body.modal-open { overflow: hidden; }
   55%  { filter: brightness(1.25) contrast(.8) saturate(.7);  opacity: 1; }
   100% { filter: none; }
 }
+/* 比例类：由 JS 根据真实宽高比动态设置 */
+.instax-media.is-portrait { /* 竖图比例，由 JS 设置 aspect-ratio */ }
+.instax-media.is-landscape { /* 横图比例，由 JS 设置 aspect-ratio */ }
+.instax-media.is-video { cursor: pointer; }
 /* 视频暂停指示（无原生控制栏，点画面切换） */
 .instax-vstate {
   position: absolute; inset: 0; margin: auto;
@@ -1787,6 +1810,14 @@ body.modal-open { overflow: hidden; }
 
     const totalPhotos = photos.length;
 
+    // 创建或更新模糊背景层
+    let blurBg = media.querySelector('.instax-blur-bg');
+    if (!blurBg) {
+      blurBg = document.createElement('div');
+      blurBg.className = 'instax-blur-bg';
+      media.appendChild(blurBg);
+    }
+
     // 如果是导航且已有媒体元素，只需更新 src，避免重建导致状态丢失
     let node;
     if (mediaType === 'video' || mediaType === 'mixed') {
@@ -1796,6 +1827,14 @@ body.modal-open { overflow: hidden; }
           const posterImg = new Image();
           posterImg.src = previewImageUrl(posterSrc, IMAGE_VARIANT.modal);
           posterImg.onload = function() {
+            // 计算真实宽高比并夹取到合理范围 [0.62, 2.35]
+            let ratio = this.width / this.height;
+            ratio = Math.max(0.62, Math.min(2.35, ratio));
+            media.style.aspectRatio = `${ratio}`;
+            // 设置模糊背景
+            blurBg.style.backgroundImage = `url("${previewImageUrl(posterSrc, IMAGE_VARIANT.modal)}")`;
+            blurBg.classList.remove('hidden');
+            // 设置方向类
             media.classList.remove('is-portrait', 'is-landscape');
             if (this.width > this.height) {
               media.classList.add('is-landscape');
@@ -1803,6 +1842,15 @@ body.modal-open { overflow: hidden; }
               media.classList.add('is-portrait');
             }
           };
+          posterImg.onerror = function() {
+            // 海报图加载失败时使用默认比例
+            media.style.aspectRatio = '99 / 62';
+            blurBg.classList.add('hidden');
+          };
+        } else {
+          // 无海报图时使用默认比例
+          media.style.aspectRatio = '99 / 62';
+          blurBg.classList.add('hidden');
         }
       };
       
@@ -1816,7 +1864,10 @@ body.modal-open { overflow: hidden; }
         updateVideoOrientation();
       } else {
         media.classList.remove('is-video', 'is-portrait', 'is-landscape');
-        media.innerHTML = '';
+        // 清空除 blurBg 外的所有子元素
+        Array.from(media.children).forEach(child => {
+          if (!child.classList.contains('instax-blur-bg')) child.remove();
+        });
         node = document.createElement('video');
         node.className = 'instax-asset developing';
         node.loop = true; node.muted = true;
@@ -1848,12 +1899,25 @@ body.modal-open { overflow: hidden; }
         const photoImg = new Image();
         photoImg.src = previewImageUrl(currentPhotoSrc, IMAGE_VARIANT.modal);
         photoImg.onload = function() {
+          // 计算真实宽高比并夹取到合理范围 [0.62, 2.35]
+          let ratio = this.naturalWidth / this.naturalHeight;
+          ratio = Math.max(0.62, Math.min(2.35, ratio));
+          media.style.aspectRatio = `${ratio}`;
+          // 设置模糊背景
+          blurBg.style.backgroundImage = `url("${previewImageUrl(currentPhotoSrc, IMAGE_VARIANT.modal)}")`;
+          blurBg.classList.remove('hidden');
+          // 设置方向类
           media.classList.remove('is-portrait', 'is-landscape');
-          if (this.width > this.height) {
+          if (this.naturalWidth > this.naturalHeight) {
             media.classList.add('is-landscape');
           } else {
             media.classList.add('is-portrait');
           }
+        };
+        photoImg.onerror = function() {
+          // 图片加载失败时使用默认比例
+          media.style.aspectRatio = '99 / 62';
+          blurBg.classList.add('hidden');
         };
       };
       
@@ -1863,7 +1927,10 @@ body.modal-open { overflow: hidden; }
         updatePhotoOrientation();
       } else {
         media.classList.remove('is-video', 'is-portrait', 'is-landscape');
-        media.innerHTML = '';
+        // 清空除 blurBg 外的所有子元素
+        Array.from(media.children).forEach(child => {
+          if (!child.classList.contains('instax-blur-bg')) child.remove();
+        });
         node = new Image();
         node.className = 'instax-asset developing';
         node.alt = spot.name;
@@ -2018,6 +2085,43 @@ body.modal-open { overflow: hidden; }
     const overlay = $('#instaxOverlay');
     overlay.querySelector('.instax-backdrop').addEventListener('click', closeInstax);
     overlay.addEventListener('click', onInstaxOverlayClick);
+
+    // 窗口大小变化或转屏时，重新计算媒体容器的真实比例
+    window.addEventListener('resize', () => {
+      if (state.modalIndex < 0) return;
+      const spot = state.spots[state.modalIndex];
+      const mediaType = getMediaType(spot);
+      const photos = getPhotos(spot);
+      const currentPhotoSrc = photos[currentPhotoIndex] || '';
+      const posterSrc = getPosterSrc(spot);
+      
+      // 根据当前媒体类型重新触发比例计算
+      if (mediaType === 'video' || mediaType === 'mixed') {
+        // 视频模式：使用海报图重新计算
+        if (posterSrc) {
+          const posterImg = new Image();
+          posterImg.src = previewImageUrl(posterSrc, IMAGE_VARIANT.modal);
+          posterImg.onload = function() {
+            const media = $('#instaxMedia');
+            let ratio = this.width / this.height;
+            ratio = Math.max(0.62, Math.min(2.35, ratio));
+            media.style.aspectRatio = `${ratio}`;
+          };
+        }
+      } else {
+        // 照片模式：使用当前照片重新计算
+        if (currentPhotoSrc) {
+          const photoImg = new Image();
+          photoImg.src = previewImageUrl(currentPhotoSrc, IMAGE_VARIANT.modal);
+          photoImg.onload = function() {
+            const media = $('#instaxMedia');
+            let ratio = this.naturalWidth / this.naturalHeight;
+            ratio = Math.max(0.62, Math.min(2.35, ratio));
+            media.style.aspectRatio = `${ratio}`;
+          };
+        }
+      }
+    });
 
     window.addEventListener('keydown', (e) => {
       if (!overlay.classList.contains('open')) return;
