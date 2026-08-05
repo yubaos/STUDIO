@@ -1,1 +1,25 @@
-Nothing needs to be added to the .gitignore file based on the provided changes. The modification of 'footprint-map/index.html' is a standard HTML file that should be tracked in version control.
+# Examples 1:
+
+# Example 2 (Project with artifacts):
+#Compiled and build artifacts
+*.pyc
+__pycache__/
+*.o
+*.obj
+dist/
+build/
+#Dependencies
+.venv/
+venv/
+node_modules/
+#Logs and temp files
+*.log
+*.tmp
+*.swp
+#Environment
+.env
+.env.local
+.env.*
+#Editors
+.vscode/
+.idea/
