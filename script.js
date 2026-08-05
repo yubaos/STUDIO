@@ -1,6 +1,7 @@
 /**
  * YUBAO.STUDIO - Main Interaction Script
  * Handles 3D grid perspective effects and user interactions
+ * Performance Optimized Version
  */
 
 (function() {
@@ -11,10 +12,28 @@
     perspective: 900,
     rotationMultiplier: 4,
     transitionDuration: 0.15,
+    throttleDelay: 16, // ~60fps
   };
 
   /**
-   * Initialize grid perspective effect with requestAnimationFrame
+   * Throttle function to limit execution frequency
+   * @param {Function} func - Function to throttle
+   * @param {number} limit - Time limit in milliseconds
+   * @returns {Function} Throttled function
+   */
+  function throttle(func, limit) {
+    let inThrottle;
+    return function(...args) {
+      if (!inThrottle) {
+        func.apply(this, args);
+        inThrottle = true;
+        setTimeout(() => inThrottle = false, limit);
+      }
+    };
+  }
+
+  /**
+   * Initialize grid perspective effect with throttled updates
    * @param {HTMLElement} gridElement - The grid element to apply effects to
    */
   function initGridEffect(gridElement) {
@@ -27,44 +46,30 @@
     gridElement.style.transformStyle = 'preserve-3d';
     gridElement.style.transition = `transform ${CONFIG.transitionDuration}s ease-out`;
 
-    let rafId = null;
-    let latestX = 0;
-    let latestY = 0;
-
     /**
      * Update grid transform based on mouse position
+     * @param {MouseEvent} event - Mouse move event
      */
-    const updateTransform = () => {
-      rafId = null;
+    const updateTransform = (event) => {
+      const x = (event.clientX / window.innerWidth - 0.5) * 2;
+      const y = (event.clientY / window.innerHeight - 0.5) * 2;
+      
       gridElement.style.transform = `
         perspective(${CONFIG.perspective}px) 
-        rotateY(${latestX * CONFIG.rotationMultiplier}deg) 
-        rotateX(${-latestY * CONFIG.rotationMultiplier}deg)
+        rotateY(${x * CONFIG.rotationMultiplier}deg) 
+        rotateX(${-y * CONFIG.rotationMultiplier}deg)
       `;
     };
 
-    /**
-     * Handle mouse move event
-     * @param {MouseEvent} event - Mouse move event
-     */
-    const handleMouseMove = (event) => {
-      latestX = (event.clientX / window.innerWidth - 0.5) * 2;
-      latestY = (event.clientY / window.innerHeight - 0.5) * 2;
-
-      if (!rafId) {
-        rafId = requestAnimationFrame(updateTransform);
-      }
-    };
+    // Throttle mouse move handler for better performance
+    const throttledMouseMove = throttle(updateTransform, CONFIG.throttleDelay);
 
     // Add event listener with passive option for better scroll performance
-    document.addEventListener('mousemove', handleMouseMove, { passive: true });
+    document.addEventListener('mousemove', throttledMouseMove, { passive: true });
 
     // Cleanup function (for potential SPA usage)
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      if (rafId) {
-        cancelAnimationFrame(rafId);
-      }
+      document.removeEventListener('mousemove', throttledMouseMove);
     };
   }
 
