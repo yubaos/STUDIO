@@ -1,47 +1,53 @@
-# Examples 1:
-# Project with source/config files only
-# Added files: [src/main.py, README.md, config.json]
-# Deleted files: [old/unused.py]
-# Modified files: [utils.py]
-# Current .gitignore: (empty)
-# Expected output: (empty - output nothing)
+# Examples
 
-# Example 2:
-# Added files: [pycache/main.cpython-310.pyc, dist/app.js, .env.local, .vscode/settings.json]
-# Deleted files: []
-# Modified files: []
-# Current .gitignore: *.log
-# Expected output:
-# #Compiled and build artifacts
-# *.pyc
-# pycache/
-# *.o
-# *.obj
-# dist/
-# build/
-# #Dependencies
-# .venv/
-# venv/
-# node_modules/
-# #Logs and temp files
-# *.log
-# *.tmp
-# *.swp
-# #Environment
-# .env
-# .env.local
-# .env.
-# #Editors
-# .vscode/
-# .idea/
-# #Original rules preserved
-# *.log
+    Input:
+    ### Added files:
+    [src/main.py, README.md, config.json]
 
-# For the main input:
-# Added files: []
-# Deleted files: []
-# Modified files: ['footprint-map/index.html']
-# Current .gitignore: (empty)
-# Since only a source file (index.html) was modified and no build artifacts, dependencies, or temp files are present, output nothing.
+    ### Deleted files:
+    [old/unused.py]
+    ### Modified files:
+    [utils.py]
+    ###current .gitignore Content
+    (empty)
+    Expected Output:
+    (empty — output nothing)
 
-# Output: (empty)
+# Example 2 (Project with artifacts):
+Input:
+### Added files:
+[pycache/main.cpython-310.pyc, dist/app.js, .env.local, .vscode/settings.json
+
+### Deleted files:
+    []
+
+### Modified files:
+[]
+### current .gitignore Content
+*.log
+Expected Output:
+    #Compiled and build artifacts
+    *.pyc
+    pycache/
+    *.o
+    *.obj
+    dist/
+    build/
+    #Dependencies
+    .venv/
+    venv/
+    node_modules/
+    #Logs and temp files
+    *.log
+    *.tmp
+    *.swp
+    #Environment
+    .env
+    .env.local
+    .env.
+    #Editors
+    .vscode/
+    .idea/
+    #Original rules preserved
+    *.log
+Final reminder: Output ONLY the .gitignore content. If nothing should be ignored, output NOTHING.
