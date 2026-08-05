@@ -1786,10 +1786,13 @@ body.modal-open { overflow: hidden; }
     $('#instaxCard').style.setProperty('--tilt', tilt.toFixed(1) + 'deg');
 
     const totalPhotos = photos.length;
+    
+    // 对于 mixed 类型，判断是否应该显示视频（索引 0）还是照片（索引 > 0）
+    const shouldShowVideo = mediaType === 'video' || (mediaType === 'mixed' && currentPhotoIndex === 0);
 
     // 如果是导航且已有媒体元素，只需更新 src，避免重建导致状态丢失
     let node;
-    if (mediaType === 'video' || mediaType === 'mixed') {
+    if (shouldShowVideo) {
       // 视频模式：检测视频海报图的方向
       const updateVideoOrientation = () => {
         if (posterSrc) {
@@ -1922,6 +1925,7 @@ body.modal-open { overflow: hidden; }
     overlay.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('modal-open');
     state.modalIndex = -1;
+    currentPhotoIndex = 0;
     
     // 关闭弹窗时自动收起侧边栏，避免遮挡地图内容
     const sb = $('#sidebar');
@@ -1941,8 +1945,11 @@ body.modal-open { overflow: hidden; }
     const photos = getPhotos(spot);
     const totalPhotos = photos.length;
     
-    // 如果是照片模式或 mixed 模式且有多张照片，先切换照片
-    if ((mediaType === 'photo' || mediaType === 'mixed') && totalPhotos > 1) {
+    // 对于 mixed 类型，判断是否应该显示视频（索引 0）还是照片（索引 > 0）
+    const shouldShowVideo = mediaType === 'video' || (mediaType === 'mixed' && currentPhotoIndex === 0);
+    
+    // 如果是照片模式或 mixed 模式且有多张照片且当前不是视频状态，先切换照片
+    if ((mediaType === 'photo' || (mediaType === 'mixed' && !shouldShowVideo)) && totalPhotos > 1) {
       const newIndex = (currentPhotoIndex + dir + totalPhotos) % totalPhotos;
       if (newIndex !== currentPhotoIndex) {
         currentPhotoIndex = newIndex;
@@ -1976,7 +1983,9 @@ body.modal-open { overflow: hidden; }
     const spot = state.spots[state.modalIndex];
     const mediaType = getMediaType(spot);
     const photos = getPhotos(spot);
-    const isMultiPhoto = (mediaType === 'photo' || mediaType === 'mixed') && photos.length > 1;
+    // 对于 mixed 类型，判断是否应该显示视频（索引 0）还是照片（索引 > 0）
+    const shouldShowVideo = mediaType === 'video' || (mediaType === 'mixed' && currentPhotoIndex === 0);
+    const isMultiPhoto = (mediaType === 'photo' || (mediaType === 'mixed' && !shouldShowVideo)) && photos.length > 1;
     
     const rect = overlay.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
@@ -2025,7 +2034,9 @@ body.modal-open { overflow: hidden; }
       const spot = state.spots[state.modalIndex];
       const mediaType = getMediaType(spot);
       const photos = getPhotos(spot);
-      const isMultiPhoto = (mediaType === 'photo' || mediaType === 'mixed') && photos.length > 1;
+      // 对于 mixed 类型，判断是否应该显示视频（索引 0）还是照片（索引 > 0）
+      const shouldShowVideo = mediaType === 'video' || (mediaType === 'mixed' && currentPhotoIndex === 0);
+      const isMultiPhoto = (mediaType === 'photo' || (mediaType === 'mixed' && !shouldShowVideo)) && photos.length > 1;
       
       if (e.key === 'Escape') {
         closeInstax();
@@ -2058,7 +2069,9 @@ body.modal-open { overflow: hidden; }
       const spot = state.spots[state.modalIndex];
       const mediaType = getMediaType(spot);
       const photos = getPhotos(spot);
-      const isMultiPhoto = (mediaType === 'photo' || mediaType === 'mixed') && photos.length > 1;
+      // 对于 mixed 类型，判断是否应该显示视频（索引 0）还是照片（索引 > 0）
+      const shouldShowVideo = mediaType === 'video' || (mediaType === 'mixed' && currentPhotoIndex === 0);
+      const isMultiPhoto = (mediaType === 'photo' || (mediaType === 'mixed' && !shouldShowVideo)) && photos.length > 1;
       
       // 多张照片模式：垂直滑动切换照片，水平滑动无效
       if (isMultiPhoto) {
