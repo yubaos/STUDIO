@@ -63,13 +63,12 @@ body {
   border: 2px dashed rgba(217,179,106,.55);
   border-radius: 50%;
   position: relative;
-  animation: slowSpin 3.4s linear infinite;
 }
 .loader-plane {
   position: absolute; top: -13px; left: 50%;
   width: 24px; height: 24px; margin-left: -12px;
   fill: var(--gold);
-  transform: rotate(90deg);
+  animation: planeOrbit 3.4s linear infinite;
 }
 .loader-text {
   margin: 24px 0 6px;
@@ -103,6 +102,14 @@ body {
 .loader.error .loader-plane { fill: var(--red); }
 @keyframes blink { 0%, 100% { opacity: .15; } 50% { opacity: 1; } }
 @keyframes slowSpin { to { transform: rotate(360deg); } }
+@keyframes planeOrbit { 
+  0% { 
+    transform: translate(-46px, 0) rotate(90deg); 
+  }
+  100% { 
+    transform: translate(-46px, 0) rotate(450deg); 
+  } 
+}
 
 /* ==================== 侧栏（旅行手账） ==================== */
 .sidebar {
