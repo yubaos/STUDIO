@@ -1,8 +1,12 @@
+```
 # Compiled and build artifacts
 *.pyc
 __pycache__/
 *.o
 *.obj
+dist/
+build/
+target/
 *.class
 *.exe
 *.dll
@@ -11,41 +15,60 @@ __pycache__/
 *.out
 
 # Dependencies
-node_modules/
-venv/
 .venv/
+venv/
 .env
 .env.local
-*.env.*
+.env.*
+node_modules/
+.julia/
+zig*/
+.jekyll-cache/
+.bundle/
+vendor/bundle/
+vendor/ruby/
 
 # Logs and temp files
 *.log
 *.tmp
 *.swp
 *.swo
+*.bak
+*.~
+*~
 
 # Editors
 .vscode/
 .idea/
-
-# System files
+*.sublime-project
+*.sublime-workspace
 .DS_Store
 Thumbs.db
 
-# Coverage
+# Coverage reports
 coverage/
 htmlcov/
 .coverage
+*.cover
 
-# Build directories
-dist/
-build/
-target/
-.gradle/
-
-# Python cache
-.mypy_cache/
+# Testing
 .pytest_cache/
+.mypy_cache/
+.tox/
+.nyc_output/
+coverage.xml
+*.gcda
+*.gcno
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*:*
 
 # Compressed files
 *.zip
@@ -70,3 +93,10 @@ target/
 *.tar.bz2
 *.tar.xz
 *.tar.zst
+
+# Security
+*.key
+*.pem
+*.crt
+*.cert
+```
