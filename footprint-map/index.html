@@ -26,9 +26,9 @@
   --blue: #1d6fd1;
   --gold: #d9b36a;
   --sea: #a9c9d6;
-  --font-body: 'Noto Sans SC', system-ui, -apple-system, sans-serif;
-  --font-display: 'Noto Sans SC', sans-serif;
-  --font-hand: 'Ma Shan Zheng', 'Noto Sans SC', cursive;
+  --font-body: system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --font-display: system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --font-hand: 'Ma Shan Zheng', cursive;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
 }
 
@@ -896,10 +896,8 @@ body.modal-open { overflow: hidden; }
   <meta name="description" content="一张纯静态的个人旅行足迹地图：Leaflet 底图、省份/国家 GeoJSON 高亮、蓝色脉冲打卡点、Instax Wide 风格照片手账弹窗。">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
-  <!-- ★ 字体：全部异步加载（media=print → onload 切回 all），任一 CDN 挂起都不阻塞首屏 -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/zcool-xiaowei/index.css" media="print" onload="this.media='all'">
+  <!-- ★ 字体：仅加载 Ma Shan Zheng（手写风格）和 IBM Plex Mono（等宽），中文使用系统自带优秀字体 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ma-shan-zheng/index.css" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-sc/index.css" media="print" onload="this.media='all'">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono/index.css" media="print" onload="this.media='all'">
 
   <!-- ★ Leaflet 完整样式：同样异步加载（关键结构样式已内置于内联 style，加载失败也不影响地图可用） -->

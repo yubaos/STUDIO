@@ -1,3 +1,4 @@
+```
 # Compiled and build artifacts
 *.pyc
 __pycache__/
@@ -5,6 +6,7 @@ __pycache__/
 *.obj
 dist/
 build/
+target/
 *.class
 *.exe
 *.dll
@@ -15,18 +17,16 @@ build/
 # Dependencies
 .venv/
 venv/
+.env
+.env.local
+.env.*
 node_modules/
 .julia/
-.zig-cache/
-zig-cache/
-target/
-.gradle/
-.mypy_cache/
-.pytest_cache/
-coverage/
-htmlcov/
-.nyc_output/
-.scoverage/
+zig*/
+.jekyll-cache/
+.bundle/
+vendor/bundle/
+vendor/ruby/
 
 # Logs and temp files
 *.log
@@ -34,30 +34,43 @@ htmlcov/
 *.swp
 *.swo
 *.bak
-*.~*
-.DS_Store
-Thumbs.db
-
-# Environment
-.env
-.env.local
-.env.*
+*.~
+*~
 
 # Editors
 .vscode/
 .idea/
-*.swp
-*.swo
-*~
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+
+# Coverage reports
+coverage/
+htmlcov/
+.coverage
+*.cover
+
+# Testing
+.pytest_cache/
+.mypy_cache/
+.tox/
+.nyc_output/
+coverage.xml
+*.gcda
+*.gcno
 
 # OS generated files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
 ehthumbs.db
-Icon?
 Thumbs.db
-*.crdownload
+*:*
 
-# Archives
+# Compressed files
 *.zip
 *.gz
 *.tar
@@ -80,3 +93,10 @@ Thumbs.db
 *.tar.bz2
 *.tar.xz
 *.tar.zst
+
+# Security
+*.key
+*.pem
+*.crt
+*.cert
+```
