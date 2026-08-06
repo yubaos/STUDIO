@@ -1055,9 +1055,7 @@ body.modal-open { overflow: hidden; }
    * 国家/地区 id 为 ISO 3166-1 数字码：泰国 764 / 马来西亚 458 / 中国香港 344
    * 扩展参考：新加坡 702 / 越南 704 / 印度尼西亚 360 / 柬埔寨 116 */
   const WORLD_SOURCES = [
-    'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json',
-    'https://fastly.jsdelivr.net/npm/world-atlas@2/countries-50m.json',
-    'https://unpkg.com/world-atlas@2/countries-50m.json'
+    './data/footprint-countries.json'
   ];
 
   /* 区域描边样式（dashArray 显式给 null，避免 setStyle 合并后虚线残留） */
