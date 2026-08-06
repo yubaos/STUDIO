@@ -1049,10 +1049,12 @@ body.modal-open { overflow: hidden; }
   const DATAV_URL = (adcode) => `https://geo.datav.aliyun.com/areas_v3/bound/${adcode}.json`;
 
   /* 简化版世界地图数据：仅包含泰国 (764)、马来西亚 (458)、中国香港 (344)
-   * 从 world-atlas 1:50m 提取并简化，文件大小从 738KB 降至 6.4KB（压缩率 99.1%）
+   * 从 world-atlas 1:10m 提取并简化，保留更高精度边界细节
+   * 文件大小约 15KB（比 50m 版本略大，但精度显著提升）
    * 国家/地区 id 为 ISO 3166-1 数字码：泰国 764 / 马来西亚 458 / 中国香港 344
    * 扩展参考：新加坡 702 / 越南 704 / 印度尼西亚 360 / 柬埔寨 116 */
   const WORLD_SOURCES = [
+    'data/countries-selected-high-res.json',
     'data/countries-selected.json',
     'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json',
     'https://fastly.jsdelivr.net/npm/world-atlas@2/countries-50m.json',
