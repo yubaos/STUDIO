@@ -261,7 +261,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.drawer-home .arr {
+.drawer-home svg {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
   transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -270,7 +273,7 @@ body {
   gap: 4px;
 }
 
-.drawer-home:active .arr {
+.drawer-home:active svg {
   transform: translateX(-4px);
 }
 
